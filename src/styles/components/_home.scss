@@ -1,0 +1,138 @@
+/* ==================== HOME ===================== */
+
+.main-image-container {
+	width: 100%;
+	height: 58vh;
+	background-image: url('/images/home/lies-from-granny-mobile.jpg');
+	background-size: cover;
+	background-position-x: center;
+	background-position-y: center;
+}
+
+.fit-content {
+	height: fit-content;
+}
+
+/* ==================== 3-PACK COMPONENT ===================== */
+.new-three-pack {
+	.image-link img {
+		height: 100%;
+	}
+
+	.image-link {
+		border-radius: 50%;
+		// display: flex;
+		// flex: 0 0 363px;
+		height: 258px;
+		width: 258px;
+		justify-content: center;
+		overflow: hidden;
+		position: relative;
+	}
+
+	.image-overlay {
+		align-items: center;
+		border-radius: 50%;
+		bottom: 0;
+		display: flex;
+		justify-content: center;
+		left: 0;
+		opacity: 1;
+		position: absolute;
+		right: 0;
+		top: 0;
+		transition: opacity 0.25s;
+		z-index: 1;
+		background-color: rgba(0, 0, 0, 0.3);
+		&:hover {
+			opacity: 0;
+		}
+	}
+
+	// img {
+	// 	border-radius: 50%;
+	// 	height: 363px;
+	// 	&::after {
+	// 		content: '';
+	// 		display: block;
+	// 		background-color: rgba(0, 0, 0, 0.3);
+	// 		border-radius: 50%;
+	// 		height: 363px;
+	// 		z-index: 99;
+	// 	}
+	// }
+}
+
+/* ==================== VIDEO COMPONENT ===================== */
+.video-header {
+	text-align: center;
+	font-size: 35px;
+}
+
+// .home-video-container {
+// 	width: 800px;
+// 	margin: auto;
+// }
+
+.home-video-container {
+	width: 350px;
+	height: fit-content;
+	margin: auto;
+}
+
+// .video {
+// margin: auto;
+// width: 100%;
+// 	height: 450px;
+// }
+
+.video {
+	margin: auto;
+	width: 100%;
+	height: 200px;
+}
+
+@media screen and (min-width: $breakpoint-md) {
+	.main-image-container {
+		height: 95vh;
+		background-image: url('/images/home/Lies-From-Granny.jpg');
+	}
+
+	.new-three-pack {
+		.image-link {
+			height: 200px;
+			width: 200px;
+		}
+	}
+
+	/* ==================== VIDEO COMPONENT ===================== */
+	.video-header {
+		font-size: 55px;
+	}
+
+	.home-video-container {
+		width: 800px;
+	}
+
+	.video {
+		height: 450px;
+	}
+}
+
+@media screen and (min-width: $breakpoint-lg) {
+	.new-three-pack {
+		.image-link {
+			height: 275px;
+			width: 275px;
+		}
+	}
+}
+
+@media screen and (min-width: $breakpoint-xl) {
+	.new-three-pack {
+		.image-link {
+			height: 343px;
+			width: 343px;
+		}
+	}
+}

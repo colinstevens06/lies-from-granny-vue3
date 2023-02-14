@@ -1,0 +1,35 @@
+/* ==================== SONGS LIST ==================== */
+
+.songs-container {
+	columns: 1;
+	column-gap: 20px;
+	.band-card {
+		width: 100%;
+		margin: 0;
+		padding: 10px 25px;
+		overflow: hidden;
+		break-inside: avoid;
+		h2 {
+			font-size: 1.75rem;
+		}
+		li {
+			font-size: 1.1rem;
+		}
+		ul {
+			margin-bottom: 0.75rem;
+			padding-inline-start: 30px;
+		}
+	}
+}
+
+@media screen and (min-width: $breakpoint-md) {
+	.songs-container {
+		columns: 2;
+	}
+}
+
+@media screen and (min-width: $breakpoint-lg) {
+	.songs-container {
+		columns: 3;
+	}
+}

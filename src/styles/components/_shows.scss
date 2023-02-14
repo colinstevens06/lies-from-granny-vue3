@@ -1,0 +1,55 @@
+/* ==================== SHOWS ===================== */
+
+.main-image-container__shows {
+	width: 100%;
+	height: 95vh;
+	background-image: url('/images/home/lies-from-granny-shows-hero.jpg');
+	background-size: cover;
+}
+
+.gig-title {
+	font-size: 1.5em;
+	margin-bottom: 7px;
+}
+
+.gig-deets {
+	font-size: 1.25em;
+	margin-bottom: 10px;
+	font-style: italic;
+}
+
+.gig-text {
+	font-size: 1em;
+	line-height: 1.2;
+	margin-bottom: 12px;
+}
+
+.shows-container {
+	display: flex;
+	height: 100%;
+	flex-flow: row wrap;
+	margin-top: 30px;
+	justify-content: flex-start;
+	align-content: flex-start;
+}
+
+.show-card {
+	display: flex;
+	width: 540px;
+	margin-bottom: 25px;
+
+	ul {
+		padding-inline-start: 28px;
+	}
+}
+
+@media screen and (min-width: $breakpoint-md) {
+	.shows-container {
+		padding: 0.5rem;
+	}
+
+	.show-card {
+		margin-right: 0.5rem;
+		padding-right: 0.5rem;
+	}
+}
