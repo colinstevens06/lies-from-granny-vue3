@@ -1,0 +1,18 @@
+.main-container {
+	padding-left: 1rem;
+	padding-right: 1rem;
+}
+
+@media screen and (min-width: $breakpoint-md) {
+	.main-container {
+		padding-left: 70px;
+		padding-right: 70px;
+	}
+}
+
+@media screen and (min-width: $breakpoint-xl) {
+	.main-container {
+		padding-left: 140px;
+		padding-right: 140px;
+	}
+}

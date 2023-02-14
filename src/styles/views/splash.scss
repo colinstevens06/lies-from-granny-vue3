@@ -1,0 +1,29 @@
+.splash-page {
+	&__container {
+		position: absolute;
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		min-height: 100vh;
+		min-width: 100%;
+		background-color: $lfg-poster-yellow;
+		background-image: linear-gradient(to bottom right, $lfg-poster-yellow-top-left, $lfg-poster-yellow-bottom-right);
+		color: rgba(0, 0, 0, 0.97);
+	}
+
+	&__content {
+		align-self: center;
+	}
+
+	&__hero-image {
+		max-height: 50vh;
+	}
+
+	a {
+		color: $lfg-pink;
+		transition: 0.3s;
+		&:hover {
+			color: $lfg-pink--hover-dark;
+		}
+	}
+}
