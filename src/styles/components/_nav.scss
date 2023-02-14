@@ -1,0 +1,85 @@
+/* ==================== NAV ===================== */
+.top-nav {
+	&__nav-links {
+		flex-direction: row;
+		justify-content: center;
+	}
+
+	&__logo {
+		height: 40px;
+	}
+
+	&__brand-link {
+		color: $lfg-dark-gray;
+		transition: 0.5s;
+		&:hover {
+			color: $lfg-pink;
+			transition: 0.5s;
+			text-decoration: none;
+		}
+	}
+
+	&__brand-name {
+		display: inline-flex;
+		font-size: 1.5rem;
+		align-items: center;
+		color: $lfg-dark-gray;
+		transition: 0.5s;
+		&:hover {
+			color: $lfg-pink;
+			transition: 0.5s;
+			text-decoration: none;
+		}
+	}
+
+	&__hamburger {
+		background-color: $lfg-pink;
+		border: transparent;
+
+		&:hover {
+			background: $lfg-pink--hover-dark !important;
+			border: transparent !important;
+		}
+
+		.p-button-label {
+			display: none;
+		}
+	}
+
+	&__item {
+		font-size: 1.25em;
+		border: 1px solid #000000;
+		border-radius: 5px;
+		margin-left: 10px;
+		color: #000000;
+		padding: 12px;
+		text-decoration: none;
+		transition: 0.3s;
+
+		&:hover,
+		&--active {
+			background-color: $lfg-pink;
+			border: 1px solid $lfg-pink;
+			color: #f5f4f2;
+		}
+	}
+}
+
+@media screen and (min-width: $breakpoint-md) {
+	.top-nav {
+		&__logo {
+			height: 80px;
+		}
+		&__brand-name {
+			font-size: 2.5rem;
+		}
+	}
+}
+
+@media screen and (min-width: $breakpoint-xl) {
+	.top-nav {
+		&__brand-name {
+			font-size: 2.75rem;
+		}
+	}
+}
