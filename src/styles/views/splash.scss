@@ -15,8 +15,14 @@
 		align-self: center;
 	}
 
+	&__links {
+		i {
+			color: $lfg-pink;
+		}
+	}
+
 	&__hero-image {
-		max-height: 50vh;
+		max-height: 40vh;
 	}
 
 	a {
@@ -24,6 +30,15 @@
 		transition: 0.3s;
 		&:hover {
 			color: $lfg-pink--hover-dark;
+		}
+	}
+}
+
+@media screen and (min-width: $breakpoint-md) {
+	.splash-page {
+		&__links {
+			width: 50vw;
+			max-width: 500px;
 		}
 	}
 }
