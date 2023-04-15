@@ -2,11 +2,24 @@ import type { Gig } from '@models/gig';
 
 export const pastShows = [
 	{
+		id: 13,
+		name: 'The 8x10',
+		date: 'March 31, 2023',
+		text: [
+			'Along with 5 Spot and Tom Curran, we had a sellout at the 8x10!',
+			'Thanks so much to everyone who came out and made it a special night for us.',
+			'And a big thanks to the <a href="https://www.the8x10.com/" target="_blank">8x10</a> for putting on and excellent evening.'
+		],
+		img: '/images/shows/8x10-03-31-23.jpg',
+		imgAlt: 'Renegade 2020 flyer'
+	},
+	{
 		id: 12,
 		name: 'The Renegade',
 		date: 'Sept. 3, 2020',
 		text: [
-			'Online stream at the Renegade in Arlington.',
+			'The Renegade is a great spot in Arlington with a nice stage and booming sound system.',
+			'We loved rocking this joint.',
 			'You can watch the full show <a href="https://www.youtube.com/watch?v=JJFmEw_tpOQ&t=9694s" target="_blank">on YouTube</a>.'
 		],
 		img: '/images/shows/Renegade-09-03-20.jpg',
