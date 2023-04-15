@@ -1,5 +1,10 @@
 export const songs = [
 	{
+		id: 56,
+		bandName: 'All Time Low',
+		songs: ['Dear Maria, Count Me In']
+	},
+	{
 		id: 55,
 		bandName: 'Third Eye Blind',
 		songs: ["How's It Going to Be", 'Semi-Charmed Life']
