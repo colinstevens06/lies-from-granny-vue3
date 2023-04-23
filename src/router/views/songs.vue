@@ -19,7 +19,7 @@
 						<a href="https://www.instagram.com/liesfromgranny/" target="_blank" rel="noopener noreferrer">Instagram</a>
 						or
 						<!-- prettier-ignore -->
-						<span><a href="https://www.facebook.com/Lies-From-Granny-427515441329100" target="_blank" rel="noopener noreferrer" >Facebook</a>.</span>
+						<span><a :href="urls.facebook" target="_blank" rel="noopener noreferrer" >Facebook</a>.</span>
 					</p>
 					<p>
 						Want to book us for a gig? We'll work with you to build a setlist for your audience.
@@ -43,4 +43,5 @@
 <script setup lang="ts">
 	import Layout from '../layouts/main.vue';
 	import SongsContainer from '../../components/songs/songs-container.vue';
+	import { urls } from '@utils/urls';
 </script>

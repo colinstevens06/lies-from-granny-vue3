@@ -2,6 +2,18 @@ import type { Gig } from '@models/gig';
 
 export const pastShows = [
 	{
+		id: 14,
+		name: 'Petworth Porchfest',
+		date: 'April 22, 2023',
+		text: [
+			'PorchFest was unfortunately rained out. But as they say, rain is a good thing!',
+			'Rain makes corn. Corn makes whiskey.',
+			'Well, you know how the rest goes...'
+		],
+		img: '/images/shows/Porchfest-04-22-2023.jpg',
+		imgAlt: 'Petworth Porchfest - April 22'
+	},
+	{
 		id: 13,
 		name: 'The 8x10',
 		date: 'March 31, 2023',
