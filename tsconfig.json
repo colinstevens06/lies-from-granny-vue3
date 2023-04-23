@@ -9,8 +9,10 @@
 			"@models/*": ["models/*"],
 			"@router/*": ["router/*"],
 			"@styles/*": ["styles/*"],
+			"@utils/*": ["utils/*"],
 			"@views/*": ["router/views/*"]
-		}
+		},
+		"ignoreDeprecations": "5.0"
 	},
 
 	"references": [

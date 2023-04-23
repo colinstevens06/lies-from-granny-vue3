@@ -25,13 +25,7 @@
 							</a>
 						</li>
 						<li>
-							<a
-								href="https://www.facebook.com/Lies-From-Granny-427515441329100"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								Facebook
-							</a>
+							<a :href="urls.facebook" target="_blank" rel="noopener noreferrer">Facebook</a>
 						</li>
 					</ul>
 				</div>
@@ -50,4 +44,5 @@
 
 <script setup lang="ts">
 	import Layout from '@router/layouts/main.vue';
+	import { urls } from '@utils/urls';
 </script>
