@@ -2,6 +2,18 @@ import type { Gig } from '@models/gig';
 
 export const pastShows = [
 	{
+		id: 15,
+		name: '#FightLikeFitz',
+		date: 'July 29, 2023',
+		text: [
+			'Thanks to all who came out to the #FightLikeFitz benefit show!',
+			'Ticket sales went to friend-of-the-band Tommy Fitzgerald to help in his fight against ALS.'
+		],
+		img: '/images/shows/8x10-2023-07-29.jpg',
+		imgAlt: 'FightLikeFitz - July 29, 2023',
+		songs: ['99 Balloons', 'The Anthem', 'Little Things', 'Sk8er Boi']
+	},
+	{
 		id: 14,
 		name: 'Petworth Porchfest',
 		date: 'April 22, 2023',

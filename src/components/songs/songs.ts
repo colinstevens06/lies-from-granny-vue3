@@ -1,5 +1,40 @@
 export const songs = [
 	{
+		id: 63,
+		bandName: 'No Rain',
+		songs: ['Blind Melon']
+	},
+	{
+		id: 62,
+		bandName: 'Flagpole Sitta',
+		songs: ['Harvey Danger']
+	},
+	{
+		id: 61,
+		bandName: 'Eve 6',
+		songs: ['Inside Out']
+	},
+	{
+		id: 60,
+		bandName: 'Avril Lavigne',
+		songs: ['Sk8er Boi']
+	},
+	{
+		id: 59,
+		bandName: 'Good Charlotte',
+		songs: ['Little Things', 'The Anthem']
+	},
+	{
+		id: 58,
+		bandName: 'Amy Winehouse',
+		songs: ['Valerie']
+	},
+	{
+		id: 57,
+		bandName: 'Jimmy Eat World',
+		songs: ['The Middle']
+	},
+	{
 		id: 56,
 		bandName: 'All Time Low',
 		songs: ['Dear Maria, Count Me In']
@@ -112,7 +147,7 @@ export const songs = [
 	{
 		id: 34,
 		bandName: 'Sum 41',
-		songs: ['Fat Lip']
+		songs: ['Fat Lip', 'In Too Deep']
 	},
 	{
 		id: 33,
@@ -142,7 +177,7 @@ export const songs = [
 	{
 		id: 28,
 		bandName: 'New Found Glory',
-		songs: ['My Friends Over You']
+		songs: ['My Friends Over You', 'Hit or Miss']
 	},
 	{
 		id: 27,
@@ -187,7 +222,7 @@ export const songs = [
 	{
 		id: 19,
 		bandName: 'The Cranberries',
-		songs: ['Zombie']
+		songs: ['Zombie', 'Linger']
 	},
 	{
 		id: 18,
@@ -267,7 +302,7 @@ export const songs = [
 	{
 		id: 3,
 		bandName: 'Green Day',
-		songs: ['Basket Case', 'Chump', 'Longview', 'She', 'Welcome to Paradise', 'When I Come Around']
+		songs: ['Basket Case', 'Chump', 'Longview', 'She', 'Welcome to Paradise', 'When I Come Around', 'Brain Stew']
 	},
 	{
 		id: 2,
