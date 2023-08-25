@@ -13,21 +13,21 @@
 						<router-link to="/songs">song list</router-link>
 						for an idea of what we play.
 					</p>
-					<p>
-						Email us at
-						<a href="mailto:liesfromgranny@gmail.com">LiesFromGranny@gmail.com</a>
-					</p>
-					<p>Follow us on social media:</p>
-					<ul>
-						<li>
-							<a href="https://www.instagram.com/liesfromgranny/" target="_blank" rel="noopener noreferrer">
-								Instagram
-							</a>
-						</li>
-						<li>
-							<a :href="urls.facebook" target="_blank" rel="noopener noreferrer">Facebook</a>
-						</li>
-					</ul>
+					<form class="p-fluid pr-3 mt-3" name="contact" method="POST" netlify netlify-honeypot="bot-field">
+						<input name="bot-field" class="hidden" />
+						<label for="name" class="block mt-3 mb-1">Name</label>
+						<InputText id="name" v-model="formBinding.name" />
+						<label for="email" class="block mt-3 mb-1">Email</label>
+						<InputText id="email" v-model="formBinding.email" />
+						<label for="note" class="block mt-3 mb-1">Notes</label>
+						<Textarea
+							id="note"
+							v-model="formBinding.note"
+							rows="5"
+							placeholder="Let us know what you're looking for!"
+						/>
+						<Button label="Submit" class="max-w-max mt-2" type="submit" :disabled="!formFilledOut" />
+					</form>
 				</div>
 
 				<div class="col-12 md:col-5 flex-order-1 md:flex-order-2">
@@ -44,5 +44,18 @@
 
 <script setup lang="ts">
 	import Layout from '@router/layouts/main.vue';
-	import { urls } from '@utils/urls';
+	import InputText from 'primevue/inputtext';
+	import { computed, reactive } from 'vue';
+	import Textarea from 'primevue/textarea';
+	import Button from 'primevue/button';
+
+	const formBinding = reactive({
+		email: '',
+		name: '',
+		note: ''
+	});
+
+	const formFilledOut = computed(
+		() => formBinding.name.length > 0 && formBinding.email.length > 0 && formBinding.note.length > 0
+	);
 </script>
