@@ -16,10 +16,11 @@
 					<form class="p-fluid pr-3 mt-3" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
 						<input name="bot-field" class="hidden" />
 						<label for="name" class="block mt-3 mb-1">Name</label>
-						<InputText id="name" name="name" v-model="formBinding.name" />
-						<!-- <input id="name" /> -->
+						<!-- <InputText id="name" name="name" v-model="formBinding.name" /> -->
+						<input id="name" name="name" />
 						<label for="email" class="block mt-3 mb-1">Email</label>
-						<InputText id="email" name="email" v-model="formBinding.email" />
+						<!-- <InputText id="email" name="email" v-model="formBinding.email" /> -->
+						<input id="email" name="email" />
 						<label for="note" class="block mt-3 mb-1">Notes</label>
 						<Textarea
 							id="note"
@@ -28,7 +29,7 @@
 							rows="5"
 							placeholder="Let us know what you're looking for!"
 						/>
-						<Button label="Submit" class="max-w-max mt-2" type="submit" :disabled="!formFilledOut" />
+						<Button label="Submit" class="max-w-max mt-2" type="submit" />
 					</form>
 				</div>
 
