@@ -13,14 +13,18 @@
 						<router-link to="/songs">song list</router-link>
 						for an idea of what we play.
 					</p>
-					<form class="p-fluid pr-3 mt-3" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+					<form class="p-fluid pr-3 mt-3" name="contact" method="POST" netlify netlify-honeypot="bot-field">
 						<input name="bot-field" class="hidden" />
-						<label for="name" class="block mt-3 mb-1">Name</label>
-						<!-- <InputText id="name" name="name" v-model="formBinding.name" /> -->
-						<input id="name" name="name" />
-						<label for="email" class="block mt-3 mb-1">Email</label>
-						<!-- <InputText id="email" name="email" v-model="formBinding.email" /> -->
-						<input id="email" name="email" />
+						<label for="name" class="block mt-3 mb-1">
+							Name
+							<!-- <InputText id="name" name="name" v-model="formBinding.name" /> -->
+							<input id="name" name="name" type="text" />
+						</label>
+						<label for="email" class="block mt-3 mb-1">
+							Email
+							<!-- <InputText id="email" name="email" v-model="formBinding.email" /> -->
+							<input id="email" name="email" type="email" />
+						</label>
 						<label for="note" class="block mt-3 mb-1">Notes</label>
 						<Textarea
 							id="note"
