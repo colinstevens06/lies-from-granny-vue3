@@ -1,6 +1,6 @@
 {
-	"extends": "@vue/tsconfig/tsconfig.web.json",
-	"include": ["env.d.ts", "src/**/*", "src/**/*.vue"],
+	"extends": "@vue/tsconfig/tsconfig.json",
+	"include": ["env.d.ts", "src/**/*.ts", "src/**/*.vue"],
 	"compilerOptions": {
 		"baseUrl": "src",
 		"paths": {
@@ -12,12 +12,13 @@
 			"@utils/*": ["utils/*"],
 			"@views/*": ["router/views/*"]
 		},
-		"ignoreDeprecations": "5.0"
+		"ignoreDeprecations": "5.0",
+		"moduleResolution": "node"
 	},
 
 	"references": [
 		{
-			"path": "./tsconfig.config.json"
+			"path": "./tsconfig.vite.json"
 		}
 	]
 }
