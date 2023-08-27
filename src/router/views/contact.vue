@@ -18,13 +18,13 @@
 						<!-- <input name="bot-field" class="hidden" /> -->
 						<label for="name" class="block mt-3 mb-1">
 							Name
-							<!-- <InputText id="name" name="name" v-model="formBinding.name" /> -->
-							<input id="name" name="name" type="text" />
+							<InputText id="name" name="name" v-model="formBinding.name" />
+							<!-- <input id="name" name="name" type="text" /> -->
 						</label>
 						<label for="email" class="block mt-3 mb-1">
 							Email
-							<!-- <InputText id="email" name="email" v-model="formBinding.email" /> -->
-							<input id="email" name="email" type="email" />
+							<InputText id="email" name="email" v-model="formBinding.email" />
+							<!-- <input id="email" name="email" type="email" /> -->
 						</label>
 						<label for="note" class="block mt-3 mb-1">Notes</label>
 						<!-- <Textarea
