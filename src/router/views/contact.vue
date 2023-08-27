@@ -15,26 +15,25 @@
 					</p>
 					<form class="p-fluid pr-3 mt-3" name="contact" method="post">
 						<input type="hidden" name="form-name" value="contact" />
-						<!-- <input name="bot-field" class="hidden" /> -->
+						<input name="bot-field" class="hidden" />
 						<label for="name" class="block mt-3 mb-1">
 							Name
-							<InputText id="name" name="name" v-model="formBinding.name" />
-							<!-- <input id="name" name="name" type="text" /> -->
+							<InputText id="name" name="name" class="mt-1" v-model="formBinding.name" />
 						</label>
 						<label for="email" class="block mt-3 mb-1">
 							Email
-							<InputText id="email" name="email" v-model="formBinding.email" />
-							<!-- <input id="email" name="email" type="email" /> -->
+							<InputText id="email" name="email" class="mt-1" v-model="formBinding.email" />
 						</label>
 						<label for="note" class="block mt-3 mb-1">Notes</label>
-						<!-- <Textarea
-							id="note"
-							name="note"
+						<Textarea
 							v-model="formBinding.note"
+							id="note"
+							class="mt-1"
+							name="note"
 							rows="5"
 							placeholder="Let us know what you're looking for!"
-						/> -->
-						<Button label="Submit" class="max-w-max mt-2" type="submit" />
+						/>
+						<Button label="Submit" class="max-w-max mt-2" type="submit" :disabled="!formFilledOut" />
 					</form>
 				</div>
 

@@ -29,10 +29,10 @@
 	</head>
 	<body>
 		<div id="app"></div>
-		<form name="contact" netlify hidden>
+		<form name="contact" netlify netlify-honeypot="bot-field" hidden>
 			<input name="name" type="text" />
 			<input name="email" type="email" />
-			<!-- <textarea name="note"></textarea> -->
+			<textarea name="note"></textarea>
 		</form>
 		<script type="module" src="/src/main.ts"></script>
 	</body>
