@@ -26,13 +26,13 @@
 							<input id="email" name="email" type="email" />
 						</label>
 						<label for="note" class="block mt-3 mb-1">Notes</label>
-						<Textarea
+						<!-- <Textarea
 							id="note"
 							name="note"
 							v-model="formBinding.note"
 							rows="5"
 							placeholder="Let us know what you're looking for!"
-						/>
+						/> -->
 						<Button label="Submit" class="max-w-max mt-2" type="submit" />
 					</form>
 				</div>
