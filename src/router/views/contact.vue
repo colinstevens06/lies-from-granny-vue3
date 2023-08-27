@@ -33,7 +33,16 @@
 							rows="5"
 							placeholder="Let us know what you're looking for!"
 						/>
-						<Button label="Submit" class="max-w-max mt-2" type="submit" :disabled="!formFilledOut" />
+						<Transition name="fade" mode="out-in">
+							<p v-if="noteCharLimitExceeded" class="mt-1 text-sm text-red-700">
+								{{ charactersAllowedMessage }} You have exceeded that limit. Please shorten your message.
+							</p>
+							<p v-else class="mt-1 text-sm text-400">
+								{{ charactersAllowedMessage }}
+								You have {{ charactersLeftNumber }} characters left.
+							</p>
+						</Transition>
+						<Button label="Submit" class="max-w-max mt-2" type="submit" :disabled="!formValid" />
 					</form>
 				</div>
 
@@ -62,7 +71,17 @@
 		note: ''
 	});
 
+	const charactersAllowed = 500;
+
+	const charactersAllowedMessage = `There is a ${charactersAllowed} character limit. `;
+
+	const charactersLeftNumber = computed(() => charactersAllowed - formBinding.note.length);
+
 	const formFilledOut = computed(
 		() => formBinding.name.length > 0 && formBinding.email.length > 0 && formBinding.note.length > 0
 	);
+
+	const formValid = computed(() => formFilledOut.value && !noteCharLimitExceeded.value);
+
+	const noteCharLimitExceeded = computed(() => formBinding.note.length > charactersAllowed);
 </script>
