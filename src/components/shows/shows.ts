@@ -1,6 +1,6 @@
 import type { Gig } from '@models/gig';
 
-export const pastShows = [
+export const shows = [
 	{
 		id: 15,
 		name: '#FightLikeFitz',

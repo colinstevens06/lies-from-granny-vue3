@@ -38,6 +38,13 @@ h1 {
 	height: auto;
 }
 
+form {
+	label {
+		font-weight: bold;
+	}
+}
+
+@import './theme';
 @import './primeflex-variables';
 @import './variables';
 @import './layout';
