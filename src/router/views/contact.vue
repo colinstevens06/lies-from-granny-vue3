@@ -13,8 +13,9 @@
 						<router-link to="/songs">song list</router-link>
 						for an idea of what we play.
 					</p>
-					<form class="p-fluid pr-3 mt-3" name="contact" method="POST" netlify netlify-honeypot="bot-field">
-						<input name="bot-field" class="hidden" />
+					<form class="p-fluid pr-3 mt-3" name="contact" method="post">
+						<input type="hidden" name="form-name" value="contact" />
+						<!-- <input name="bot-field" class="hidden" /> -->
 						<label for="name" class="block mt-3 mb-1">
 							Name
 							<!-- <InputText id="name" name="name" v-model="formBinding.name" /> -->
