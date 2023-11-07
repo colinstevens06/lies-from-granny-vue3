@@ -2,6 +2,18 @@ import type { Gig } from '@models/gig';
 
 export const shows = [
 	{
+		id: 16,
+		name: 'The 8x10',
+		date: 'March 9, 2024',
+		text: [
+			"We're excited to be returning to The 8x10!",
+			'The Grandkids are known for filling out the 8x10, so we cannot wait to pack the house again and hear you sing along!',
+			'Joining us will be Rebel Ernie and Johnny Bailed Lately.'
+		],
+		img: '/images/shows/8x10-2024-03-09.jpg',
+		imgAlt: 'The 8x10 - March 9, 2024'
+	},
+	{
 		id: 15,
 		name: '#FightLikeFitz',
 		date: 'July 29, 2023',
