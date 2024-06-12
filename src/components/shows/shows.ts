@@ -2,13 +2,36 @@ import type { Gig } from '@models/gig';
 
 export const shows = [
 	{
+		id: 18,
+		name: 'The 8x10 - Halloween Show',
+		date: 'October 26, 2024',
+		text: [
+			'There is no place quite like the 8x10, and we are excited to be coming back around Halloween!',
+			'Get your best costume out and come rock with us at one of the best venues in Baltimore.',
+			'We will post ticket information when available.'
+		],
+		img: '/images/zombie-head.png',
+		imgAlt: 'Pickles Pub OCMD - September 21, 2024'
+	},
+	{
+		id: 17,
+		name: 'Pickles Pub, OCMD',
+		date: 'September 21, 2024',
+		text: [
+			"We're excited to be making our debut at Pickles Pub in OC!",
+			"Ocean City holds a special place in our heart's, so we're thrilled to be rocking one of the best spots in town.",
+			"Pickles is a full-service bar and restaurant, so it's a great option for dinner if you're looking to fill your stomach before a night of drinkin' and dancin'!"
+		],
+		img: '/images/shows/Pickles-OC-9-21-24.jpg',
+		imgAlt: 'Pickles Pub OCMD - September 21, 2024'
+	},
+	{
 		id: 16,
 		name: 'The 8x10',
 		date: 'March 9, 2024',
 		text: [
-			"We're excited to be returning to The 8x10!",
-			'The Grandkids are known for filling out the 8x10, so we cannot wait to pack the house again and hear you sing along!',
-			'Joining us will be Rebel Ernie and Johnny Bailed Lately.'
+			'As always, it was a helluva time at The 8x10!',
+			'You all rocked so hard - thank you so much for coming out and dancing with us! You packed the place again and we are so thankful for the support!'
 		],
 		img: '/images/shows/8x10-2024-03-09.jpg',
 		imgAlt: 'The 8x10 - March 9, 2024'
