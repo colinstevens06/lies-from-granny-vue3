@@ -10,5 +10,5 @@
 </template>
 
 <script setup lang="ts">
-	defineProps({ bandName: String, songs: [] });
+	defineProps<{ bandName: string; songs: string[] }>();
 </script>

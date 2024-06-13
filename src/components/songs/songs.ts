@@ -1,3 +1,5 @@
+import type { BandListing } from '@models/song';
+
 export const songs = [
 	{
 		id: 69,
@@ -353,4 +355,4 @@ export const songs = [
 			"What's My Age Again"
 		]
 	}
-];
+] as BandListing[];

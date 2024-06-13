@@ -10,24 +10,19 @@
 	import { ref } from 'vue';
 	import SongCard from './song-card.vue';
 	import { songs } from './songs';
+	import type { BandListing } from '@models/song';
 
-	const sortedSongs = ref();
+	const sortedSongs = ref<BandListing[]>();
 
-	const sortByName = (input: any) => {
+	const sortByName = (input: BandListing[]) => {
 		// verifying input has value
 		if (input) {
 			let newInput = [...input];
 
 			// alphabatize by band name
-			return newInput.sort(function (a, b) {
-				if (b.bandName.toLowerCase() < a.bandName.toLowerCase()) {
-					return 1;
-				} else if (a.bandName.toLowerCase() < b.bandName.toLowerCase()) {
-					return -1;
-				} else {
-					return 0;
-				}
-			});
+			return newInput
+				.sort((a, b) => a.bandName.localeCompare(b.bandName.toLowerCase()))
+				.map(listing => ({ ...listing, songs: listing.songs.sort() }));
 		}
 	};
 

@@ -1,9 +1,9 @@
 <template>
 	<div class="main-container my-5">
-		<h2>Covering Hits, '60s to Present, and Everything In Between</h2>
+		<h2>High-Energy Pop Rock Cover Band</h2>
 		<p>
-			Lies From Granny is a five-piece rock cover band who brings a party environment by playing a mix of rock, pop punk
-			and anything else you might want to dance to.
+			Lies From Granny is a five-piece rock cover band who brings a party environment while playing a mix of rock, pop
+			punk and anything else you might want to dance to.
 		</p>
 		<p>
 			We love learning new songs and are always adding new tunes to our arsenal. So anytime you see us, expect to see a
