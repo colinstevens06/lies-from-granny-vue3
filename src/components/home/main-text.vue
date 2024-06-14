@@ -12,16 +12,17 @@
 		</p>
 		<p>
 			You can find us rocking out at venues across D.C., Maryland and Virginia. We'd love to see you at a show! Follow
-			us on social media to see where we'll be next, or
-			<router-link to="/contact">book us for your next event</router-link>
+			us on
+			<a href="https://www.instagram.com/liesfromgranny/" target="_blank" rel="noopener noreferrer">Instagram</a>
+			or
+			<a :href="urls.facebook" target="_blank" rel="noopener noreferrer">Facebook</a>
+			to see where our
+			<!-- prettier-ignore -->
+			<span><router-link to="/shows">next show is</router-link>,</span>
+			or
+			<!-- prettier-ignore -->
+			<span><router-link to="/contact">reach out about a gig</router-link>.</span>
 		</p>
-		<p class="font-bold">Follow Us!</p>
-		<ul class="list-none pl-0">
-			<li>
-				<a href="https://www.instagram.com/liesfromgranny/" target="_blank" rel="noopener noreferrer">Instagram</a>
-			</li>
-			<li class="mt-1"><a :href="urls.facebook" target="_blank" rel="noopener noreferrer">Facebook</a></li>
-		</ul>
 	</div>
 </template>
 
