@@ -3,16 +3,7 @@
 		<div class="main-container">
 			<div class="grid mt-3">
 				<div class="col-12 md:col-7 flex-order-2 md:flex-order-1">
-					<p class="mt-0">
-						Need a live band for your upcoming event? Need a band to fill in a spot at your bar? Or to schedule us for
-						regular appearances?
-					</p>
-					<p>We'd love to hear from you.</p>
-					<p>
-						We'll work with you on selecting songs to fit your party's vibe. Take a look at our
-						<router-link to="/songs">song list</router-link>
-						for an idea of what we play.
-					</p>
+					<p class="mt-0">Interested in booking us? Just want to say hello? We'd love to hear from you!</p>
 					<form class="p-fluid pr-3 mt-3" name="contact" method="post">
 						<input type="hidden" name="form-name" value="contact" />
 						<input name="bot-field" class="hidden" />
@@ -37,7 +28,7 @@
 							<p v-if="noteCharLimitExceeded" class="mt-1 text-sm text-red-700">
 								{{ charactersAllowedMessage }} You have exceeded that limit. Please shorten your message.
 							</p>
-							<p v-else class="mt-1 text-sm text-400">
+							<p v-else class="mt-1 text-sm text-500">
 								{{ charactersAllowedMessage }}
 								You have {{ charactersLeftNumber }} characters left.
 							</p>

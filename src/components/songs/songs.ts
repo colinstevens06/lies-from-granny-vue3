@@ -1,4 +1,36 @@
+import type { BandListing } from '@models/song';
+
 export const songs = [
+	{
+		id: 69,
+		bandName: 'Goldfinger',
+		songs: ['99 Balloons']
+	},
+	{
+		id: 68,
+		bandName: 'Hawthorne Heights',
+		songs: ['Ohio is for Lovers']
+	},
+	{
+		id: 67,
+		bandName: 'Hawthorne Heights',
+		songs: ['Ohio is for Lovers']
+	},
+	{
+		id: 66,
+		bandName: 'Taking Back Sunday',
+		songs: ['MakeDamnSure']
+	},
+	{
+		id: 65,
+		bandName: 'Janis Joplin',
+		songs: ['Me and Bobby McGee']
+	},
+	{
+		id: 64,
+		bandName: 'Starting Line',
+		songs: ['Best of Me']
+	},
 	{
 		id: 63,
 		bandName: 'No Rain',
@@ -177,7 +209,7 @@ export const songs = [
 	{
 		id: 28,
 		bandName: 'New Found Glory',
-		songs: ['My Friends Over You', 'Hit or Miss']
+		songs: ['My Friends Over You', 'Hit or Miss', 'Kiss Me']
 	},
 	{
 		id: 27,
@@ -323,4 +355,4 @@ export const songs = [
 			"What's My Age Again"
 		]
 	}
-];
+] as BandListing[];
