@@ -25,11 +25,13 @@
 	import { computed } from 'vue';
 
 	const upcomingShowsNew = computed(() =>
-		shows.filter(show => {
-			const todayMidnight = new Date(`${show.date} 23:59:59`);
+		shows
+			.filter(show => {
+				const todayMidnight = new Date(`${show.date} 23:59:59`);
 
-			return todayMidnight.getTime() >= new Date().getTime();
-		})
+				return todayMidnight.getTime() >= new Date().getTime();
+			})
+			.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 	);
 
 	const pastShowsNew = computed(() =>
