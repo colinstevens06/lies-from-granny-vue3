@@ -2,14 +2,34 @@ import type { BandListing } from '@models/song';
 
 export const songs = [
 	{
+		id: 71,
+		bandName: 'Limp Bizkit',
+		songs: ['Break Stuff']
+	},
+	{
+		id: 71,
+		bandName: 'Natalie Imbruglia',
+		songs: ['Torn']
+	},
+	{
+		id: 70,
+		bandName: 'Linkin Park',
+		songs: ['In The End']
+	},
+	{
 		id: 69,
-		bandName: 'Goldfinger',
-		songs: ['99 Balloons']
+		bandName: 'Dashboard Confessional',
+		songs: ['Hands Down']
+	},
+	{
+		id: 69,
+		bandName: 'Nirvana',
+		songs: ['Smells Like Teen Spirit']
 	},
 	{
 		id: 68,
-		bandName: 'Hawthorne Heights',
-		songs: ['Ohio is for Lovers']
+		bandName: 'Goldfinger',
+		songs: ['99 Balloons']
 	},
 	{
 		id: 67,
@@ -19,7 +39,7 @@ export const songs = [
 	{
 		id: 66,
 		bandName: 'Taking Back Sunday',
-		songs: ['MakeDamnSure']
+		songs: ['MakeDamnSure', "Cute Without The 'E' (Cut From The Team)"]
 	},
 	{
 		id: 65,
@@ -234,7 +254,7 @@ export const songs = [
 	{
 		id: 23,
 		bandName: 'Alanis Morisette',
-		songs: ['Hand in My Pocket', 'You Oughtta Know']
+		songs: ['Hand in My Pocket', 'You Oughtta Know', 'Ironic']
 	},
 	{
 		id: 22,
@@ -284,7 +304,7 @@ export const songs = [
 	{
 		id: 13,
 		bandName: 'Fall Out Boy',
-		songs: ["Sugar We're Goin Down"]
+		songs: ["Sugar We're Goin Down", 'Grand Theft Autumn']
 	},
 	{
 		id: 12,
@@ -329,7 +349,7 @@ export const songs = [
 	{
 		id: 4,
 		bandName: 'Weezer',
-		songs: ['Hash Pipe', 'Island in the Sun']
+		songs: ['Hash Pipe', 'Island in the Sun', "Say it Ain't So"]
 	},
 	{
 		id: 3,

@@ -2,8 +2,46 @@ import type { Gig } from '@models/gig';
 
 export const shows = [
 	{
+		id: 21,
+		name: 'Pickles Pub, OCMD',
+		date: 'Auguest 23, 2025',
+		text: [
+			"Summer's winding down, but we're not done yet!",
+			'Come rock out with us for a energy-filled set at Pickles!',
+			'Have you tried the Original Pickel Shot yet?',
+			"If not, what have you been waiting for? And while you're at it, order a round for the band ;)"
+		],
+		img: '/images/shows/2025/pickles-oc-8-2025.jpg',
+		imgAlt: 'Pickles Pub OCMD - September 21, 2024'
+	},
+	{
+		id: 20,
+		name: 'Pickles Pub, OCMD',
+		date: 'May 24, 2025',
+		text: [
+			"We're stoked to make our return to Pickles Pub for Memorial Day weekend!",
+			'Come the official summer kickoff party with Lies From Granny!',
+			"Pickles is a great spot for dinner, so make sure to come early to get some food in your belly so you're ready for a long night of dancing!"
+		],
+		img: '/images/shows/2025/pickles-oc-memorial-day-2025.jpg',
+		imgAlt: 'Pickles Pub OCMD - May 24, 2025'
+	},
+	{
+		id: 19,
+		name: 'Asheville, NC Benefit Show - The 8x10',
+		date: 'November 23, 2024',
+		text: [
+			'November 22-23, The 8x10 and the Baltimore music community are proud to present two nights benefiting the Asheville, NC, music community.',
+			'Over 2 nights, watch eight sets of diverse music with special guests.',
+			'VIP ticket packages are available.',
+			'Tickets go on sale Monday, Oct. 21 on <a href="https://the8x10.com/Tickets.html">The 8x10\'s ticket website.</a>'
+		],
+		img: '/images/shows/2024/asheville-benefit-8x10.jpg',
+		imgAlt: 'The 8x10 - Asheville NC Benefit Show - November 22-23, 2024'
+	},
+	{
 		id: 18,
-		name: 'The 8x10 - Halloween Show',
+		name: 'Halloween Show - The 8x10',
 		date: 'October 26, 2024',
 		text: [
 			'There is no place quite like the 8x10, and we are excited to be coming back around Halloween!',
@@ -11,16 +49,17 @@ export const shows = [
 			'We will post ticket information when available.'
 		],
 		img: '/images/zombie-head.png',
-		imgAlt: 'Pickles Pub OCMD - September 21, 2024'
+		imgAlt: 'The 8x10 - October 26, 2024'
 	},
 	{
 		id: 17,
 		name: 'Pickles Pub, OCMD',
 		date: 'September 21, 2024',
 		text: [
-			"We're excited to be making our debut at Pickles Pub in OC!",
-			"Ocean City holds a special place in our heart's, so we're thrilled to be rocking one of the best spots in town.",
-			"Pickles is a full-service bar and restaurant, so it's a great option for dinner if you're looking to fill your stomach before a night of drinkin' and dancin'!"
+			'What a time we had at Pickles for our Ocean City debut!!!',
+			"Ocean City holds a special place in our heart's, so we were thrilled to be rock at one of the best spots in town.",
+			"If you're ever in OC, Pickles is a full-service bar and restaurant, so it's a great option for dinner if you're looking to fill your stomach before a night of drinkin' and dancin'!",
+			"We can't wait to return in 2025!"
 		],
 		img: '/images/shows/Pickles-OC-9-21-24.jpg',
 		imgAlt: 'Pickles Pub OCMD - September 21, 2024'

@@ -23,7 +23,7 @@
 					</p>
 					<p>
 						Want to book us for a gig? We'll work with you to build a setlist for your audience.
-						<Link to="/contact">Contact us</Link>
+						<RouterLink to="/contact">Contact us</RouterLink>
 						about a booking.
 					</p>
 				</div>
