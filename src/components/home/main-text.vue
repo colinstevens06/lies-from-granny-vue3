@@ -1,9 +1,9 @@
 <template>
 	<div class="main-container my-5">
-		<h2>High-Energy Pop Rock Cover Band</h2>
+		<h2>High-Energy Rock Cover Band</h2>
 		<p>
-			Lies From Granny is a five-piece pop rock cover band from the Washington D.C. - Baltimore area who always brings
-			the party to every stage they hit
+			Lies From Granny is a five-piece rock cover band from the Washington D.C. - Baltimore area who always brings the
+			party to every stage they hit
 		</p>
 		<p>
 			Come out to a Lies From Granny show and you'll be dancing and singing along to your favorite songs all night long.
