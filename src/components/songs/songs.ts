@@ -2,7 +2,12 @@ import type { BandListing } from '@models/song';
 
 export const songs = [
 	{
-		id: 71,
+		id: 73,
+		bandName: 'Spice Girls',
+		songs: ['Wannabe']
+	},
+	{
+		id: 72,
 		bandName: 'Limp Bizkit',
 		songs: ['Break Stuff']
 	},

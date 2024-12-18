@@ -4,11 +4,11 @@ export const shows = [
 	{
 		id: 21,
 		name: 'Pickles Pub, OCMD',
-		date: 'Auguest 23, 2025',
+		date: 'August 23, 2025',
 		text: [
 			"Summer's winding down, but we're not done yet!",
 			'Come rock out with us for a energy-filled set at Pickles!',
-			'Have you tried the Original Pickel Shot yet?',
+			'Have you tried the Original Pickle Shot yet?',
 			"If not, what have you been waiting for? And while you're at it, order a round for the band ;)"
 		],
 		img: '/images/shows/2025/pickles-oc-8-2025.jpg',
