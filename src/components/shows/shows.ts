@@ -2,7 +2,15 @@ import type { Gig } from '@models/gig';
 
 export const shows = [
 	{
-		id: 21,
+		id: 23,
+		name: 'Molloys Irish Pub',
+		date: 'Sept 27, 2025',
+		text: ['Back and ready to rock at Molloys!', 'Come early for the food', 'Stay late for the jams', "We're on 9-1"],
+		img: '/images/zombie-head.png',
+		imgAlt: 'Molloys - September 27, 2025'
+	},
+	{
+		id: 22,
 		name: 'Pickles Pub, OCMD',
 		date: 'August 23, 2025',
 		text: [
