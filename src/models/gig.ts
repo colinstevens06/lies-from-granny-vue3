@@ -5,5 +5,8 @@ export interface Gig {
 	text: string[];
 	img: string;
 	imgAlt: string;
+	/** Intrinsic image dimensions, used to reserve layout space before load. */
+	imgWidth?: number;
+	imgHeight?: number;
 	songs: string[];
 }

@@ -2,7 +2,7 @@
 	<div class="splash-page splash-page__container text-center">
 		<div class="splash-page__content">
 			<h1 class="font-permanent-marker text-6xl mt-0 mb-1">See Us Soon</h1>
-			<img src="/images/zombie-head.png" class="splash-page__hero-image" />
+			<img :src="heroImgSrc" alt="" class="splash-page__hero-image" width="740" height="949" decoding="async" />
 			<p class="text-xl mb-1">8x10 &#183; March 31, 2023</p>
 			<ul class="list-none pl-0 mb-5 mt-1">
 				<li class="text-4xl font-permanent-marker">Lies From Granny</li>
@@ -29,4 +29,9 @@
 	</div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+	import { netlifyImage } from '@utils/images';
+
+	// Splash hero is capped at 40vh tall; 800px wide comfortably covers tall displays at 2x.
+	const heroImgSrc = netlifyImage('/images/zombie-head.png', 800);
+</script>

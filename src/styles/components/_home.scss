@@ -1,12 +1,17 @@
 /* ==================== HOME ===================== */
 
 .main-image-container {
+	display: block;
 	width: 100%;
 	height: 58vh;
-	background-image: url('/images/home/lies-from-granny-mobile.jpg');
-	background-size: cover;
-	background-position-x: center;
-	background-position-y: center;
+}
+
+.main-image {
+	display: block;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
 }
 
 .fit-content {
@@ -95,7 +100,6 @@
 @media screen and (min-width: $breakpoint-md) {
 	.main-image-container {
 		height: 95vh;
-		background-image: url('/images/home/lies-from-granny.jpg');
 	}
 
 	.new-three-pack {

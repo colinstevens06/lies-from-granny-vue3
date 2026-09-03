@@ -19,7 +19,7 @@ export const songs = [
 	{
 		id: 70,
 		bandName: 'Linkin Park',
-		songs: ['In The End']
+		songs: ['In the End', 'One Step Closer']
 	},
 	{
 		id: 69,
@@ -34,17 +34,17 @@ export const songs = [
 	{
 		id: 68,
 		bandName: 'Goldfinger',
-		songs: ['99 Balloons']
+		songs: ['99 Red Balloons']
 	},
 	{
 		id: 67,
 		bandName: 'Hawthorne Heights',
-		songs: ['Ohio is for Lovers']
+		songs: ['Ohio Is for Lovers']
 	},
 	{
 		id: 66,
 		bandName: 'Taking Back Sunday',
-		songs: ['MakeDamnSure', "Cute Without The 'E' (Cut From The Team)"]
+		songs: ['MakeDamnSure', "Cute Without the 'E' (Cut from the Team)"]
 	},
 	{
 		id: 65,
@@ -53,18 +53,18 @@ export const songs = [
 	},
 	{
 		id: 64,
-		bandName: 'Starting Line',
+		bandName: 'The Starting Line',
 		songs: ['Best of Me']
 	},
 	{
 		id: 63,
-		bandName: 'No Rain',
-		songs: ['Blind Melon']
+		bandName: 'Blind Melon',
+		songs: ['No Rain']
 	},
 	{
 		id: 62,
-		bandName: 'Flagpole Sitta',
-		songs: ['Harvey Danger']
+		bandName: 'Harvey Danger',
+		songs: ['Flagpole Sitta']
 	},
 	{
 		id: 61,
@@ -89,7 +89,7 @@ export const songs = [
 	{
 		id: 57,
 		bandName: 'Jimmy Eat World',
-		songs: ['The Middle']
+		songs: ['The Middle', 'A Praise Chorus']
 	},
 	{
 		id: 56,
@@ -103,7 +103,7 @@ export const songs = [
 	},
 	{
 		id: 54,
-		bandName: 'Tina & Ike Turner',
+		bandName: 'Tina Turner',
 		songs: ['Proud Mary']
 	},
 	{
@@ -144,7 +144,7 @@ export const songs = [
 	{
 		id: 46,
 		bandName: 'Pat Benatar',
-		songs: ['Hit Me With Your Best Shot']
+		songs: ['Hit Me with Your Best Shot']
 	},
 	{
 		id: 45,
@@ -164,7 +164,7 @@ export const songs = [
 	{
 		id: 42,
 		bandName: 'Rage Against the Machine',
-		songs: ['Killin in the Name']
+		songs: ['Killing in the Name']
 	},
 	{
 		id: 41,
@@ -179,12 +179,12 @@ export const songs = [
 	{
 		id: 39,
 		bandName: 'Shania Twain',
-		songs: ['Man! I Feel Like a Woman']
+		songs: ['Man! I Feel Like a Woman!']
 	},
 	{
 		id: 38,
 		bandName: 'Sheryl Crow',
-		songs: ['If It Makes You Happpy']
+		songs: ['If It Makes You Happy']
 	},
 	{
 		id: 37,
@@ -258,12 +258,12 @@ export const songs = [
 	},
 	{
 		id: 23,
-		bandName: 'Alanis Morisette',
-		songs: ['Hand in My Pocket', 'You Oughtta Know', 'Ironic']
+		bandName: 'Alanis Morissette',
+		songs: ['Hand in My Pocket', 'You Oughta Know', 'Ironic']
 	},
 	{
 		id: 22,
-		bandName: 'Ben King',
+		bandName: 'Ben E. King',
 		songs: ['Stand By Me']
 	},
 	{
@@ -309,7 +309,7 @@ export const songs = [
 	{
 		id: 13,
 		bandName: 'Fall Out Boy',
-		songs: ["Sugar We're Goin Down", 'Grand Theft Autumn']
+		songs: ["Sugar, We're Goin Down", 'Grand Theft Autumn']
 	},
 	{
 		id: 12,
@@ -339,7 +339,7 @@ export const songs = [
 	{
 		id: 7,
 		bandName: '3 Doors Down',
-		songs: ['Kryponite']
+		songs: ['Kryptonite']
 	},
 	{
 		id: 6,
@@ -377,7 +377,53 @@ export const songs = [
 			'First Date',
 			'Miss You',
 			'The Rock Show',
-			"What's My Age Again"
+			"What's My Age Again?",
+			'Dammit'
 		]
+	},
+	{
+		id: 74,
+		bandName: 'Ozzy Osbourne',
+		songs: ['Crazy Train']
+	},
+	{
+		id: 75,
+		bandName: 'American Hi-Fi',
+		songs: ['Flavor of the Weak']
+	},
+	{
+		id: 77,
+		bandName: 'Turnstile',
+		songs: ['Mystery']
+	},
+	{
+		id: 78,
+		bandName: 'Taylor Swift',
+		songs: ['Shake It Off']
+	},
+	{
+		id: 79,
+		bandName: 'My Chemical Romance',
+		songs: ['Teenagers']
+	},
+	{
+		id: 80,
+		bandName: 'Brand New',
+		songs: ['The Quiet Things That No One Ever Knows']
+	},
+	{
+		id: 81,
+		bandName: 'Incubus',
+		songs: ['Wish You Were Here']
+	},
+	{
+		id: 82,
+		bandName: 'Florence + The Machine',
+		songs: ['Dog Days Are Over']
+	},
+	{
+		id: 83,
+		bandName: 'Fuel',
+		songs: ['Shimmer']
 	}
 ] as BandListing[];

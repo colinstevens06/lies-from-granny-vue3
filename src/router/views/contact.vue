@@ -39,9 +39,12 @@
 
 				<div class="col-12 md:col-5 flex-order-1 md:flex-order-2">
 					<img
-						src="/images/contact/contact-lies-from-granny.jpg"
+						:src="contactImgSrc"
 						alt="Lies From Granny at Locust Point Festival"
 						class="img-fluid"
+						width="512"
+						height="512"
+						decoding="async"
 					/>
 				</div>
 			</div>
@@ -55,6 +58,10 @@
 	import { computed, reactive } from 'vue';
 	import Textarea from 'primevue/textarea';
 	import Button from 'primevue/button';
+	import { netlifyImage } from '@utils/images';
+
+	// Rendered at half the content width on desktop; the 512px source is the max useful size.
+	const contactImgSrc = netlifyImage('/images/contact/contact-lies-from-granny.jpg', 512);
 
 	const formBinding = reactive({
 		email: '',

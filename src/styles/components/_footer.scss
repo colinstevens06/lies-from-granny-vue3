@@ -16,9 +16,15 @@ footer {
 	bottom: 0;
 	width: 100%;
 	height: 60px;
-	line-height: 60px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.25rem;
 
-	span {
-		color: rgba(255, 255, 255, 0.91);
+	.footer__socials {
+		display: flex;
+		gap: 1rem;
+		font-size: 1.1rem;
 	}
 }

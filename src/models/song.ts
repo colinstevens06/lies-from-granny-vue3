@@ -3,4 +3,3 @@ export interface BandListing {
 	bandName: string;
 	songs: string[];
 }
-
