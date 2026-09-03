@@ -1,10 +1,16 @@
 <template>
 	<footer class="footer surface-900 text-center">
-		<span class="p-4 mb-0">
-			Page developed by
-			<a href="https://www.instagram.com/drumminup" target="_blank" rel="noopener noreferrer">Drummin Up Media</a>
-		</span>
+		<div class="footer__socials">
+			<a :href="urls.instagram" target="_blank" rel="noopener noreferrer" aria-label="Lies From Granny on Instagram">
+				<i class="pi pi-instagram"></i>
+			</a>
+			<a :href="urls.facebook" target="_blank" rel="noopener noreferrer" aria-label="Lies From Granny on Facebook">
+				<i class="pi pi-facebook"></i>
+			</a>
+		</div>
 	</footer>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+	import { urls } from '@utils/urls';
+</script>

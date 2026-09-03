@@ -29,9 +29,12 @@
 				</div>
 				<div class="col-12 md:col-6 flex-order-1 md:flex-order-6 song-list-img">
 					<img
-						src="/images/home/Lies-From-Granny-Songs-List.jpg"
+						:src="setlistImgSrc"
 						alt="Setlist from a Lies From Granny show"
 						class="img-fluid img-song-list"
+						width="500"
+						height="281"
+						decoding="async"
 					/>
 				</div>
 			</div>
@@ -44,4 +47,8 @@
 	import Layout from '../layouts/main.vue';
 	import SongsContainer from '../../components/songs/songs-container.vue';
 	import { urls } from '@utils/urls';
+	import { netlifyImage } from '@utils/images';
+
+	// Rendered at half the content width on desktop; the 500px source is the max useful size.
+	const setlistImgSrc = netlifyImage('/images/home/Lies-From-Granny-Songs-List.jpg', 500);
 </script>

@@ -2,7 +2,17 @@
 	<div class="show-card">
 		<div class="grid">
 			<div class="col-12 md:col-6 gig-image">
-				<img :src="gig.img" :alt="gig.imgAlt" class="w-full img-fluid" />
+				<img
+					:src="flyerSrc"
+					:srcset="flyerSrcset"
+					sizes="(min-width: 768px) 270px, 100vw"
+					:alt="gig.imgAlt"
+					:width="gig.imgWidth"
+					:height="gig.imgHeight"
+					class="w-full img-fluid"
+					loading="lazy"
+					decoding="async"
+				/>
 			</div>
 
 			<div class="col-12 md:col-6">
@@ -24,8 +34,13 @@
 
 <script setup lang="ts">
 	import type { Gig } from '@models/gig';
+	import { netlifyImage } from '@utils/images';
+	import { computed } from 'vue';
 
-	defineProps<{
+	const props = defineProps<{
 		gig: Gig;
 	}>();
+
+	const flyerSrc = computed(() => netlifyImage(props.gig.img, 400));
+	const flyerSrcset = computed(() => `${flyerSrc.value} 400w, ${netlifyImage(props.gig.img, 800)} 800w`);
 </script>

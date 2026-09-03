@@ -2,12 +2,57 @@ import type { Gig } from '@models/gig';
 
 export const shows = [
 	{
+		id: 26,
+		name: 'Pickles Pub, OCMD',
+		date: 'September 26, 2026',
+		text: [
+			"Ocean's Calling Festival is taking over OC that weekend, and we're playing Pickles Pub with Higher Education again — this time they're closing out the night!",
+			'Pickles is just a couple blocks off the boardwalk, so come find us as the festival crowd spills off the sand.',
+			"Should be a seriously fun one - don't miss it!"
+		],
+		img: '/images/shows/2026/pickles-oc-9-26-2026-placeholder.png',
+		imgAlt: 'Pickles Pub OCMD - September 26, 2026',
+		imgWidth: 800,
+		imgHeight: 1000
+	},
+	{
+		id: 25,
+		name: 'Pickles Pub, OCMD',
+		date: 'May 23, 2026',
+		text: [
+			"We're opening for Higher Education at Pickles Pub in OC!",
+			'Epic night ahead - come kick off the summer with us on the boardwalk scene.',
+			'Get there early, grab some food, and get ready to dance.'
+		],
+		img: '/images/shows/2026/pickles-oc-5-23-2026-placeholder.png',
+		imgAlt: 'Pickles Pub OCMD - May 23, 2026',
+		imgWidth: 800,
+		imgHeight: 1000
+	},
+	{
+		id: 24,
+		name: 'Molloys Irish Pub',
+		date: 'March 16, 2026',
+		text: [
+			"St. Patty's at Molloys - an Irish bar through and through, and we're bringing the party!",
+			"We've got a batch of new songs ready to debut, so come sing along with us.",
+			"Wear your green, grab a pint, and let's celebrate!"
+		],
+		img: '/images/shows/2026/molloys-3-16-2026-placeholder.png',
+		imgAlt: 'Molloys Irish Pub - March 16, 2026',
+		imgWidth: 800,
+		imgHeight: 1000,
+		songs: ['A Praise Chorus', 'Dog Days Are Over', 'Shimmer', 'Wish You Were Here']
+	},
+	{
 		id: 23,
 		name: 'Molloys Irish Pub',
 		date: 'Sept 27, 2025',
 		text: ['Back and ready to rock at Molloys!', 'Come early for the food', 'Stay late for the jams', "We're on 9-1"],
 		img: '/images/zombie-head.png',
-		imgAlt: 'Molloys - September 27, 2025'
+		imgAlt: 'Molloys - September 27, 2025',
+		imgWidth: 740,
+		imgHeight: 949
 	},
 	{
 		id: 22,
@@ -20,7 +65,9 @@ export const shows = [
 			"If not, what have you been waiting for? And while you're at it, order a round for the band ;)"
 		],
 		img: '/images/shows/2025/pickles-oc-8-2025.jpg',
-		imgAlt: 'Pickles Pub OCMD - September 21, 2024'
+		imgAlt: 'Pickles Pub OCMD - September 21, 2024',
+		imgWidth: 400,
+		imgHeight: 500
 	},
 	{
 		id: 20,
@@ -32,7 +79,9 @@ export const shows = [
 			"Pickles is a great spot for dinner, so make sure to come early to get some food in your belly so you're ready for a long night of dancing!"
 		],
 		img: '/images/shows/2025/pickles-oc-memorial-day-2025.jpg',
-		imgAlt: 'Pickles Pub OCMD - May 24, 2025'
+		imgAlt: 'Pickles Pub OCMD - May 24, 2025',
+		imgWidth: 400,
+		imgHeight: 500
 	},
 	{
 		id: 19,
@@ -45,7 +94,9 @@ export const shows = [
 			'Tickets go on sale Monday, Oct. 21 on <a href="https://the8x10.com/Tickets.html">The 8x10\'s ticket website.</a>'
 		],
 		img: '/images/shows/2024/asheville-benefit-8x10.jpg',
-		imgAlt: 'The 8x10 - Asheville NC Benefit Show - November 22-23, 2024'
+		imgAlt: 'The 8x10 - Asheville NC Benefit Show - November 22-23, 2024',
+		imgWidth: 400,
+		imgHeight: 618
 	},
 	{
 		id: 18,
@@ -57,7 +108,9 @@ export const shows = [
 			'We will post ticket information when available.'
 		],
 		img: '/images/zombie-head.png',
-		imgAlt: 'The 8x10 - October 26, 2024'
+		imgAlt: 'The 8x10 - October 26, 2024',
+		imgWidth: 740,
+		imgHeight: 949
 	},
 	{
 		id: 17,
@@ -70,7 +123,9 @@ export const shows = [
 			"We can't wait to return in 2025!"
 		],
 		img: '/images/shows/Pickles-OC-9-21-24.jpg',
-		imgAlt: 'Pickles Pub OCMD - September 21, 2024'
+		imgAlt: 'Pickles Pub OCMD - September 21, 2024',
+		imgWidth: 400,
+		imgHeight: 500
 	},
 	{
 		id: 16,
@@ -81,7 +136,9 @@ export const shows = [
 			'You all rocked so hard - thank you so much for coming out and dancing with us! You packed the place again and we are so thankful for the support!'
 		],
 		img: '/images/shows/8x10-2024-03-09.jpg',
-		imgAlt: 'The 8x10 - March 9, 2024'
+		imgAlt: 'The 8x10 - March 9, 2024',
+		imgWidth: 800,
+		imgHeight: 1000
 	},
 	{
 		id: 15,
@@ -93,6 +150,8 @@ export const shows = [
 		],
 		img: '/images/shows/8x10-2023-07-29.jpg',
 		imgAlt: 'FightLikeFitz - July 29, 2023',
+		imgWidth: 801,
+		imgHeight: 1000,
 		songs: ['99 Balloons', 'The Anthem', 'Little Things', 'Sk8er Boi']
 	},
 	{
@@ -105,7 +164,9 @@ export const shows = [
 			'Well, you know how the rest goes...'
 		],
 		img: '/images/shows/Porchfest-04-22-2023.jpg',
-		imgAlt: 'Petworth Porchfest - April 22'
+		imgAlt: 'Petworth Porchfest - April 22',
+		imgWidth: 801,
+		imgHeight: 1001
 	},
 	{
 		id: 13,
@@ -117,7 +178,9 @@ export const shows = [
 			'And a big thanks to the <a href="https://www.the8x10.com/" target="_blank">8x10</a> for putting on and excellent evening.'
 		],
 		img: '/images/shows/8x10-03-31-23.jpg',
-		imgAlt: 'Renegade 2020 flyer'
+		imgAlt: 'Renegade 2020 flyer',
+		imgWidth: 400,
+		imgHeight: 500
 	},
 	{
 		id: 12,
@@ -129,7 +192,9 @@ export const shows = [
 			'You can watch the full show <a href="https://www.youtube.com/watch?v=JJFmEw_tpOQ&t=9694s" target="_blank">on YouTube</a>.'
 		],
 		img: '/images/shows/Renegade-09-03-20.jpg',
-		imgAlt: 'Renegade 2020 flyer'
+		imgAlt: 'Renegade 2020 flyer',
+		imgWidth: 400,
+		imgHeight: 500
 	},
 	{
 		id: 11,
@@ -140,7 +205,9 @@ export const shows = [
 			'It was a very fun event. We played in the back of the brewery and it was a cool environment!'
 		],
 		img: '/images/shows/best-buddies.jpg',
-		imgAlt: 'Best Buddies flyer'
+		imgAlt: 'Best Buddies flyer',
+		imgWidth: 400,
+		imgHeight: 500
 	},
 	{
 		id: 10,
@@ -151,6 +218,8 @@ export const shows = [
 		],
 		img: '/images/shows/Valentines-8x10-Web-flyer.jpg',
 		imgAlt: "LFG Valentine's at 8x10 flyer",
+		imgWidth: 399,
+		imgHeight: 499,
 		songs: ['Flagpole Sitta', 'This Love', 'Valerie', 'Josie']
 	},
 	{
@@ -162,6 +231,8 @@ export const shows = [
 		],
 		img: '/images/shows/Sollys-Jan-2019.jpg',
 		imgAlt: 'LFG guitarist and singer Nick Hermes',
+		imgWidth: 396,
+		imgHeight: 494,
 		songs: ['Hey Jealousy', 'Santeria']
 	},
 	{
@@ -173,6 +244,8 @@ export const shows = [
 		],
 		img: '/images/shows/Sollys-11-23.jpg',
 		imgAlt: 'Lies From Granny guitar player Kyle Fives',
+		imgWidth: 400,
+		imgHeight: 500,
 		songs: ['Dirty Little Secret', "Killin' in the Name", 'Absolutely (Story of a Girl)', 'She Hates Me']
 	},
 	{
@@ -182,6 +255,8 @@ export const shows = [
 		text: ['Halloween songs at Mums, one of our favorite Baltimore spots.'],
 		img: '/images/shows/Mums-10-19.jpg',
 		imgAlt: 'Lies From Granny bass player Ben Denissen',
+		imgWidth: 400,
+		imgHeight: 500,
 		songs: ['Anthem Part Two', 'Feeling This', 'Highway to Hell', 'I Put a Spell on You', 'Ghostbusters']
 	},
 	{
@@ -190,7 +265,9 @@ export const shows = [
 		date: 'Sept. 8, 2019',
 		text: ['Outside venue in Baltimore. This was our third gig in 48 hours. What a weekend!'],
 		img: '/images/shows/Sandlot-9-8-19.jpg',
-		imgAlt: 'Anna Stevens and Kyle Fives out front at Sandlot in Baltimore'
+		imgAlt: 'Anna Stevens and Kyle Fives out front at Sandlot in Baltimore',
+		imgWidth: 400,
+		imgHeight: 500
 	},
 	{
 		id: 5,
@@ -201,6 +278,8 @@ export const shows = [
 		],
 		img: '/images/shows/8x10-9-7-19.jpg',
 		imgAlt: 'Kyle Fives and Anna Stevens rockin the 8x10 stage',
+		imgWidth: 400,
+		imgHeight: 500,
 		songs: ['Rich Girl', 'Short Skirt/Long Jacket', 'Brain Stew', 'If It Makes You Happy']
 	},
 	{
@@ -209,7 +288,9 @@ export const shows = [
 		date: 'Sept. 7, 2019',
 		text: ['Our first festival. Beautiful day to play outside and to be a part of a great community event.'],
 		img: '/images/shows/Locust-Point-9-7-19.jpg',
-		imgAlt: 'The whole Lies From Granny gang at the Locust Point Festival'
+		imgAlt: 'The whole Lies From Granny gang at the Locust Point Festival',
+		imgWidth: 400,
+		imgHeight: 500
 	},
 	{
 		id: 3,
@@ -217,7 +298,9 @@ export const shows = [
 		date: 'June 22, 2019',
 		text: ['Mums is a great party spot in Federal Hill, Baltimore. Cash encouraged!'],
 		img: '/images/shows/Mums-6-22-19.jpg',
-		imgAlt: 'Colin Stevens drumming up a storm at an LFG show'
+		imgAlt: 'Colin Stevens drumming up a storm at an LFG show',
+		imgWidth: 400,
+		imgHeight: 500
 	},
 	{
 		id: 2,
@@ -228,7 +311,9 @@ export const shows = [
 			'This was a Friday happy hour - gorgeous day with great tunes.'
 		],
 		img: '/images/shows/Sandlot-6-21-19.jpg',
-		imgAlt: 'Anna Stevens singing at the Sandlot in Baltimore'
+		imgAlt: 'Anna Stevens singing at the Sandlot in Baltimore',
+		imgWidth: 400,
+		imgHeight: 500
 	},
 	{
 		id: 1,
@@ -238,6 +323,8 @@ export const shows = [
 			"This was our first show at Sandlot. It's an outdoor spot in Harbor East and is right on the water. It's hard to beat playing outside."
 		],
 		img: '/images/shows/Sandlot-6-12-19.jpg',
-		imgAlt: 'Kyle Fives shredding the guitar at Sandlot in Baltimore'
+		imgAlt: 'Kyle Fives shredding the guitar at Sandlot in Baltimore',
+		imgWidth: 400,
+		imgHeight: 500
 	}
 ] as Gig[];

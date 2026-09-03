@@ -3,11 +3,7 @@
 		<nav class="flex justify-content-between py-3 top-nav">
 			<div class="flex align-items-center">
 				<router-link class="top-nav__brand-link flex no-underline" to="/home">
-					<img
-						src="/images/home/Lies-From-Granny-Logo.png"
-						alt="Lies From Granny logo"
-						class="top-nav__logo mr-2 md:mr-4"
-					/>
+					<img :src="logoSrc" alt="Lies From Granny logo" class="top-nav__logo mr-2 md:mr-4" decoding="async" />
 					<h1 class="top-nav__brand-name flex m-0" id="brand-header">Lies From Granny</h1>
 				</router-link>
 			</div>
@@ -57,9 +53,13 @@
 	import { useRoute, useRouter } from 'vue-router';
 	import Button from 'primevue/button';
 	import Menu from 'primevue/menu';
+	import { netlifyImage } from '@utils/images';
 	import { ref } from 'vue';
 
 	const menu = ref();
+
+	// Logo renders at 40px tall; 80px wide covers 2x displays.
+	const logoSrc = netlifyImage('/images/home/Lies-From-Granny-Logo.png', 80);
 
 	const menuItems = ref([
 		{

@@ -7,6 +7,42 @@
 
 		<title>Lies From Granny</title>
 
+		<!--
+			Preload the home hero (LCP image) on home routes only — this SPA serves index.html
+			for every route, so static preload links would waste bandwidth on non-home landings.
+			URLs must match the rendered Netlify CDN srcset in src/router/views/home.vue exactly.
+		-->
+		<script>
+			(function () {
+				if (!/^\/(home)?\/?$/.test(window.location.pathname)) return;
+				var heroPreloads = [
+					{
+						href: '/.netlify/images?url=/images/home/lies-from-granny-mobile.jpg&w=500&fm=webp',
+						srcset:
+							'/.netlify/images?url=/images/home/lies-from-granny-mobile.jpg&w=500&fm=webp 500w, /.netlify/images?url=/images/home/lies-from-granny-mobile.jpg&w=1000&fm=webp 1000w',
+						media: '(max-width: 767px)'
+					},
+					{
+						href: '/.netlify/images?url=/images/home/lies-from-granny.jpg&w=1200&fm=webp',
+						srcset:
+							'/.netlify/images?url=/images/home/lies-from-granny.jpg&w=1200&fm=webp 1200w, /.netlify/images?url=/images/home/lies-from-granny.jpg&w=1800&fm=webp 1800w',
+						media: '(min-width: 768px)'
+					}
+				];
+				heroPreloads.forEach(function (preload) {
+					var link = document.createElement('link');
+					link.rel = 'preload';
+					link.as = 'image';
+					link.href = preload.href;
+					link.setAttribute('imagesrcset', preload.srcset);
+					link.setAttribute('imagesizes', '100vw');
+					link.setAttribute('media', preload.media);
+					link.setAttribute('fetchpriority', 'high');
+					document.head.appendChild(link);
+				});
+			})();
+		</script>
+
 		<!-- Favicon -->
 		<link rel="shortcut icon" type="image/png" href="/images/home/favicon.png" />
 
