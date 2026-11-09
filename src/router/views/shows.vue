@@ -3,7 +3,7 @@
 		<!-- <div className="main-image-container__shows"></div> -->
 		<div class="main-container">
 			<h2>Upcoming Shows</h2>
-			<ShowsContainer v-if="upcomingShowsNew.length > 0" :gigs="upcomingShowsNew" />
+			<ShowsContainer v-if="upcoming.length > 0" :gigs="upcoming" />
 			<p v-else>
 				Nothing coming up currently. Follow us on
 				<a :href="urls.instagram" target="_blank">Instagram</a>
@@ -12,7 +12,7 @@
 				for the latest event information.
 			</p>
 			<h2>Past Shows</h2>
-			<ShowsContainer :gigs="pastShowsNew" />
+			<ShowsContainer :gigs="past" />
 		</div>
 	</Layout>
 </template>
@@ -22,24 +22,8 @@
 	import ShowsContainer from '@components/shows/past-shows.vue';
 	import { shows } from '@components/shows/shows';
 	import { urls } from '@utils/urls';
-	import { computed } from 'vue';
+	import { pastShows, upcomingShows } from '@utils/shows';
 
-	const upcomingShowsNew = computed(() =>
-		shows
-			.filter(show => {
-				const todayMidnight = new Date(`${show.date} 23:59:59`);
-
-				return todayMidnight.getTime() >= new Date().getTime();
-			})
-			.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-	);
-
-	const pastShowsNew = computed(() =>
-		shows.filter(show => {
-			const todayMidnight = new Date(`${show.date} 23:59:59`);
-
-			return todayMidnight.getTime() < new Date().getTime();
-		})
-	);
+	const upcoming = upcomingShows(shows);
+	const past = pastShows(shows);
 </script>
-@/components/shows/shows

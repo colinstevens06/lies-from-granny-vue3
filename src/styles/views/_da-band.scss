@@ -1,0 +1,120 @@
+/* ==================== DA BAND (/da-band) ===================== */
+
+.da-band {
+	max-width: 720px;
+	margin: 0 auto;
+	padding-bottom: 2rem;
+
+	&__title {
+		font-family: 'Permanent Marker', cursive;
+		margin-bottom: 0;
+	}
+
+	&__section {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		margin-top: 1.5rem;
+
+		h2 {
+			margin: 0;
+		}
+	}
+}
+
+.band-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+	min-width: 0;
+	margin: 0;
+	padding: 1rem;
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	border-radius: 8px;
+	background-color: #fff;
+
+	ul {
+		margin: 0.25rem 0 0;
+		padding-inline-start: 1.5rem;
+	}
+
+	&__title {
+		font-size: 1.25rem;
+		font-weight: bold;
+	}
+
+	&__meta {
+		color: rgba(0, 0, 0, 0.7);
+		overflow-wrap: anywhere;
+	}
+
+	&__empty {
+		margin: 0;
+		font-size: 1.25rem;
+		font-weight: bold;
+	}
+
+	&--featured {
+		padding: 1.5rem;
+		border: none;
+		background-color: $lfg-poster-yellow;
+		background-image: linear-gradient(to bottom right, $lfg-poster-yellow-top-left, $lfg-poster-yellow-bottom-right);
+
+		.band-card__title {
+			font-family: 'Permanent Marker', cursive;
+			font-size: 2rem;
+			font-weight: normal;
+			line-height: 1.15;
+		}
+
+		.practice-card__time {
+			font-size: 1.35rem;
+		}
+	}
+}
+
+.practice-card {
+	&__time {
+		font-weight: bold;
+	}
+
+	&__badge {
+		align-self: flex-start;
+		padding: 0.15rem 0.6rem;
+		border-radius: 999px;
+		background-color: $lfg-pink;
+		color: #fff;
+		font-size: 0.8rem;
+		font-weight: bold;
+		text-transform: uppercase;
+	}
+
+	&--cancelled {
+		color: rgba(0, 0, 0, 0.55);
+
+		.band-card__title,
+		.practice-card__time {
+			text-decoration: line-through;
+		}
+	}
+
+	&__songs summary {
+		cursor: pointer;
+		color: $lfg-pink--hover-dark;
+		font-weight: bold;
+	}
+}
+
+.next-gig {
+	&__countdown {
+		color: $lfg-pink;
+		font-size: 1.5rem;
+		font-weight: bold;
+	}
+
+	&__link {
+		align-self: flex-start;
+		color: $lfg-pink--hover-dark;
+		font-weight: bold;
+	}
+}

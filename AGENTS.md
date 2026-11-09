@@ -39,7 +39,7 @@ Use the existing SCSS organization: global entry in [src/styles/index.scss](src/
 - The home hero preloads in [index.html](index.html) are injected by an inline script on home routes only; keep those URLs in sync with the hero srcset in [src/router/views/home.vue](src/router/views/home.vue).
 - New show or song records should preserve the existing object shape, use unique IDs where applicable, and include matching files in `public/images/`.
 - `show-card.vue` renders show descriptions with `v-html`; only trusted, intentionally authored HTML should enter `Gig.text`.
-- Show filtering parses human-readable date strings in `src/router/views/shows.vue`; preserve the parseable format when adding dates.
+- Show filtering parses human-readable date strings in `src/utils/shows.ts`; preserve the parseable format when adding dates.
 - `songs-container.vue` sorts nested song arrays in place; avoid relying on imported source data remaining untouched when changing that behavior.
 - The contact form appears intended for static-host or Netlify form handling, so verify deployment behavior before changing its submission markup.
 

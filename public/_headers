@@ -1,0 +1,5 @@
+# Band-internal page: keep it out of search results. Reached by direct link only.
+/da-band
+  X-Robots-Tag: noindex, nofollow
+/da-band/*
+  X-Robots-Tag: noindex, nofollow

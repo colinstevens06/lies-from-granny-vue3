@@ -1,0 +1,11 @@
+{
+	"version": "0.0.1",
+	"configurations": [
+		{
+			"name": "netlify-dev",
+			"runtimeExecutable": "yarn",
+			"runtimeArgs": ["netlify"],
+			"port": 8888
+		}
+	]
+}

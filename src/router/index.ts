@@ -37,6 +37,12 @@ const router = createRouter({
 			// which is lazy-loaded when the route is visited.
 			component: () => import('./views/songs.vue')
 		},
+		{
+			// Band-internal page: unlisted (not in the nav) and noindexed via public/_headers.
+			path: '/da-band',
+			name: 'da-band',
+			component: () => import('./views/da-band.vue')
+		},
 		{ path: '/:catchAll(.*)', component: () => import('./views/_404.vue') }
 	]
 });
