@@ -4,9 +4,9 @@
 			<div class="next-gig__countdown">{{ countdown }}</div>
 			<div class="band-card__title">{{ gig.name }}</div>
 			<div class="band-card__meta">{{ gig.date }}</div>
-			<RouterLink to="/shows" class="next-gig__link">Show details</RouterLink>
+			<RouterLink to="/shows" class="band-link">Show details</RouterLink>
 		</template>
-		<p v-else class="band-card__empty">No gigs booked yet.</p>
+		<p v-else class="band-card__empty">Nothing on the books right now.</p>
 	</article>
 </template>
 

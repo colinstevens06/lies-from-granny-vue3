@@ -78,15 +78,8 @@
 		font-weight: bold;
 	}
 
-	&__badge {
-		align-self: flex-start;
-		padding: 0.15rem 0.6rem;
-		border-radius: 999px;
-		background-color: $lfg-pink;
-		color: #fff;
-		font-size: 0.8rem;
+	&__label {
 		font-weight: bold;
-		text-transform: uppercase;
 	}
 
 	&--cancelled {
@@ -105,16 +98,62 @@
 	}
 }
 
-.next-gig {
-	&__countdown {
-		color: $lfg-pink;
-		font-size: 1.5rem;
-		font-weight: bold;
+// Inline-block so a cancelled title's line-through doesn't run through the badge.
+.practice-badge {
+	display: inline-block;
+	align-self: flex-start;
+	padding: 0.15rem 0.6rem;
+	border-radius: 999px;
+	color: #fff;
+	font-family: 'Roboto', sans-serif;
+	font-size: 0.8rem;
+	font-weight: bold;
+	line-height: 1.4;
+	text-transform: uppercase;
+	vertical-align: middle;
+
+	summary & {
+		margin-left: 0.5rem;
 	}
 
-	&__link {
-		align-self: flex-start;
-		color: $lfg-pink--hover-dark;
-		font-weight: bold;
+	&--cancelled {
+		background-color: $lfg-pink;
 	}
+
+	&--tentative {
+		background-color: $lfg-dark-gray;
+	}
+}
+
+.practice-history {
+	display: block;
+
+	summary {
+		cursor: pointer;
+	}
+
+	&__body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.35rem;
+		margin-top: 0.5rem;
+	}
+}
+
+.next-gig__countdown {
+	color: $lfg-pink;
+	font-size: 1.5rem;
+	font-weight: bold;
+}
+
+.band-link {
+	align-self: flex-start;
+
+	.da-band > & {
+		display: inline-block;
+		margin-top: 1.5rem;
+	}
+
+	color: $lfg-pink--hover-dark;
+	font-weight: bold;
 }

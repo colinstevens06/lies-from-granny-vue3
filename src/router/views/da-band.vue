@@ -20,15 +20,7 @@
 					<PracticeCard v-for="practice in laterPractices" :key="practice.id" :practice="practice" />
 				</section>
 
-				<section v-if="recaps.length" class="da-band__section">
-					<h2>Recaps</h2>
-					<article v-for="practice in recaps" :key="practice.id" class="band-card">
-						<div class="band-card__title">{{ formatPracticeDay(practice) }}</div>
-						<ul>
-							<li v-for="line in practice.recap" :key="line">{{ line }}</li>
-						</ul>
-					</article>
-				</section>
+				<RouterLink to="/da-band/history" class="band-link">Practice history &rarr;</RouterLink>
 			</div>
 		</div>
 	</Layout>
@@ -41,15 +33,14 @@
 	import { practices } from '@components/band/practices';
 	import { shows } from '@components/shows/shows';
 	import { easternNow } from '@utils/dates';
-	import { formatPracticeDay, practiceRecaps, upcomingPractices } from '@utils/practices';
+	import { upcomingPractices } from '@utils/practices';
 	import { upcomingShows } from '@utils/shows';
 
 	const now = easternNow();
 	const today = now.slice(0, 10);
 
 	const upcoming = upcomingPractices(practices, now);
-	const nextPractice = upcoming.find(practice => practice.status === 'scheduled');
+	const nextPractice = upcoming.find(practice => practice.status !== 'cancelled');
 	const laterPractices = upcoming.filter(practice => practice !== nextPractice);
 	const nextGig = upcomingShows(shows)[0];
-	const recaps = practiceRecaps(practices);
 </script>

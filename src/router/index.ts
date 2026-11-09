@@ -43,6 +43,12 @@ const router = createRouter({
 			name: 'da-band',
 			component: () => import('./views/da-band.vue')
 		},
+		{
+			// Covered by the same /da-band/* noindex rule in public/_headers.
+			path: '/da-band/history',
+			name: 'da-band-history',
+			component: () => import('./views/da-band-history.vue')
+		},
 		{ path: '/:catchAll(.*)', component: () => import('./views/_404.vue') }
 	]
 });
