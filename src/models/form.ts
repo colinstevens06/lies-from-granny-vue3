@@ -1,8 +1,9 @@
+import type { MarchShowPlanningDetails } from '../forms/march-show-planning/model';
 import type { MemberId } from './band-member';
 
 // One member per registered form. Registering a form means adding its details type here, and its handler to the
 // three registries (src/forms/rules.ts, src/forms/index.ts, netlify/forms/index.ts).
-export type FormDetails = never;
+export type FormDetails = MarchShowPlanningDetails;
 export type FormSlug = FormDetails['slug'];
 
 export interface FormAvailability {

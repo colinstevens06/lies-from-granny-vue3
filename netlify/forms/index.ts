@@ -1,5 +1,6 @@
 import type { MemberId } from '../../src/models/band-member';
 import type { Form, FormDetails, FormSlug } from '../../src/models/form';
+import { marchShowPlanning } from './march-show-planning';
 import type { Queryable } from '../lib/band-db';
 import type { Failure } from '../lib/failure';
 
@@ -13,7 +14,9 @@ export interface FormHandler<D> {
 	saveAnswer?(client: Queryable, form: Form, member: MemberId, body: unknown): Promise<D | Failure>;
 }
 
-export const formHandlers: Record<FormSlug, FormHandler<FormDetails>> = {};
+export const formHandlers: Record<FormSlug, FormHandler<FormDetails>> = {
+	'march-show-planning': marchShowPlanning
+};
 
 /** The handler for a slug, or undefined for a slug this build doesn't know (an old preview branch, a rollback). */
 export const handlerFor = (slug: string): FormHandler<FormDetails> | undefined =>

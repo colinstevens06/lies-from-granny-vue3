@@ -43,6 +43,18 @@ Run the Netlify CLI as `yarn exec netlify <cmd>`. `yarn netlify <cmd>` runs the 
 
 List them in the gitignored `band-data/import.ts` as `practices: PracticeImport[]` (same fields as `Practice`, minus `id` and `formId`), then `yarn seed:band` (dry run) and `yarn seed:band --write`. The target is that day's row (a live one first), so re-running updates in place, and marking a day `cancelled` updates the same row. `gigId` must be a `Gig.id` in `shows.ts`. `complete` is only accepted here; the editor offers tentative, scheduled and cancelled.
 
+## Add a new band form (P3b)
+
+Worked example: `march-show-planning` (migration `0003`, `src/forms/march-show-planning/`, `netlify/forms/march-show-planning.ts`).
+
+1. Pick a slug (`^[a-z0-9-]{1,60}$`).
+2. Write a migration that inserts the form row (title, due date, and any availability columns) and its `form_members` rows, plus any new tables. Quote apostrophes in text as `''`. Never edit it once a deploy has applied it.
+3. Add `src/forms/<slug>/` with `model.ts` and `rules.ts` (`missing`). From P5, add `screen.vue` and `responses.vue`, built from the shared pieces.
+4. Add `netlify/forms/<slug>.ts` (`loadDetails`, and `saveAnswer` if members answer), plus `mineOf` and `missing` in `rules.ts`. A form with availability should call `availabilityMissing` from `src/utils/availability.ts` in its `missing`.
+5. Wire all three registries: `src/forms/rules.ts`, `netlify/forms/index.ts`, and from P5 `src/forms/index.ts`. They are typed `Record<FormSlug, …>`, so a missing one fails `yarn type-check`.
+6. Extend `FormDetails` in `src/models/form.ts` (`FormSlug` follows from it).
+7. Only one open form may have availability. Close the old one before a new availability form's migration runs.
+
 ## Release order
 
 Colin releases to Anna alone first, testing on production, not a preview. Previews copy production, so they start empty.
