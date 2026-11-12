@@ -49,3 +49,16 @@ export const daysBetween = (from: string, to: string) =>
 
 /** A Date's local calendar day as 'YYYY-MM-DD'. */
 export const toIsoDate = (date: Date) => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+
+/** A 'YYYY-MM-DD' date moved by whole days. */
+export const addDays = (date: string, days: number) =>
+	new Date(calendarDay(date).getTime() + days * MS_PER_DAY).toISOString().slice(0, 10);
+
+/** 0 (Sunday) to 6 (Saturday) for a 'YYYY-MM-DD' date. */
+export const weekdayIndex = (date: string) => calendarDay(date).getUTCDay();
+
+/** True for a real calendar date written exactly as 'YYYY-MM-DD'. */
+export const isIsoDate = (value: unknown): value is string =>
+	typeof value === 'string' &&
+	/^\d{4}-\d{2}-\d{2}$/.test(value) &&
+	calendarDay(value).toISOString().slice(0, 10) === value;

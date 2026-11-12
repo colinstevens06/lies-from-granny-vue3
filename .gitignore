@@ -38,3 +38,6 @@ coverage
 
 # Local Netlify folder
 .netlify
+
+# Real band data for the seed script (see scripts/seed-band-data.ts)
+/band-data
