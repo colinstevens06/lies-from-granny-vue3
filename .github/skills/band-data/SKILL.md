@@ -43,6 +43,15 @@ Run the Netlify CLI as `yarn exec netlify <cmd>`. `yarn netlify <cmd>` runs the 
 
 List them in the gitignored `band-data/import.ts` as `practices: PracticeImport[]` (same fields as `Practice`, minus `id` and `formId`), then `yarn seed:band` (dry run) and `yarn seed:band --write`. The target is that day's row (a live one first), so re-running updates in place, and marking a day `cancelled` updates the same row. `gigId` must be a `Gig.id` in `shows.ts`. `complete` is only accepted here; the editor offers tentative, scheduled and cancelled.
 
+## Release order
+
+Colin releases to Anna alone first, testing on production, not a preview. Previews copy production, so they start empty.
+
+1. Deploy. Migrations `0001`–`0003` run and the March show planning form row appears.
+2. Seed production: `yarn seed:band --branch main` (dry run), then `--write`, with the database's full-write access toggle on only for that run.
+3. Colin checks `/da-band`.
+4. Colin invites Anna (see Identity members).
+
 ## Identity members (P2)
 
 Pending: written when Identity is set up.
