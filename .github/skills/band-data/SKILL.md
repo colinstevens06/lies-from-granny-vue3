@@ -67,6 +67,13 @@ Worked example: `march-show-planning` (migration `0003`, `src/forms/march-show-p
 - **Close form** closes without booking anything. Both close the form for good; there is no reopen. To ask again, ship a new form (see Add a new band form).
 - Locked-in practices carry `form_id`. Edit their time and place in the practice editor (P8).
 
+## Editing practices (P8)
+
+- Admin only: `/da-band/admin/practices` (the Practices tile on the dashboard). It lists upcoming practices soonest first. Tap one to edit, or **+ Add a practice**. The editor sends the whole record: date, optional start and end time (both or neither), location (empty means Burtonsville), status, songs to prepare and recap lines (one per line).
+- Status offers Tentative, Scheduled and Cancelled. Cancel a practice instead of deleting it (there is no delete). `complete` only comes from the seed, and an edit keeps a stored `complete`.
+- Saving never changes a practice's `gigId` or `formId`. A save onto a day that already has a live practice is refused (`409 date-taken`), but a cancelled one doesn't block the day.
+- The editor runs the same `parsePracticeInput` checks as the server, so it explains a problem before sending. The seed and the editor share `writePracticeRow` and `replacePracticeChildren`.
+
 ## Release order
 
 Colin releases to Anna alone first, testing on production, not a preview. Previews copy production, so they start empty.

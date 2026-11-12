@@ -88,6 +88,12 @@ const router = createRouter({
 			component: () => import('./views/da-band-edit.vue'),
 			meta: { requiresMember: true }
 		},
+		{
+			path: '/da-band/admin/practices',
+			name: 'da-band-admin-practices',
+			component: () => import('./views/da-band-admin-practices.vue'),
+			meta: { requiresMember: true }
+		},
 		{ path: '/:catchAll(.*)', component: () => import('./views/_404.vue') }
 	]
 });

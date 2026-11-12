@@ -4,7 +4,7 @@ import { useSaveLane } from '@/composables/use-save-lane';
 import type { Answer, MemberAvailability } from '@models/availability';
 import type { CurrentMember } from '@models/band-member';
 import type { Form } from '@models/form';
-import type { Practice } from '@models/practice';
+import type { Practice, PracticeInput } from '@models/practice';
 
 /** Availability writes go out in chunks of at most this many days. */
 const CHUNK = 400;
@@ -187,6 +187,21 @@ export const useBandStore = defineStore('band', () => {
 		forms.value = forms.value.map(f => (f.id === form.id ? form : f));
 	};
 
+	/**
+	 * Admin: creates a practice (no `id`) or replaces one (whole record), and updates the store. Goes straight through
+	 * `band-api`, not the save queue. Throws a `BandApiError` (409 `date-taken`, 400 with the error code).
+	 */
+	const savePractice = async (input: PracticeInput, id?: number) => {
+		const { practice } = await bandApi<{ practice: Practice }>(id === undefined ? 'practices' : `practices/${id}`, {
+			method: id === undefined ? 'POST' : 'PUT',
+			body: input
+		});
+		practices.value =
+			id === undefined
+				? [...practices.value, practice]
+				: practices.value.map(p => (p.id === practice.id ? practice : p));
+	};
+
 	/** Admin: books the days as scheduled practices and closes the form. Throws a `BandApiError` (409 `already-booked` names the days). */
 	const lockInForm = async (formId: number, days: string[]) => {
 		await bandApi(`forms/${formId}/lock-in`, { method: 'POST', body: { days } });
@@ -239,6 +254,7 @@ export const useBandStore = defineStore('band', () => {
 		loadMe,
 		signOut,
 		closeForm,
+		savePractice,
 		lockInForm,
 		signOffForm,
 		setMyAnswers,

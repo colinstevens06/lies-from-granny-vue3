@@ -35,3 +35,6 @@ export const practiceLocation = (practice: Practice) => practice.location ?? PRA
 /** The show a practice is prepping for, if it names one. */
 export const practiceGig = (practice: Practice): Gig | undefined =>
 	practice.gigId === undefined ? undefined : shows.find(show => show.id === practice.gigId);
+
+/** An upcoming practice that's still on and has no time yet. */
+export const needsTime = (practice: Practice) => practice.status !== 'cancelled' && !practice.startTime;
