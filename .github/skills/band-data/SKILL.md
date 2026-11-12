@@ -32,6 +32,17 @@ Run the Netlify CLI as `yarn exec netlify <cmd>`. `yarn netlify <cmd>` runs the 
 - A deployed branch: `yarn seed:band --branch main`, which gets the connection string from your Netlify CLI login. Production's Access control page gives the CLI read-only access by default, so a write needs "full write access" turned on first. Turn it on only for the run and off again afterward. Dry run first.
 - Any other database: set `DATABASE_URL` in the shell.
 
+## Forms and practices server (P3)
+
+- Tables: `forms`, `form_members`, `practices`, `practice_songs`, `practice_recap_lines` (migration 0002). A form is created by its own migration; there is no create endpoint. Practices are never deleted; cancel them.
+- Only one open form may have availability (`forms_one_open_availability`). Close the current one before a new availability form's migration runs on production, or the migration fails.
+- Registries are keyed by form slug: `src/forms/rules.ts` (sign-off rule), `netlify/forms/index.ts` (server handler), and from P5 `src/forms/index.ts` (screens). A form row whose slug the running build doesn't know is logged and left out, never an error.
+- Shared writers: `writePracticeRow` and `replacePracticeChildren` in `netlify/lib/band-db.ts` are the only code that writes practice columns, songs and recap lines. Extend them, don't add a second path.
+
+### Importing practices
+
+List them in the gitignored `band-data/import.ts` as `practices: PracticeImport[]` (same fields as `Practice`, minus `id` and `formId`), then `yarn seed:band` (dry run) and `yarn seed:band --write`. The target is that day's row (a live one first), so re-running updates in place, and marking a day `cancelled` updates the same row. `gigId` must be a `Gig.id` in `shows.ts`. `complete` is only accepted here; the editor offers tentative, scheduled and cancelled.
+
 ## Identity members (P2)
 
 Pending: written when Identity is set up.

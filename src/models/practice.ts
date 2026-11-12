@@ -17,4 +17,20 @@ export interface Practice {
 	/** The show this practice is prepping for (`Gig.id`). */
 	gigId?: number;
 	status: PracticeStatus;
+	/** The form whose lock-in created this practice. */
+	formId?: number;
 }
+
+/** The editor's whole-record body. `complete` is accepted only when the stored practice is already complete. */
+export interface PracticeInput {
+	date: string;
+	startTime?: string;
+	endTime?: string;
+	location?: string;
+	status: PracticeStatus;
+	prepare: string[];
+	recap: string[];
+}
+
+/** One entry of `band-data/import.ts`. */
+export type PracticeImport = Omit<Practice, 'id' | 'formId'>;

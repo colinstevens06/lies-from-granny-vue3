@@ -12,8 +12,10 @@
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import type { AvailabilityImport } from '../src/models/availability';
+import type { PracticeImport } from '../src/models/practice';
 import { expandImport } from '../src/utils/availability';
-import { openDb, writeAvailability, type Db } from '../netlify/lib/band-db';
+import { parsePracticeImport } from '../src/utils/practice-input';
+import { importPractices, openDb, writeAvailability, type Db } from '../netlify/lib/band-db';
 
 const args = process.argv.slice(2);
 const write = args.includes('--write');
@@ -53,15 +55,31 @@ const seedAvailability = async (db: Db, entries: AvailabilityImport[]) => {
 	}
 };
 
+/** Imports practices through `importPractices` (updated in place by day), after the same checks the editor uses. */
+const seedPractices = async (db: Db, entries: PracticeImport[]) => {
+	for (const entry of entries) {
+		const checked = parsePracticeImport(entry);
+		if (!checked.ok) throw new Error(`Practice ${entry.date}: ${checked.error}`);
+	}
+
+	const { created, updated } = await importPractices(entries, 'colin', !write, db);
+	console.log(`  ${created} ${write ? 'created' : 'would create'}, ${updated} ${write ? 'updated' : 'would update'}`);
+};
+
 const main = async () => {
 	const url = connectionString();
 	console.log(`Target: ${new URL(url).host}${write ? ' (WRITING)' : ' (dry run; add --write to commit)'}`);
 
-	const { availability } = (await import('../band-data/import')) as { availability: AvailabilityImport[] };
+	const { availability, practices } = (await import('../band-data/import')) as {
+		availability: AvailabilityImport[];
+		practices: PracticeImport[];
+	};
 	const db = openDb(url);
 
 	console.log('Availability');
 	await seedAvailability(db, availability);
+	console.log('Practices');
+	await seedPractices(db, practices);
 	await (db as unknown as { end?: () => Promise<void> }).end?.();
 };
 

@@ -1,5 +1,6 @@
 import type { CurrentMember } from '../../src/models/band-member';
 import { getCurrentMember, requireAdmin } from './current-member';
+import { isFailure, type Failure } from './failure';
 
 // Shared by every band function. Check order (contract 10): method → origin and content type on writes → path shape
 // → identity → role → body shape → database lookups → validation that needs the looked-up row.
@@ -33,3 +34,16 @@ export const authenticate = async (admin = false): Promise<CurrentMember | Respo
 };
 
 export const methodNotAllowed = () => fail(405, 'method-not-allowed');
+
+/** A database result as a response: a `Failure` becomes its status and `{ error, ...details }`; anything else is a 200. */
+export const respond = (
+	result: unknown | Failure,
+	success: (value: any) => Response // eslint-disable-line @typescript-eslint/no-explicit-any
+) => (isFailure(result) ? fail(result.status, result.error, result.details) : success(result));
+
+/** The numeric id in a path segment, or undefined when it isn't a positive integer. */
+export const idFrom = (segment: string | undefined) =>
+	/^[1-9]\d{0,9}$/.test(segment ?? '') ? Number(segment) : undefined;
+
+/** Path segments after /api/band/<resource>. */
+export const subPath = (req: Request) => new URL(req.url).pathname.replace(/\/+$/, '').split('/').slice(4);
