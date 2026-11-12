@@ -23,6 +23,13 @@ interface Options {
 	redirectOn401?: boolean;
 }
 
+/** Local testing only: in a production build `import.meta.env.DEV` is false, so the import below is dropped. */
+const localTestingHeaders = async (): Promise<Record<string, string>> => {
+	if (!import.meta.env.DEV) return {};
+
+	return (await import('./dev-auth')).devHeaders();
+};
+
 export const bandApi = async <T>(
 	path: string,
 	{ method = 'GET', body, redirectOn401 = true }: Options = {}
@@ -32,7 +39,11 @@ export const bandApi = async <T>(
 		response = await fetch(`/api/band/${path}`, {
 			method,
 			credentials: 'same-origin',
-			headers: method === 'GET' ? undefined : { 'content-type': 'application/json' },
+			headers: {
+				...(method === 'GET' ? {} : { 'content-type': 'application/json' }),
+				// Local testing only: removed from production builds along with dev-auth.
+				...(await localTestingHeaders())
+			},
 			body: method === 'GET' ? undefined : JSON.stringify(body ?? {})
 		});
 	} catch {

@@ -20,7 +20,7 @@ export default async (req: Request) => {
 	if (req.method === 'GET') {
 		if (rawId !== undefined) return fail(404, 'not-found');
 
-		const current = await authenticate();
+		const current = await authenticate(req);
 		return current instanceof Response ? current : json(200, { practices: await listPractices() });
 	}
 
@@ -32,7 +32,7 @@ export default async (req: Request) => {
 	const id = idFrom(rawId);
 	if (updating && id === undefined) return fail(404, 'not-found');
 
-	const current = await authenticate(true);
+	const current = await authenticate(req, true);
 	if (current instanceof Response) return current;
 
 	const input = parsePracticeInput(await readBody(req));

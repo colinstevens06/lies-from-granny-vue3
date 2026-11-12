@@ -29,7 +29,7 @@ export default async (req: Request) => {
 	if (rawId === undefined) {
 		if (req.method !== 'GET') return methodNotAllowed();
 
-		const current = await authenticate();
+		const current = await authenticate(req);
 		return current instanceof Response ? current : json(200, { forms: await listForms() });
 	}
 
@@ -41,7 +41,7 @@ export default async (req: Request) => {
 	const formId = idFrom(rawId);
 	if (formId === undefined) return fail(404, 'not-found');
 
-	const current = await authenticate(rule.admin);
+	const current = await authenticate(req, rule.admin);
 	if (current instanceof Response) return current;
 
 	const body = await readBody(req);

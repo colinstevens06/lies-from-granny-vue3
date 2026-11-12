@@ -24,8 +24,8 @@ export const checkWrite = (req: Request) => {
 export const readBody = (req: Request) => req.json().catch(() => undefined) as Promise<unknown>;
 
 /** The caller, or the 401 / 403 response. An unauthenticated request never reaches the database. */
-export const authenticate = async (admin = false): Promise<CurrentMember | Response> => {
-	const current = admin ? await requireAdmin() : await getCurrentMember();
+export const authenticate = async (req: Request, admin = false): Promise<CurrentMember | Response> => {
+	const current = admin ? await requireAdmin(req) : await getCurrentMember(req);
 	if (current === 'signed-out') return fail(401, 'signed-out');
 	if (current === 'not-a-member') return fail(403, 'not-a-member');
 	if (current === 'not-admin') return fail(403, 'not-admin');

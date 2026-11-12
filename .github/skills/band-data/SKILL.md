@@ -74,6 +74,16 @@ Worked example: `march-show-planning` (migration `0003`, `src/forms/march-show-p
 - Saving never changes a practice's `gigId` or `formId`. A save onto a day that already has a live practice is refused (`409 date-taken`), but a cancelled one doesn't block the day.
 - The editor runs the same `parsePracticeInput` checks as the server, so it explains a problem before sending. The seed and the editor share `writePracticeRow` and `replacePracticeChildren`.
 
+## Local testing
+
+Google sign-in can't work under `yarn netlify`: Identity isn't proxied locally (`/.netlify/identity/*` falls through to the Vue app), and Identity's OAuth state returns to production anyway. Real sign-in is checked on production at release, before Anna is invited.
+
+Instead, the login page shows **Sign in as {member}** buttons in dev (Colin is marked admin). The choice lives in `sessionStorage`, `band-api` sends it as an `x-dev-member` header, and **Sign out** clears it. Everything else works as in production: `/api/band/me` returns the member, and pages and API calls follow the real role rules.
+
+- **Server gate:** `devMemberFrom` in `netlify/lib/current-member.ts`, the single auth seam. It accepts the header only when `NETLIFY_DEV=true`, `NETLIFY_LOCAL=true` and `CONTEXT=dev` (what `netlify dev` sets, and a deployed function has none of them), the request's host is localhost or 127.0.0.1, and the header names a known member. Anything else runs the real Identity path.
+- **Client gate:** the switcher and `src/utils/dev-auth.ts` sit behind `import.meta.env.DEV`, so a production build has none of it. After changing this code, run `yarn build-only` and confirm `grep -r "x-dev-member" dist` finds nothing.
+- Seed the local database first (`yarn seed:band --write` with `yarn netlify` running) to see Anna's prefill and the existing practice.
+
 ## Release order
 
 Colin releases to Anna alone first, testing on production, not a preview. Previews copy production, so they start empty.

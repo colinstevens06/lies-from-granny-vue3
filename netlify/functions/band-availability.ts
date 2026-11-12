@@ -12,7 +12,7 @@ export default async (req: Request) => {
 	if (req.method === 'GET') {
 		if (target !== undefined) return fail(404, 'not-found');
 
-		const current = await authenticate();
+		const current = await authenticate(req);
 		if (current instanceof Response) return current;
 
 		return json(200, { members: await listAvailability() });
@@ -23,7 +23,7 @@ export default async (req: Request) => {
 	if (refused) return refused;
 	if (!members.some(m => m.id === target)) return fail(404, 'not-found');
 
-	const current = await authenticate();
+	const current = await authenticate(req);
 	if (current instanceof Response) return current;
 	const isAdmin = current.role === 'admin';
 	if (target !== current.member && !isAdmin) return fail(403, 'not-yours');
