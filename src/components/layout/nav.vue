@@ -45,6 +45,11 @@
 					<span>Contact</span>
 				</router-link>
 			</div>
+
+			<p v-if="band.me" class="top-nav__session">
+				Signed in as {{ signedInName }} &middot;
+				<a href="#" @click.prevent="signOutAndLeave">Sign out</a>
+			</p>
 		</nav>
 	</div>
 </template>
@@ -54,7 +59,9 @@
 	import Button from 'primevue/button';
 	import Menu from 'primevue/menu';
 	import { netlifyImage } from '@utils/images';
-	import { ref } from 'vue';
+	import { computed, ref } from 'vue';
+	import { members } from '@components/band/members';
+	import { useBandStore } from '@/stores/band';
 
 	const menu = ref();
 
@@ -90,6 +97,14 @@
 
 	const route = useRoute();
 	const router = useRouter();
+	const band = useBandStore();
+
+	const signedInName = computed(() => members.find(m => m.id === band.me?.member)?.name);
+
+	const signOutAndLeave = async () => {
+		await band.signOut();
+		await router.push({ name: 'da-band-login' });
+	};
 
 	const toggleMenu = (event: Event) => {
 		menu.value.toggle(event);

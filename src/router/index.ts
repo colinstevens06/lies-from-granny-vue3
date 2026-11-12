@@ -1,4 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import { useBandStore } from '@/stores/band';
+
+declare module 'vue-router' {
+	interface RouteMeta {
+		/** Needs a signed-in band member. The server is the real gate; this only decides where to send the browser. */
+		requiresMember?: boolean;
+	}
+}
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
@@ -41,16 +49,31 @@ const router = createRouter({
 			// Band-internal page: unlisted (not in the nav) and noindexed via public/_headers.
 			path: '/da-band',
 			name: 'da-band',
-			component: () => import('./views/da-band.vue')
+			component: () => import('./views/da-band.vue'),
+			meta: { requiresMember: true }
+		},
+		{
+			path: '/da-band/login',
+			name: 'da-band-login',
+			component: () => import('./views/da-band-login.vue')
 		},
 		{
 			// Covered by the same /da-band/* noindex rule in public/_headers.
 			path: '/da-band/history',
 			name: 'da-band-history',
-			component: () => import('./views/da-band-history.vue')
+			component: () => import('./views/da-band-history.vue'),
+			meta: { requiresMember: true }
 		},
 		{ path: '/:catchAll(.*)', component: () => import('./views/_404.vue') }
 	]
+});
+
+router.beforeEach(async to => {
+	if (!to.meta.requiresMember) return;
+
+	const status = await useBandStore().loadMe();
+	if (status === 'signed-out') return { name: 'da-band-login', query: { redirect: to.fullPath } };
+	if (status === 'not-a-member') return { name: 'da-band-login', query: { reason: 'not-a-member' } };
 });
 
 router.beforeResolve(() => {

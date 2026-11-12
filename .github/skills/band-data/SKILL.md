@@ -64,6 +64,10 @@ Colin releases to Anna alone first, testing on production, not a preview. Previe
 3. Colin checks `/da-band`.
 4. Colin invites Anna (see Identity members).
 
-## Identity members (P2)
+## Identity members and sign-in (P2)
 
-Pending: written when Identity is set up.
+- Identity is invite-only with Google as the provider. Invite a member: Netlify dashboard → Identity → invite their Google address, then give them **exactly one** slug role (`anna`, `kyle`, `nick`, `francesco` or `colin`). Colin also gets `admin`. The dashboard sets roles only, and `getCurrentMember` reads only roles. No emails go in the repo.
+- A role change reaches the token within an hour, or immediately after signing out and back in. A user with no slug role, or two, gets "This account isn't on the band list."
+- Renaming a member means renaming their Identity role too (see Migrations).
+- Client: `src/utils/auth.ts` is the only client importer of `@netlify/identity`, and it loads lazily. `main.ts` finishes a Google callback (a URL hash with a token) before the router starts. The router guard on `meta.requiresMember` calls `loadMe()`, and a 401 goes to `/da-band/login`. The header shows "Signed in as {name} · Sign out".
+- Still to verify with real sign-in: where Google's redirect lands (the code assumes the site root with a hash, then moves to the saved `/da-band…` path) and that the `nf_jwt` cookie reaches `/api/band/*`.
