@@ -1,5 +1,9 @@
 # Jan–Feb 2027 availability poll
 
+> **Superseded (November 10, 2026). Not sent.** Colin decided to wait for the custom round form in
+> `2026-11-da-band-availability-workflows.md` instead of using a Google Form. Kept for the date-label and
+> Sheets notes, in case a form is ever used as a fallback.
+
 Round one of the poll in `2026-da-band-edition.md` §6. Built as a Google Form, sent November 10, 2026,
 due **Sunday, November 15**. The Drive connector can't create Forms, so this is the copy to paste in
 by hand. About 10 minutes.
@@ -29,37 +33,37 @@ A fixed list instead of a typed name, so every answer maps cleanly to one person
   into one option per line. If it puts everything in one option, paste a week at a time instead.
 
 ```
-Fri, Jan 1
-Sat, Jan 2
-Sun, Jan 3
-Mon, Jan 4
-Tue, Jan 5
-Wed, Jan 6
-Thu, Jan 7
-Fri, Jan 8
-Sat, Jan 9
-Sun, Jan 10
-Mon, Jan 11
-Tue, Jan 12
-Wed, Jan 13
-Thu, Jan 14
-Fri, Jan 15
-Sat, Jan 16
-Sun, Jan 17
-Mon, Jan 18
-Tue, Jan 19
-Wed, Jan 20
-Thu, Jan 21
-Fri, Jan 22
-Sat, Jan 23
-Sun, Jan 24
-Mon, Jan 25
-Tue, Jan 26
-Wed, Jan 27
-Thu, Jan 28
-Fri, Jan 29
-Sat, Jan 30
-Sun, Jan 31
+Fri Jan 1
+Sat Jan 2
+Sun Jan 3
+Mon Jan 4
+Tue Jan 5
+Wed Jan 6
+Thu Jan 7
+Fri Jan 8
+Sat Jan 9
+Sun Jan 10
+Mon Jan 11
+Tue Jan 12
+Wed Jan 13
+Thu Jan 14
+Fri Jan 15
+Sat Jan 16
+Sun Jan 17
+Mon Jan 18
+Tue Jan 19
+Wed Jan 20
+Thu Jan 21
+Fri Jan 22
+Sat Jan 23
+Sun Jan 24
+Mon Jan 25
+Tue Jan 26
+Wed Jan 27
+Thu Jan 28
+Fri Jan 29
+Sat Jan 30
+Sun Jan 31
 ```
 
 ### Question 3: Which February dates could you practice?
@@ -67,35 +71,38 @@ Sun, Jan 31
 Same settings as question 2.
 
 ```
-Mon, Feb 1
-Tue, Feb 2
-Wed, Feb 3
-Thu, Feb 4
-Fri, Feb 5
-Sat, Feb 6
-Sun, Feb 7
-Mon, Feb 8
-Tue, Feb 9
-Wed, Feb 10
-Thu, Feb 11
-Fri, Feb 12
-Sat, Feb 13
-Sun, Feb 14
-Mon, Feb 15
-Tue, Feb 16
-Wed, Feb 17
-Thu, Feb 18
-Fri, Feb 19
-Sat, Feb 20
-Sun, Feb 21
-Mon, Feb 22
-Tue, Feb 23
-Wed, Feb 24
-Thu, Feb 25
-Fri, Feb 26
-Sat, Feb 27
-Sun, Feb 28
+Mon Feb 1
+Tue Feb 2
+Wed Feb 3
+Thu Feb 4
+Fri Feb 5
+Sat Feb 6
+Sun Feb 7
+Mon Feb 8
+Tue Feb 9
+Wed Feb 10
+Thu Feb 11
+Fri Feb 12
+Sat Feb 13
+Sun Feb 14
+Mon Feb 15
+Tue Feb 16
+Wed Feb 17
+Thu Feb 18
+Fri Feb 19
+Sat Feb 20
+Sun Feb 21
+Mon Feb 22
+Tue Feb 23
+Wed Feb 24
+Thu Feb 25
+Fri Feb 26
+Sat Feb 27
+Sun Feb 28
 ```
+
+**No commas in the date labels, on purpose.** The response Sheet joins a person's checked boxes with
+", ", so a label like "Fri, Jan 1" would make every cell ambiguous to split.
 
 Two month questions rather than one 59-option question keep the scroll readable on a phone. It's still
 one tap per date, which is the property that made the last poll work.

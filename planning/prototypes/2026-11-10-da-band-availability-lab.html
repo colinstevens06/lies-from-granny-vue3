@@ -1,0 +1,1383 @@
+<title>Da Band Availability Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap">
+<style>
+	/* Layout: a control column (decisions, then state) beside a fixed-height device frame that renders /da-band at real width. */
+	:root {
+		/* Lab chrome: follows the viewer's theme */
+		--bg: #f6f4f7;
+		--panel: #ffffff;
+		--ink: #1d1a20;
+		--muted: #645d6b;
+		--line: #dcd6e0;
+		--accent: #c51866;
+		--accent-ink: #ffffff;
+		--chip: #efe9f2;
+		/* Site palette (inside the frame). The real site is light-only, so these stay put in dark mode. */
+		--site-bg: #ffffff;
+		--site-ink: #212529;
+		--site-muted: rgba(33, 37, 41, 0.68);
+		--site-line: rgba(0, 0, 0, 0.12);
+		--pink: #ed1d7a;
+		--pink-dark: #c51866;
+		--yellow: #ffec84;
+		--yellow-a: #fff584;
+		--yellow-b: #ffe484;
+		--yes: #2f9e44;
+		--no: #212529;
+		--maybe: #f59f00;
+		--open: #eef0f2;
+		--font-display: 'Permanent Marker', 'Marker Felt', cursive;
+		--font-body: 'Roboto', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+		--font-data: 'Roboto Mono', ui-monospace, Menlo, monospace;
+	}
+	@media (prefers-color-scheme: dark) {
+		:root:not([data-theme='light']) {
+			--bg: #151218;
+			--panel: #1f1b23;
+			--ink: #efeaf2;
+			--muted: #a59cad;
+			--line: #3a3340;
+			--accent: #ff5fa2;
+			--accent-ink: #1a0d14;
+			--chip: #2c2631;
+			color-scheme: dark;
+		}
+	}
+	:root[data-theme='dark'] {
+		--bg: #151218;
+		--panel: #1f1b23;
+		--ink: #efeaf2;
+		--muted: #a59cad;
+		--line: #3a3340;
+		--accent: #ff5fa2;
+		--accent-ink: #1a0d14;
+		--chip: #2c2631;
+		color-scheme: dark;
+	}
+
+	* { box-sizing: border-box; }
+	body {
+		background: var(--bg);
+		color: var(--ink);
+		font-family: var(--font-body);
+		font-size: 14px;
+		line-height: 1.45;
+	}
+	.lab {
+		max-width: 1240px;
+		margin: 0 auto;
+		padding-block: 20px 48px;
+		padding-left: max(16px, env(safe-area-inset-left, 0px));
+		padding-right: max(16px, env(safe-area-inset-right, 0px));
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+	}
+	.lab-head h1 {
+		font-family: var(--font-display);
+		font-weight: 400;
+		font-size: 30px;
+		margin: 0;
+		text-wrap: balance;
+	}
+	.lab-head p { margin: 4px 0 0; color: var(--muted); max-width: 70ch; }
+
+	.lab-main {
+		display: grid;
+		grid-template-columns: 330px minmax(0, 1fr);
+		gap: 20px;
+		align-items: start;
+	}
+	@media (max-width: 900px) {
+		.lab-main { grid-template-columns: minmax(0, 1fr); }
+	}
+
+	.controls {
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+		background: var(--panel);
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		padding: 16px;
+	}
+	.controls h2 {
+		margin: 0;
+		font-size: 11px;
+		text-transform: uppercase;
+		letter-spacing: 0.08em;
+		color: var(--muted);
+	}
+	.ctl { display: flex; flex-direction: column; gap: 6px; }
+	.ctl-label { font-weight: 700; font-size: 13px; display: flex; justify-content: space-between; gap: 8px; align-items: baseline; }
+	.ctl-label .tag { font-weight: 500; font-size: 11px; color: var(--accent); text-transform: uppercase; letter-spacing: 0.06em; }
+	.seg { display: flex; flex-wrap: wrap; gap: 4px; }
+	.seg button {
+		font: inherit;
+		font-size: 13px;
+		padding: 5px 10px;
+		border-radius: 6px;
+		border: 1px solid var(--line);
+		background: var(--chip);
+		color: var(--ink);
+		cursor: pointer;
+	}
+	.seg button[aria-pressed='true'] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+	.seg button:focus-visible, .lab button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+	.divider { height: 1px; background: var(--line); }
+
+	.stage { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+	.hint {
+		background: var(--panel);
+		border: 1px solid var(--line);
+		border-left: 4px solid var(--accent);
+		border-radius: 8px;
+		padding: 10px 14px;
+	}
+	.hint strong { color: var(--accent); }
+	.readout { display: flex; flex-wrap: wrap; gap: 8px; }
+	.metric {
+		background: var(--panel);
+		border: 1px solid var(--line);
+		border-radius: 8px;
+		padding: 6px 12px;
+		display: flex;
+		flex-direction: column;
+	}
+	.metric b { font-family: var(--font-data); font-size: 18px; font-variant-numeric: tabular-nums; }
+	.metric span { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; }
+	.frame-wrap { overflow-x: auto; padding-bottom: 4px; }
+
+	/* ===== Device frame: the site itself ===== */
+	.frame {
+		position: relative;
+		height: 720px;
+		margin: 0 auto;
+		background: var(--site-bg);
+		color: var(--site-ink);
+		border: 8px solid #2a2530;
+		border-radius: 22px;
+		overflow: hidden;
+		display: flex;
+		flex-direction: column;
+		font-size: 15px;
+	}
+	.frame[data-w='390'] { width: 406px; }
+	.frame[data-w='720'] { width: 784px; }
+	.scroller { flex: 1; overflow-y: auto; position: relative; }
+	.site-nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 12px 16px;
+		background: var(--site-ink);
+		color: #fff;
+		font-family: var(--font-display);
+		font-size: 17px;
+	}
+	.site-nav small { font-family: var(--font-body); font-size: 12px; opacity: 0.8; }
+	.page { padding: 8px 16px 24px; display: flex; flex-direction: column; gap: 16px; max-width: 720px; margin: 0 auto; }
+	.frame[data-w='720'] .page { padding-inline: 32px; }
+	.page h1 { font-family: var(--font-display); font-weight: 400; font-size: 32px; margin: 8px 0 0; }
+	.page h2 { margin: 0; font-size: 20px; }
+	.section { display: flex; flex-direction: column; gap: 10px; }
+	.section-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+	.sub { color: var(--site-muted); font-size: 13px; }
+
+	.card {
+		border: 1px solid var(--site-line);
+		border-radius: 8px;
+		padding: 14px 16px;
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+		background: var(--site-bg);
+	}
+	.card--featured {
+		border: none;
+		padding: 20px;
+		background: linear-gradient(to bottom right, var(--yellow-a), var(--yellow-b));
+	}
+	.card--featured .card-title { font-family: var(--font-display); font-size: 28px; font-weight: 400; line-height: 1.15; }
+	.card-title { font-size: 19px; font-weight: 700; }
+	.badge {
+		align-self: flex-start;
+		padding: 2px 10px;
+		border-radius: 999px;
+		color: #fff;
+		background: var(--site-ink);
+		font-size: 12px;
+		font-weight: 700;
+		text-transform: uppercase;
+	}
+	.badge--pink { background: var(--pink); }
+	.meta { color: var(--site-muted); display: flex; align-items: center; gap: 6px; }
+	.meta svg { width: 14px; height: 14px; flex: none; }
+
+	.todo { border: 2px solid var(--pink); }
+	.todo--overdue { background: var(--pink); color: #fff; border-color: var(--pink); }
+	.todo--overdue .sub, .todo--overdue .todo-kicker { color: rgba(255, 255, 255, 0.9); }
+	.todo-kicker { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--pink-dark); }
+	.bar { height: 6px; background: var(--open); border-radius: 3px; overflow: hidden; }
+	.bar i { display: block; height: 100%; background: var(--yes); }
+	.todo--overdue .bar { background: rgba(255, 255, 255, 0.35); }
+	.todo--overdue .bar i { background: #fff; }
+
+	.btn {
+		font: inherit;
+		font-weight: 700;
+		border-radius: 6px;
+		padding: 10px 16px;
+		border: none;
+		background: var(--pink);
+		color: #fff;
+		cursor: pointer;
+		align-self: flex-start;
+	}
+	.btn--ghost { background: transparent; color: var(--pink-dark); border: 1px solid var(--site-line); }
+	.todo--overdue .btn { background: #fff; color: var(--pink-dark); }
+	.btn:disabled { background: #ced4da; color: #6c757d; cursor: not-allowed; }
+	.btn:focus-visible, .scroller button:focus-visible, .scroller input:focus-visible, .scroller select:focus-visible { outline: 3px solid var(--pink); outline-offset: 2px; }
+	.row-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+	.who { display: flex; flex-wrap: wrap; gap: 6px; }
+	.who span { font-size: 13px; padding: 2px 8px; border-radius: 999px; background: var(--open); }
+	.who span.done { background: #d3f9d8; }
+
+	/* Possible dates */
+	.possible { display: flex; flex-wrap: wrap; gap: 6px; }
+	.possible span {
+		font-family: var(--font-data);
+		font-size: 13px;
+		padding: 4px 8px;
+		border-radius: 6px;
+		background: var(--yellow);
+		font-variant-numeric: tabular-nums;
+	}
+	.target { font-family: var(--font-display); font-size: 20px; line-height: 1.2; }
+
+	/* Calendar */
+	.legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; color: var(--site-muted); }
+	.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 4px; border: 1px solid var(--site-line); }
+	.month { display: flex; flex-direction: column; gap: 6px; }
+	.frame[data-w='720'] .month { max-width: 480px; }
+	.month h3 { margin: 0; font-size: 16px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+	.pager { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: 6px; }
+	.pager-btn { font: inherit; font-size: 22px; line-height: 1; height: 40px; border-radius: 6px; border: 1px solid var(--site-line); background: var(--site-bg); color: var(--site-ink); cursor: pointer; }
+	.pager-btn:disabled { opacity: 0.3; cursor: default; }
+	.in-round { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--pink-dark); }
+	.day--past { background: transparent; color: #adb5bd; cursor: default; }
+	.nav-admin { font: inherit; background: none; border: none; padding: 0; color: var(--yellow); font-weight: 700; cursor: pointer; text-decoration: underline; }
+	.tile { font: inherit; text-align: left; display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; border: 1px solid var(--site-line); border-radius: 10px; background: var(--site-bg); color: var(--site-ink); cursor: pointer; box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06); }
+	.tile:hover { border-color: var(--pink); }
+	.tile-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+	.state { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 8px; border-radius: 999px; background: var(--open); white-space: nowrap; }
+	.state--ready { background: #d3f9d8; color: #2b8a3e; }
+	.state--closed { background: var(--site-ink); color: #fff; }
+	.dots-row { display: flex; gap: 4px; }
+	.dots-row i { width: 10px; height: 10px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px #adb5bd; }
+	.dots-row i.on { background: var(--yes); box-shadow: none; }
+	.mini-head { margin: 4px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--site-muted); }
+	.back-link { align-self: flex-start; text-decoration: none; }
+	.responses { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+	.responses li { border: 1px solid var(--site-line); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px; }
+	.resp-top { display: flex; justify-content: space-between; align-items: center; }
+	.resp-line { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 8px; font-size: 14px; }
+	.resp-line > span:first-child { color: var(--site-muted); }
+	.pr-row { font: inherit; text-align: left; display: flex; justify-content: space-between; gap: 10px; align-items: center; padding: 12px 14px; border: 1px solid var(--site-line); border-radius: 8px; background: var(--site-bg); color: var(--site-ink); cursor: pointer; }
+	.pr-status { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 8px; border-radius: 999px; background: var(--open); }
+	.pr-status--tentative { background: var(--site-ink); color: #fff; }
+	.pr-status--cancelled { background: var(--pink); color: #fff; }
+	.pr-edit { gap: 10px; border: 2px solid var(--site-ink); }
+	.pr-song { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+	.pr-song input, .pr-edit textarea { font: inherit; padding: 8px 10px; border: 1px solid #ced4da; border-radius: 6px; background: var(--site-bg); color: var(--site-ink); }
+	.is-cancelled .card-title, .is-cancelled .meta b { text-decoration: line-through; }
+	.is-cancelled { color: var(--site-muted); }
+	.songs summary { cursor: pointer; color: var(--pink-dark); font-weight: 700; }
+	.card ul { margin: 4px 0 0; padding-left: 20px; }
+	.parts { margin: 4px 0; padding-left: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; counter-reset: part; }
+	.parts li { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; padding: 6px 10px; border-radius: 6px; background: #f8f9fa; font-size: 14px; }
+	.parts li span { color: var(--site-muted); white-space: nowrap; font-size: 13px; }
+	.parts li.ok span { color: var(--yes); font-weight: 700; }
+	.todo--overdue .parts li { background: rgba(255, 255, 255, 0.15); }
+	.todo--overdue .parts li span { color: #fff; }
+	.part-head { display: flex; align-items: center; gap: 10px; font-size: 18px; margin-top: 6px; }
+	.part-head span { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--site-ink); color: #fff; font-size: 14px; display: grid; place-items: center; }
+	.part-card { gap: 10px; }
+	.part-card-head { display: flex; justify-content: space-between; align-items: baseline; }
+	.part-kind { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--pink-dark); }
+	.songs-block { border-top: 1px solid var(--site-line); padding-top: 8px; display: flex; flex-direction: column; gap: 4px; }
+	.yn { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+	.yn button { font: inherit; font-size: 16px; font-weight: 700; min-height: 48px; border-radius: 6px; border: 1px solid #ced4da; background: var(--site-bg); color: var(--site-ink); cursor: pointer; }
+	.yn button[aria-pressed='true'][data-yn='yes'] { background: var(--yes); border-color: var(--yes); color: #fff; }
+	.yn button[aria-pressed='true'][data-yn='no'] { background: var(--no); border-color: var(--no); color: #fff; }
+	.song-list { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 2px; }
+	.check { display: flex; gap: 8px; align-items: center; font-size: 14px; }
+	.divider-site { height: 1px; background: var(--site-line); margin: 8px 0; }
+	.allin { border: 2px solid #d4b400; background: #fff9db; }
+	.locked-note { border-color: var(--yes); }
+	.pick-count { font-size: 15px; }
+	.picks { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 6px; }
+	.pick { font: inherit; text-align: left; padding: 8px 10px; border-radius: 6px; border: 1px solid #ced4da; background: var(--site-bg); color: var(--site-ink); cursor: pointer; display: flex; flex-direction: column; gap: 2px; }
+	.pick small { font-size: 11px; color: var(--site-muted); }
+	.pick--on { background: var(--pink); border-color: var(--pink); color: #fff; }
+	.pick--on small { color: rgba(255, 255, 255, 0.85); }
+	.prefill-note { background: #fff9db; border: 1px solid #ffe066; border-radius: 6px; padding: 8px 10px; font-size: 13px; }
+	.grid7 { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+	.dow { font-size: 11px; text-align: center; color: var(--site-muted); font-weight: 700; }
+	.day {
+		position: relative;
+		aspect-ratio: 1;
+		border: none;
+		border-radius: 5px;
+		background: var(--open);
+		color: var(--site-ink);
+		font: inherit;
+		font-size: 13px;
+		font-weight: 500;
+		font-variant-numeric: tabular-nums;
+		cursor: pointer;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 3px;
+		max-width: 100%;
+	}
+	.day--blank { background: transparent; cursor: default; }
+	.day--busy { background: var(--no); color: #fff; }
+	.day--booked { background: var(--pink); color: #fff; }
+	.day--possible { background: var(--yellow); box-shadow: inset 0 0 0 2px #d4b400; }
+	.dots { display: flex; gap: 2px; }
+	.dots i { width: 5px; height: 5px; border-radius: 50%; background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25); }
+	.dots i.yes { background: var(--yes); box-shadow: none; }
+	.dots i.no { background: var(--pink); box-shadow: none; }
+	.dots i.maybe { background: var(--maybe); box-shadow: none; }
+	.day--busy .dots i { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.5); }
+
+	/* Own answers (edit mine, week grid) */
+	.mine--yes { background: var(--yes); color: #fff; }
+	.mine--no { background: var(--no); color: #fff; }
+	.mine--maybe { background: var(--maybe); color: var(--site-ink); }
+	.mine--none { background: var(--site-bg); box-shadow: inset 0 0 0 1.5px #adb5bd; color: var(--site-muted); }
+
+	/* Round form */
+	.sticky {
+		position: sticky;
+		top: 0;
+		z-index: 3;
+		background: var(--site-bg);
+		padding: 10px 16px;
+		border-bottom: 1px solid var(--site-line);
+		display: flex;
+		flex-direction: column;
+		gap: 6px;
+	}
+	.frame[data-w='720'] .sticky { padding-inline: 32px; }
+	.progress-line { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; flex-wrap: wrap; }
+	.linkish { font: inherit; background: none; border: none; color: var(--pink-dark); font-weight: 700; cursor: pointer; padding: 0; text-decoration: underline; }
+	.shortcut { display: flex; flex-direction: column; gap: 6px; border: 1px dashed #adb5bd; border-radius: 8px; padding: 10px 12px; }
+	.shortcut-row { display: grid; grid-template-columns: 44px repeat(3, minmax(0, 1fr)); gap: 4px; align-items: center; font-size: 13px; }
+	.shortcut-row b { font-size: 13px; }
+	.mini { font: inherit; font-size: 12px; padding: 5px 0; border-radius: 5px; border: 1px solid var(--site-line); background: var(--site-bg); cursor: pointer; color: var(--site-ink); }
+	.mini:disabled { opacity: 0.35; cursor: default; }
+	.week-head {
+		position: sticky;
+		top: var(--sticky-h, 64px);
+		z-index: 2;
+		background: #f1f3f5;
+		padding: 5px 16px;
+		font-size: 12px;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: var(--site-muted);
+	}
+	.frame[data-w='720'] .week-head { padding-inline: 32px; }
+	.qrow { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 10px; align-items: center; padding: 6px 16px; border-bottom: 1px solid #f1f3f5; }
+	.frame[data-w='720'] .qrow { padding-inline: 32px; grid-template-columns: 120px 360px; }
+	.qrow--weekend { background: #fffbe6; }
+	.qrow--flash { animation: flash 1.2s ease-out; }
+	@keyframes flash { from { background: #ffd8e8; } }
+	@media (prefers-reduced-motion: reduce) { .qrow--flash { animation: none; } }
+	.qdate { font-weight: 700; font-variant-numeric: tabular-nums; }
+	.qdate small { display: block; font-weight: 400; font-size: 11px; color: var(--site-muted); }
+	.three { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+	.three button {
+		font: inherit;
+		font-size: 14px;
+		min-height: 40px;
+		border-radius: 6px;
+		border: 1px solid #ced4da;
+		background: var(--site-bg);
+		color: var(--site-ink);
+		cursor: pointer;
+	}
+	.three button[aria-pressed='true'][data-a='yes'] { background: var(--yes); border-color: var(--yes); color: #fff; }
+	.three button[aria-pressed='true'][data-a='no'] { background: var(--no); border-color: var(--no); color: #fff; }
+	.three button[aria-pressed='true'][data-a='maybe'] { background: var(--maybe); border-color: var(--maybe); }
+	.weekgrid { padding: 8px 16px; display: flex; flex-direction: column; gap: 6px; }
+	.frame[data-w='720'] .weekgrid { padding-inline: 32px; }
+	.wg-row { display: grid; grid-template-columns: 54px repeat(7, minmax(0, 1fr)); gap: 4px; align-items: center; }
+	.wg-row .wk { font-size: 11px; color: var(--site-muted); font-weight: 700; }
+	.cell {
+		font: inherit;
+		border: none;
+		border-radius: 6px;
+		min-height: 46px;
+		cursor: pointer;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		font-size: 13px;
+		font-weight: 700;
+		line-height: 1.1;
+		padding: 2px 0;
+	}
+	.cell small { font-size: 10px; font-weight: 500; }
+	.cell--out { visibility: hidden; }
+	.bottom {
+		border-top: 1px solid var(--site-line);
+		background: var(--site-bg);
+		padding: 10px 16px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 10px;
+	}
+	.bottom .btn { align-self: center; }
+
+	/* Sheet */
+	.scrim { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.4); z-index: 10; display: flex; align-items: flex-end; }
+	.sheet { background: var(--site-bg); width: 100%; border-radius: 14px 14px 0 0; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+	.sheet h3 { margin: 0; font-size: 18px; }
+	.answers { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+	.answers li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid #f1f3f5; }
+	.pill { font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px; }
+	.pill--yes { background: var(--yes); color: #fff; }
+	.pill--no { background: var(--no); color: #fff; }
+	.pill--maybe { background: var(--maybe); }
+	.pill--none { background: var(--open); color: var(--site-muted); }
+	.nearmiss { font-weight: 700; color: var(--pink-dark); }
+
+	/* New round form */
+	.field { display: flex; flex-direction: column; gap: 4px; }
+	.field label { font-weight: 700; font-size: 13px; }
+	.field input, .field select { font: inherit; padding: 9px 10px; border: 1px solid #ced4da; border-radius: 6px; background: var(--site-bg); color: var(--site-ink); }
+	.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+	.stepper { display: flex; gap: 4px; }
+	.stepper button { font: inherit; width: 40px; height: 40px; border-radius: 6px; border: 1px solid #ced4da; background: var(--site-bg); color: var(--site-ink); cursor: pointer; font-weight: 700; }
+	.stepper button[aria-pressed='true'] { background: var(--site-ink); color: #fff; border-color: var(--site-ink); }
+	.textbox { font-family: var(--font-body); background: #f8f9fa; border: 1px solid var(--site-line); border-radius: 6px; padding: 10px; white-space: pre-wrap; user-select: all; }
+	.toast { font-size: 13px; color: var(--yes); font-weight: 700; }
+
+	/* Notes */
+	.notes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+	@media (max-width: 900px) { .notes { grid-template-columns: minmax(0, 1fr); } }
+	.note { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; }
+	.note h3 { margin: 0 0 6px; font-size: 14px; }
+	.note ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+	.note p { margin: 0; }
+</style>
+
+<div class="lab">
+	<header class="lab-head">
+		<h1>Da Band availability lab</h1>
+		<p>One form going out to the band, "March show planning", with two parts: availability and a yes/no question. Plus the shared calendar, "Edit mine" and the admin screen, at real width in a 720px-tall phone frame. Version 9, Nov 10: this is the reference for the build. Use "Your form" to walk the whole life of a form, from Fresh to Dates locked. Everything in the frame is clickable, and your answers carry across screens.</p>
+	</header>
+
+	<div class="lab-main">
+		<aside class="controls" id="controls" aria-label="Lab controls"></aside>
+		<section class="stage">
+			<div class="hint" id="hint"></div>
+			<div class="readout" id="readout"></div>
+			<div class="frame-wrap">
+				<div class="frame" id="frame" data-w="390">
+					<div class="scroller" id="scroller"></div>
+					<div id="bottom"></div>
+					<div id="overlay"></div>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<section class="notes">
+		<div class="note">
+			<h3>What's real and what's invented</h3>
+			<ul>
+				<li><b>Real:</b> the roster, the 720px page width, the site colors and fonts, Dec 6 (tentative, Burtonsville), the Jan 1–Mar 31 range, and Anna's seed (every Fri and Sat, her long-weekend Sundays).</li>
+				<li><b>Invented:</b> everyone else's answers, and Anna's weekday answers. Franny has answered only through Feb 14, so March shows what an unfinished round looks like.</li>
+				<li><b>Measured live:</b> every number in the readout comes from the rendered frame.</li>
+			</ul>
+		</div>
+		<div class="note">
+			<h3>How faithful it is</h3>
+			<p>The Next practice card and the page width copy the built <code>/da-band</code> page. The site nav is a stand-in. The frame is plain HTML, not PrimeVue, so judge structure and flow here and polish in the real app.</p>
+		</div>
+		<div class="note">
+			<h3>What to try</h3>
+			<ul>
+				<li>Set <b>Your form</b> to Fresh, then fill the dates with "Fill a weekday at once" first. Watch "Taps so far".</li>
+				<li>Sign in as Nick and open <b>Admin</b> to see "Access denied".</li>
+				<li>Set <b>Your form</b> to Already ahead: your dates are in, so only the question is left.</li>
+				<li>In <b>Edit mine</b>, page forward to August 2027 to see Colin's vacation, entered before any round asked for it.</li>
+				<li>On Home, tap a gray day in January to see "everyone but…".</li>
+				<li>Sign in as Nick to see what a member sees.</li>
+			</ul>
+		</div>
+	</section>
+</div>
+
+<script>
+	(() => {
+		// ---------- Dates (all UTC so nothing shifts by time zone) ----------
+		const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+		const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+		const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+		const iso = (d) => d.toISOString().slice(0, 10);
+		// Every day anyone can answer: this month through the end of 2027.
+		const allDays = [];
+		for (let t = Date.UTC(2026, 10, 1); t <= Date.UTC(2027, 11, 31); t += 864e5) {
+			const d = new Date(t);
+			allDays.push({ iso: iso(d), dow: d.getUTCDay(), m: d.getUTCMonth(), y: d.getUTCFullYear(), dn: d.getUTCDate() });
+		}
+		// The open round's range. Every "answered" count is about these days only.
+		const ROUND_START = '2027-01-01';
+		const ROUND_END = '2027-03-31';
+		const inRound = (d) => d.iso >= ROUND_START && d.iso <= ROUND_END;
+		const days = allDays.filter(inRound);
+		const label = (day) => `${DOW[day.dow]} ${MONTHS[day.m]} ${day.dn}`;
+		const byIso = Object.fromEntries(allDays.map((d) => [d.iso, d]));
+		const MONTH_PAGES = [];
+		for (const d of allDays) if (d.dn === 1) MONTH_PAGES.push({ y: d.y, m: d.m });
+		const pageIndex = (y, m) => MONTH_PAGES.findIndex((p) => p.y === y && p.m === m);
+
+		// ---------- Members ----------
+		const MEMBERS = [
+			{ id: 'anna', name: 'Anna', short: 'Anna' },
+			{ id: 'kyle', name: 'Kyle', short: 'Fives' },
+			{ id: 'nick', name: 'Nick', short: 'Hermes' },
+			{ id: 'francesco', name: 'Francesco', short: 'Franny' },
+			{ id: 'colin', name: 'Colin', short: 'Colin' }
+		];
+		const nameOf = (id) => MEMBERS.find((m) => m.id === id).short;
+		// Anna's long-weekend Sundays: every 14 days from Sun Jan 10, 2027.
+		const ANNA_SUNDAYS = [];
+		for (let t = Date.UTC(2027, 0, 10); t <= Date.UTC(2027, 11, 12); t += 14 * 864e5) ANNA_SUNDAYS.push(iso(new Date(t)));
+		const annaWeekend = (d) => (d.dow === 5 || d.dow === 6 ? 'yes' : d.dow === 0 ? (ANNA_SUNDAYS.includes(d.iso) ? 'yes' : 'no') : undefined);
+
+		// Deterministic pseudo-random per (member, day), so invented answers never reshuffle.
+		const rand = (s) => {
+			let h = 2166136261;
+			for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
+			return ((h >>> 0) % 1000) / 1000;
+		};
+		const pick = (r, no, maybe) => (r < no ? 'no' : r < no + maybe ? 'maybe' : 'yes');
+		// Inside the round: everyone's invented answers. Outside it: only what someone entered ahead of time.
+		const COLIN_VACATION = (d) => d.iso >= '2027-08-07' && d.iso <= '2027-08-15';
+		const invented = {
+			anna: (d) => (d.y === 2027 && annaWeekend(d)) || (inRound(d) ? pick(rand('a' + d.iso), 0.25, 0.1) : undefined),
+			kyle: (d) => (!inRound(d) ? undefined : d.dow === 2 || d.dow === 4 ? 'no' : pick(rand('k' + d.iso), 0.1, 0.08)),
+			nick: (d) => (inRound(d) ? pick(rand('n' + d.iso), 0.12, 0.1) : undefined),
+			francesco: (d) => (inRound(d) && d.iso <= '2027-02-14' ? pick(rand('f' + d.iso), 0.13, 0.07) : undefined),
+			colin: (d) => (COLIN_VACATION(d) ? 'no' : inRound(d) ? pick(rand('c' + d.iso), 0.06, 0.05) : undefined)
+		};
+
+		// ---------- Lab state ----------
+		const S = {
+			view: 'home',
+			me: 'colin',
+			roundState: 'halfway',
+			w: 390,
+			formLayout: 'grid',
+			shortcut: 'button',
+			calDay: 'dots',
+			possibleMark: 'yellow',
+			editTap: 'cycle',
+			answers: {},
+			submitted: {},
+			prefilled: 0,
+			adminPage: 'dash',
+			locked: [],
+			pick: [],
+			askOpen: true,
+			askAnswers: {},
+			askDraft: { songs: [{ song: '', band: '' }] },
+			qSent: false,
+			roundClosed: false,
+			justLocked: false,
+			calPage: pageIndex(2027, 0),
+			editPage: pageIndex(2027, 0),
+			taps: 0,
+			sheet: undefined,
+			newRound: { created: false, practices: 3 },
+			copied: ''
+		};
+
+		function resetData() {
+			S.answers = {};
+			S.submitted = { anna: true, kyle: true, francesco: false };
+			for (const m of MEMBERS) {
+				S.answers[m.id] = {};
+				for (const d of allDays) {
+					const a = invented[m.id](d);
+					if (a) S.answers[m.id][d.iso] = a;
+				}
+			}
+			const other = S.me === 'colin' ? 'nick' : 'colin';
+			// The other of Colin/Nick: Nick is halfway when Colin is viewing; Colin is done when Nick is viewing.
+			if (other === 'nick') {
+				S.submitted.nick = false;
+				days.forEach((d, i) => { if (i >= 45) delete S.answers.nick[d.iso]; });
+			} else {
+				S.submitted.colin = true;
+			}
+			// The viewer, per Round state.
+			// Only the round's days are cleared; anything entered ahead (Colin's August vacation) stays.
+			const mine = S.answers[S.me];
+			if (S.roundState === 'fresh') days.forEach((d) => delete mine[d.iso]);
+			if (S.roundState === 'halfway' || S.roundState === 'overdue') days.forEach((d, i) => { if (i >= 45) delete mine[d.iso]; });
+			// 'ahead': every round date was already on their calendar before the round opened, nothing signed off yet.
+			S.submitted[S.me] = S.roundState === 'submitted';
+			S.prefilled = S.roundState === 'ahead' ? days.length : 0;
+			// Invented answers to the songs question. Whoever has signed off has answered it.
+			S.askAnswers = {
+				anna: { yes: true, songs: [{ song: 'Linger', band: 'The Cranberries' }] },
+				kyle: { yes: false, songs: [] },
+				francesco: { yes: true, songs: [{ song: 'Seven Nation Army', band: 'The White Stripes' }] }
+			};
+			for (const m of MEMBERS) if (S.submitted[m.id] && !S.askAnswers[m.id]) S.askAnswers[m.id] = { yes: false, songs: [] };
+			S.builder = { name: 'Spring show planning', parts: [{ kind: 'availability', start: '2027-04-01', end: '2027-06-30', practices: 2, target: '' }], sent: false };
+			S.locked = [];
+			S.practices = [{ iso: '2026-12-06', start: '', end: '', location: '', status: 'tentative', songs: [], recap: [] }];
+			S.prEdit = undefined;
+			S.prSaved = false;
+			S.pick = [];
+			S.roundClosed = false;
+			S.justLocked = false;
+			// Everyone's in / dates locked: every member has answered every round date and signed off.
+			if (S.roundState === 'allin' || S.roundState === 'closed') {
+				for (const m of MEMBERS) {
+					for (const d of days) if (!S.answers[m.id][d.iso]) S.answers[m.id][d.iso] = pick(rand(m.id + '2' + d.iso), 0.12, 0.08);
+					S.submitted[m.id] = true;
+					if (!S.askAnswers[m.id]) S.askAnswers[m.id] = { yes: false, songs: [] };
+				}
+				S.prefilled = 0;
+			}
+			if (S.roundState === 'closed') {
+				S.locked = days.filter((d) => dayStatus(d) === 'possible').slice(0, 3).map((d) => d.iso);
+				S.locked.forEach((iso) => S.practices.push(newPractice(iso, 'scheduled')));
+				S.roundClosed = true;
+			}
+			syncDraft();
+			S.taps = 0;
+		}
+		resetData();
+
+		const today = () => (S.roundState === 'overdue' ? 'Nov 17' : 'Nov 10');
+		const overdueDays = () => (S.roundState === 'overdue' ? 2 : 0);
+		const isAdmin = () => S.me === 'colin';
+		const answered = (id) => days.filter((d) => S.answers[id][d.iso]).length;
+
+		// ---------- Derived band status ----------
+		const BOOKED = { '2026-12-06': true }; // The tentative Dec 6 practice. The March show isn't booked yet.
+		const TODAY_ISO = () => (S.roundState === 'overdue' ? '2026-11-17' : '2026-11-10');
+		const isPast = (d) => d.iso < TODAY_ISO();
+		const isBooked = (d) => S.practices.some((p) => p.iso === d.iso && p.status !== 'cancelled');
+		function newPractice(iso, status) { return { iso, start: '', end: '', location: '', status, songs: [], recap: [] }; }
+		const fmtTime = (t) => { const [h, m] = t.split(':').map(Number); return `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`; };
+		const upcomingPractices = () => S.practices.filter((p) => p.iso >= TODAY_ISO()).sort((a, b) => (a.iso < b.iso ? -1 : 1));
+		const allIn = () => MEMBERS.every((m) => S.submitted[m.id]);
+		const DOW_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+		const longDay = (d) => `${DOW_LONG[d.dow]}, ${MONTHS_LONG[d.m]} ${d.dn}`;
+		function dayStatus(d) {
+			if (isBooked(d)) return 'booked';
+			const vals = MEMBERS.map((m) => S.answers[m.id][d.iso]);
+			if (vals.includes('no')) return 'busy';
+			if (vals.every((v) => v === 'yes')) return 'possible';
+			return 'open';
+		}
+		const possibleDates = () => allDays.filter((d) => !isPast(d) && dayStatus(d) === 'possible');
+		function nearMiss(d) {
+			const notYes = MEMBERS.filter((m) => S.answers[m.id][d.iso] !== 'yes');
+			if (notYes.length !== 1) return '';
+			const m = notYes[0];
+			const a = S.answers[m.id][d.iso];
+			return `Everyone but ${m.short} (${a ? ANSWER_LABEL[a] : 'Pending'})`;
+		}
+		const ANSWER_LABEL = { yes: 'Yes', no: 'No', maybe: 'Not sure' };
+
+		// ---------- Controls ----------
+		const DECISIONS = [
+			{ key: 'formLayout', label: 'Form layout', view: 'form', opts: [['rows', 'Rows, three buttons'], ['grid', 'Week grid, tap to cycle']],
+			  look: 'The round form. Rows give every date its own Yes / No / Not sure buttons. The week grid fits a week per line, and each tap moves a day to the next answer.' },
+			{ key: 'shortcut', label: 'Every-weekday shortcut', view: 'form', opts: [['strip', 'Strip on top'], ['button', 'Behind a button']],
+			  look: 'The top of the round form. The strip is always visible. The button opens the same controls in a sheet, so the form starts with less above the dates.' },
+			{ key: 'calDay', label: 'Calendar day', view: 'home', opts: [['color', 'Color only'], ['dots', 'Color + member dots']],
+			  look: 'The shared calendar on Home. Dots show each member’s answer under the day number (green yes, pink no, orange not sure, hollow pending).' },
+			{ key: 'possibleMark', label: 'Possible dates on calendar', view: 'home', opts: [['yellow', 'Yellow'], ['plain', 'Not marked']],
+			  look: 'The shared calendar on Home. Yellow marks days all five said Yes. "Not marked" leaves them light like any open day, and only the list above names them.' },
+			{ key: 'editTap', label: 'Edit mine: tapping a day', view: 'edit', opts: [['cycle', 'Cycles the answer'], ['sheet', 'Opens a picker']],
+			  look: 'Edit mine. Cycling goes Yes → No → Not sure → Yes in one tap per step. The picker asks every time and can’t be mis-tapped.' }
+		];
+		const STATE = [
+			{ key: 'view', label: 'Screen', opts: [['home', 'Home'], ['form', 'The form'], ['edit', 'Edit mine'], ['new', 'Admin']] },
+			{ key: 'me', label: 'Signed in as', opts: [['colin', 'Colin (admin)'], ['nick', 'Nick']], reset: true },
+			{ key: 'roundState', label: 'Your form', opts: [['fresh', 'Fresh'], ['halfway', 'Halfway'], ['ahead', 'Already ahead'], ['submitted', 'Signed off'], ['overdue', 'Overdue'], ['allin', 'Everyone’s in'], ['closed', 'Dates locked']], reset: true },
+			{ key: 'w', label: 'Viewport', opts: [[390, 'Phone 390'], [720, 'Desktop 720']] }
+		];
+		let hintText = 'Start on <strong>Home</strong>. You’re Colin (admin), halfway through March show planning. Franny hasn’t answered March yet, so March has no possible dates.';
+
+		function segRow(def, isDecision) {
+			const wrap = document.createElement('div');
+			wrap.className = 'ctl';
+			wrap.innerHTML = `<div class="ctl-label">${def.label}${isDecision ? '<span class="tag">open</span>' : ''}</div>`;
+			const seg = document.createElement('div');
+			seg.className = 'seg';
+			seg.setAttribute('role', 'group');
+			seg.setAttribute('aria-label', def.label);
+			for (const [val, text] of def.opts) {
+				const b = document.createElement('button');
+				b.type = 'button';
+				b.id = `ctl-${def.key}-${val}`;
+				b.textContent = text;
+				b.setAttribute('aria-pressed', String(S[def.key] === val));
+				b.addEventListener('click', () => {
+					S[def.key] = val;
+					if (def.key === 'view' && val === 'new') S.adminPage = 'dash';
+					if (def.reset) resetData();
+					S.sheet = undefined;
+					if (isDecision) {
+						S.view = def.view;
+						hintText = `<strong>Look at:</strong> ${def.look}`;
+					} else if (def.key === 'view') {
+						hintText = VIEW_HINT[val];
+					}
+					renderAll();
+				});
+				seg.appendChild(b);
+			}
+			wrap.appendChild(seg);
+			return wrap;
+		}
+		const VIEW_HINT = {
+
+			home: '<strong>Home</strong> is what everyone opens: the form to-do, the form\u2019s progress (admin only), the possible dates and the shared calendar.',
+			form: '<strong>The form.</strong> Part 1 is availability, part 2 is the songs question. Everything saves as you go. Sign off unlocks when both parts are done.',
+			ask: '<strong>Question.</strong> A yes/no question from the admin. Yes opens Song and Band fields, with room for several. Sending clears the to-do, and the admin’s card lists the songs.',
+			edit: '<strong>Edit mine.</strong> After submitting, members change single days here. The shared calendar updates as you go.',
+			new: '<strong>Admin</strong> is a dashboard at <code>/da-band/admin</code>: a tile per form and one for practices. Tap a form to see every response, pick dates or close it; tap Practices to edit them. There’s no form builder: forms are built in code. Anyone else sees "Access denied".'
+		};
+		function renderControls() {
+			const c = document.getElementById('controls');
+			c.innerHTML = `<h2>Decided (Colin, Nov 10)</h2><ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px">
+				<li>Form: <b>week grid, tap to cycle</b></li>
+				<li>Weekday shortcut: <b>behind a button</b></li>
+				<li>Calendar day: <b>color + member dots</b></li>
+				<li>Possible dates: <b>yellow</b></li>
+				<li>Edit mine: <b>tap cycles the answer</b></li>
+				<li>Admin: <b>its own route</b>, "Access denied" for everyone else</li>
+				<li>Calendars: <b>one month at a time</b>, any month through Dec 2027</li>
+				<li>What goes out is <b>one form made of parts</b>: availability, yes/no questions, any mix</li>
+				<li>Forms start from answers already given; all done = <b>just sign off</b></li>
+				<li>Questions: <b>yes/no, with follow-up fields on Yes</b></li>
+				<li>Unbooked target: <b>a free-text label</b> ("the March show")</li>
+				<li>Practices: <b>edited on an admin screen</b> (time, place, status, songs, recap)</li>
+				<li>Admin: <b>a dashboard</b> with a tile per form and for practices; each opens its own page</li>
+				<li>Forms are <b>custom, built in code</b>: no form builder. Several can be open; only one asks for dates</li>
+			</ul>`;
+			DECISIONS.length = 0;
+			c.insertAdjacentHTML('beforeend', '<div class="divider"></div><h2>Scenario</h2>');
+			STATE.forEach((d) => c.appendChild(segRow(d, false)));
+			const reset = document.createElement('div');
+			reset.className = 'seg';
+			reset.innerHTML = '<button type="button" id="ctl-reset">Reset answers</button>';
+			reset.querySelector('button').addEventListener('click', () => { resetData(); S.sheet = undefined; renderAll(); });
+			c.appendChild(reset);
+		}
+
+		// ---------- Shared pieces ----------
+		const PIN = '<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0a5.5 5.5 0 0 0-5.5 5.5C2.5 9.6 8 16 8 16s5.5-6.4 5.5-10.5A5.5 5.5 0 0 0 8 0Zm0 7.8a2.3 2.3 0 1 1 0-4.6 2.3 2.3 0 0 1 0 4.6Z"/></svg>';
+		const CLOCK = '<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0Zm.8 8.3 3 1.8-.8 1.3-3.8-2.3V3.5h1.6Z"/></svg>';
+		const nav = () => `<div class="site-nav"><span>Lies From Granny</span><small>${isAdmin() ? '<button type="button" class="nav-admin" id="nav-admin">Admin</button> \u00b7 ' : ''}${nameOf(S.me)} \u00b7 Sign out</small></div>`;
+		const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+		function copyText(text, key) {
+			const done = () => { S.copied = key; renderAll(); setTimeout(() => { if (S.copied === key) { S.copied = ''; renderAll(); } }, 1600); };
+			try {
+				navigator.clipboard.writeText(text).then(done, done);
+			} catch (e) {
+				done();
+			}
+		}
+
+		// One month at a time, with previous / next. `pager` is the state key holding the page index.
+		function monthPager(pager, cellFn) {
+			const { y, m } = MONTH_PAGES[S[pager]];
+			const mDays = allDays.filter((d) => d.y === y && d.m === m);
+			const prev = MONTH_PAGES[S[pager] - 1];
+			const next = MONTH_PAGES[S[pager] + 1];
+			const roundHere = mDays.some(inRound);
+			let html = `<div class="month"><div class="pager">
+				<button type="button" class="pager-btn" data-page="${pager}:-1" ${prev ? '' : 'disabled'} aria-label="${prev ? `${MONTHS_LONG[prev.m]} ${prev.y}` : 'No earlier months'}">‹</button>
+				<h3>${MONTHS_LONG[m]} ${y}${roundHere ? ' <span class="in-round">In March show planning</span>' : ''}</h3>
+				<button type="button" class="pager-btn" data-page="${pager}:1" ${next ? '' : 'disabled'} aria-label="${next ? `${MONTHS_LONG[next.m]} ${next.y}` : 'No later months'}">›</button>
+			</div><div class="grid7">`;
+			html += DOW.map((d) => `<div class="dow">${d[0]}</div>`).join('');
+			for (let i = 0; i < mDays[0].dow; i++) html += '<span class="day day--blank" aria-hidden="true"></span>';
+			html += mDays.map(cellFn).join('');
+			return html + '</div></div>';
+		}
+
+		// ---------- Views ----------
+		function viewHome() {
+			const mine = answered(S.me);
+			const done = S.submitted[S.me];
+			const open = !S.roundClosed;
+			let html = nav() + '<div class="page"><h1>Da Band</h1>';
+
+			// One to-do per form. It disappears once you've signed off.
+			if (open && !done) {
+				const od = overdueDays();
+				const left = formLeft(S.me);
+				const datesDone = !left.dates;
+				const allDone = datesDone && !left.question;
+				html += `<div class="card todo ${od ? 'todo--overdue' : ''}" data-item>
+					<span class="todo-kicker">To do</span>
+					<div class="card-title">${FORM.title}</div>
+					<div class="sub">${od ? `Overdue by ${od} days. Shame.` : `Due ${FORM.due} · 5 days left`}</div>
+					<ol class="parts">
+						<li class="${datesDone ? 'ok' : ''}"><b>Availability, Jan 1 – Mar 31</b><span>${datesDone ? (S.prefilled === days.length ? 'Already on your calendar ✓' : 'Done ✓') : `${mine} of ${days.length}${S.prefilled ? ` · ${S.prefilled} from your calendar` : ''}`}</span></li>
+						<li class="${left.question ? '' : 'ok'}"><b>${esc(ASK.title)}</b><span>${left.question ? 'Not answered' : 'Answered ✓'}</span></li>
+					</ol>
+					${allDone ? '<div class="sub">Everything’s filled in. Check it over and sign off.</div>' : datesDone ? '<div class="sub">Your dates are already in. Just the question left.</div>' : ''}
+					<button class="btn" type="button" id="go-form">${allDone ? 'Check and sign off' : mine || !left.question ? 'Keep going' : 'Fill it out'}</button>
+				</div>`;
+			}
+
+			// Everyone's in: the form is waiting on the admin to pick dates.
+			if (open && allIn()) {
+				html += `<div class="card allin" data-item>
+					<span class="todo-kicker">Everyone’s in</span>
+					<div class="card-title">All five signed off ${FORM.title}</div>
+					<div class="sub">${possibleDates().filter(inRound).length} dates work for everyone. ${isAdmin() ? 'Pick the practice dates and lock them in.' : 'Practice dates are being picked. They’ll show up here.'}</div>
+					${isAdmin() ? '<button class="btn" type="button" id="go-admin">Pick practice dates</button>' : ''}
+					${songsBlock()}
+				</div>`;
+			} else if (open && isAdmin()) {
+				const waiting = MEMBERS.filter((m) => !S.submitted[m.id]);
+				html += `<div class="card" data-item>
+					<span class="todo-kicker">Your form</span>
+					<div class="card-title">${FORM.title} · due ${FORM.due}</div>
+					<div class="sub">${MEMBERS.length - waiting.length} of 5 signed off · waiting on ${waiting.map((m) => m.short).join(', ')}</div>
+					<div class="who">${MEMBERS.map((m) => `<span class="${S.submitted[m.id] ? 'done' : ''}">${m.short} ${S.submitted[m.id] ? '✓' : `${answered(m.id)}/${days.length}${askDone(m.id) ? '' : ' · ?'}`}</span>`).join('')}</div>
+					${songsBlock()}
+					<div class="row-actions"><button class="btn btn--ghost" type="button" id="copy-nudge">${S.copied === 'nudge' ? 'Copied' : 'Copy a nudge'}</button></div>
+				</div>`;
+			}
+
+			if (S.justLocked) {
+				html += `<div class="card locked-note" data-item><span class="todo-kicker">Dates locked in</span><div class="sub">${S.locked.length} practices added. ${FORM.title} is closed.</div></div>`;
+			}
+
+			const ups = upcomingPractices();
+			const next = ups.find((p) => p.status !== 'cancelled');
+			html += `<section class="section"><h2>Next practice</h2>${next ? practiceCard(next, true) : '<div class="card"><b>No practice on the calendar.</b></div>'}</section>`;
+			const rest = ups.filter((p) => p !== next);
+			if (rest.length) html += `<section class="section"><h2>Upcoming practices</h2>${rest.map((p) => practiceCard(p, false)).join('')}</section>`;
+
+			const poss = possibleDates();
+			const target = open ? `<div class="target">3 practices to schedule before the March show · ${poss.filter(inRound).length} dates work</div>` : '';
+			const possHtml = `<section class="section" data-item>
+				<div class="section-head"><h2>Possible dates</h2><button class="linkish" type="button" id="copy-list">${S.copied === 'list' ? 'Copied' : 'Copy list'}</button></div>
+				${target}
+				<div class="sub">Upcoming days all five said Yes and nothing is booked. Pending answers keep a day off this list.</div>
+				<div class="possible">${poss.map((d) => `<span>${label(d)}</span>`).join('') || '<span>None yet</span>'}</div>
+			</section>`;
+			const calHtml = `<section class="section" data-item>
+				<div class="section-head"><h2>Band calendar</h2><button class="btn btn--ghost" type="button" id="go-edit">Edit mine</button></div>
+				<div class="legend"><span><i style="background:var(--pink)"></i>Booked</span><span><i style="background:var(--no)"></i>Someone said No</span>${S.possibleMark === 'yellow' ? '<span><i style="background:var(--yellow)"></i>All five Yes</span>' : ''}<span><i style="background:var(--open)"></i>Open</span></div>
+				${monthPager('calPage', homeCell)}
+			</section>`;
+			// While a form is open, possible dates are the point, so they go first. Otherwise the calendar leads.
+			html += open ? possHtml + calHtml : calHtml + possHtml;
+			return html + '</div>';
+		}
+		function homeCell(d) {
+			let st = dayStatus(d);
+			if (st === 'possible' && S.possibleMark !== 'yellow') st = 'open';
+			const dots = S.calDay === 'dots' ? `<span class="dots">${MEMBERS.map((m) => `<i class="${S.answers[m.id][d.iso] || ''}"></i>`).join('')}</span>` : '';
+			if (isPast(d)) return `<span class="day day--past" aria-label="${label(d)}, past">${d.dn}</span>`;
+			return `<button type="button" class="day day--${st}" data-day="${d.iso}" aria-label="${label(d)}, ${st}">${d.dn}${dots}</button>`;
+		}
+
+		function viewForm() {
+			const mine = answered(S.me);
+			const next = days.find((d) => !S.answers[S.me][d.iso]);
+			let html = nav();
+			html += `<div class="sticky" id="sticky">
+				<div class="progress-line"><b>Dates ${mine}/${days.length} · Question ${askDone(S.me) ? '✓' : '—'}</b>${next ? `<span>next blank: <button class="linkish" type="button" id="jump">${label(next)}</button></span>` : '<span>All dates answered</span>'}</div>
+				<div class="bar" aria-hidden="true"><i style="width:${(mine / days.length) * 100}%"></i></div>
+			</div>`;
+			html += `<div class="page" style="gap:12px;padding-bottom:12px"><h1 style="font-size:26px">${FORM.title}</h1>
+				<div class="sub">${overdueDays() ? `<b style="color:var(--pink)">Overdue by ${overdueDays()} days.</b> ` : `Due ${FORM.due}. `}Two parts. Everything saves as you go; sign off at the bottom when both are done.</div>
+				<h2 class="part-head"><span>1</span>Availability, Jan 1 – Mar 31</h2>
+				<div class="sub">Tap each day: Yes → No → Not sure. This is for practices and the show date.</div>
+				${S.prefilled ? `<div class="prefill-note">${S.prefilled === days.length ? `All ${days.length} dates` : `${S.prefilled} dates`} came in from your calendar. Check them, change anything that’s off.</div>` : ''}`;
+			if (S.shortcut === 'strip') html += shortcutBlock();
+			else html += `<button class="btn btn--ghost" type="button" id="open-shortcut">Fill a weekday at once…</button>`;
+			html += '</div>';
+			html += S.formLayout === 'rows' ? formRows() : formGrid();
+			html += `<div class="page" style="gap:12px">${questionPart(2)}</div>`;
+			return html;
+		}
+		function shortcutBlock() {
+			const rows = [1, 2, 3, 4, 5, 6, 0].map((dw) => {
+				const blank = days.filter((d) => d.dow === dw && !S.answers[S.me][d.iso]).length;
+				return `<div class="shortcut-row"><b>${DOW[dw]}</b>${['yes', 'no', 'maybe'].map((a) => `<button type="button" class="mini" data-fill="${dw}:${a}" ${blank ? '' : 'disabled'}>${ANSWER_LABEL[a]}</button>`).join('')}</div>`;
+			});
+			return `<div class="shortcut"><div class="sub">Answer every Monday (or any weekday) at once. Fills only dates you haven’t answered.</div>${rows.join('')}</div>`;
+		}
+		function weeks() {
+			const out = [];
+			let cur = [];
+			for (const d of days) {
+				if (d.dow === 0 && cur.length) { out.push(cur); cur = []; }
+				cur.push(d);
+			}
+			out.push(cur);
+			return out;
+		}
+		function formRows() {
+			return weeks().map((wk) => {
+				const a = wk[0], b = wk[wk.length - 1];
+				const head = a.m === b.m ? `${MONTHS[a.m]} ${a.dn}–${b.dn}` : `${MONTHS[a.m]} ${a.dn} – ${MONTHS[b.m]} ${b.dn}`;
+				return `<div class="week-head">${head}</div>` + wk.map((d) => {
+					const cur = S.answers[S.me][d.iso];
+					return `<div class="qrow ${d.dow === 5 || d.dow === 6 || d.dow === 0 ? 'qrow--weekend' : ''}" data-row="${d.iso}" data-item>
+						<div class="qdate">${label(d)}</div>
+						<div class="three" role="group" aria-label="${label(d)}">${['yes', 'no', 'maybe'].map((x) => `<button type="button" data-a="${x}" data-set="${d.iso}" aria-pressed="${cur === x}">${ANSWER_LABEL[x]}</button>`).join('')}</div>
+					</div>`;
+				}).join('');
+			}).join('');
+		}
+		function formGrid() {
+			let html = `<div class="weekgrid"><div class="legend"><span><i class="mine--none"></i>Blank</span><span><i style="background:var(--yes)"></i>Yes</span><span><i style="background:var(--no)"></i>No</span><span><i style="background:var(--maybe)"></i>Not sure</span><span>Tap to cycle</span></div>`;
+			html += `<div class="wg-row"><span></span>${DOW.map((d) => `<div class="dow">${d}</div>`).join('')}</div>`;
+			html += weeks().map((wk) => {
+				const cells = Array(7).fill(undefined);
+				wk.forEach((d) => (cells[d.dow] = d));
+				const first = wk[0];
+				return `<div class="wg-row" data-item><span class="wk">${MONTHS[first.m]} ${first.dn}</span>${cells.map((d) => {
+					if (!d) return '<span class="cell cell--out"></span>';
+					const a = S.answers[S.me][d.iso];
+					return `<button type="button" class="cell mine--${a || 'none'}" data-cycle="${d.iso}" data-row="${d.iso}" aria-label="${label(d)}: ${a ? ANSWER_LABEL[a] : 'blank'}">${d.dn}<small>${a ? ANSWER_LABEL[a] : '—'}</small></button>`;
+				}).join('')}</div>`;
+			}).join('');
+			return html + '</div>';
+		}
+		function formBottom() {
+			const left = formLeft(S.me);
+			if (S.submitted[S.me]) return `<div class="bottom"><span class="sub">Signed off. You can still change anything.</span><button class="btn btn--ghost" type="button" id="go-home">Done</button></div>`;
+			const bits = [];
+			if (left.dates) bits.push(`${left.dates} ${left.dates === 1 ? 'date' : 'dates'}`);
+			if (left.question) bits.push('the question');
+			return `<div class="bottom"><span class="sub">${bits.length ? `Left: ${bits.join(' and ')}` : 'All done. Look it over.'}</span><button class="btn" type="button" id="submit" ${bits.length ? 'disabled' : ''}>Sign off</button></div>`;
+		}
+
+		function viewEdit() {
+			let html = nav() + `<div class="page"><h1 style="font-size:26px">Edit mine</h1>
+				<div class="sub">${S.editTap === 'cycle' ? 'Tap a day to change it: Yes → No → Not sure.' : 'Tap a day to pick an answer.'} Changes save right away. Any date through December 2027, round or not: get a vacation in early and the next round starts with it filled in.</div>
+				<div class="legend"><span><i style="background:var(--yes)"></i>Yes</span><span><i style="background:var(--no)"></i>No</span><span><i style="background:var(--maybe)"></i>Not sure</span><span><i class="mine--none"></i>Not answered</span></div>
+				${monthPager('editPage', (d) => {
+					const a = S.answers[S.me][d.iso];
+					if (isPast(d)) return `<span class="day day--past" aria-label="${label(d)}, past">${d.dn}</span>`;
+					return `<button type="button" class="day mine--${a || 'none'}" data-mine="${d.iso}" aria-label="${label(d)}: ${a ? ANSWER_LABEL[a] : 'not answered'}">${d.dn}</button>`;
+				})}
+				<button class="btn btn--ghost" type="button" id="go-home">Back to Da Band</button></div>`;
+			return html;
+		}
+
+		// ---------- Admin: a dashboard at /da-band/admin, with a page per thing ----------
+		const ADMIN_PATHS = { dash: '', form: '/forms/1', new: '/forms/new', practices: '/practices' };
+		function viewNew() {
+			const path = `<div class="sub" style="font-family:var(--font-data)">liesfromgranny.com/da-band/admin${ADMIN_PATHS[S.adminPage]}</div>`;
+			if (!isAdmin()) return nav() + `<div class="page">${path}<h1 style="font-size:26px">Access denied</h1><button class="btn btn--ghost" type="button" id="go-home">Back to Da Band</button></div>`;
+			const back = S.adminPage === 'dash' ? '' : '<button class="linkish back-link" type="button" id="adm-dash">← Admin</button>';
+			const body = { dash: adminDash, form: adminForm, new: adminBuilder, practices: adminPractices }[S.adminPage]();
+			return nav() + `<div class="page">${path}${back}${body}</div>`;
+		}
+		function formStatus() {
+			if (S.roundClosed) return { text: 'Closed', cls: 'closed' };
+			if (allIn()) return { text: 'Everyone’s in · pick dates', cls: 'ready' };
+			return { text: `${MEMBERS.filter((m) => S.submitted[m.id]).length} of 5 signed off`, cls: 'open' };
+		}
+		function adminDash() {
+			const st = formStatus();
+			const ups = upcomingPractices().filter((p) => p.status !== 'cancelled');
+			const next = ups[0];
+			const tbd = ups.filter((p) => !p.start).length;
+			const formTile = `<button type="button" class="tile" data-admform="1">
+				<span class="tile-top"><b>${FORM.title}</b><span class="state state--${st.cls}">${st.text}</span></span>
+				<span class="sub">Availability Jan 1 – Mar 31 · New songs? · due ${FORM.due}</span>
+				<span class="dots-row">${MEMBERS.map((m) => `<i class="${S.submitted[m.id] ? 'on' : ''}" title="${m.short}"></i>`).join('')}</span>
+			</button>`;
+			return `<h1 style="font-size:28px">Admin</h1>
+				<section class="section"><div class="section-head"><h2>Forms</h2></div>
+					${S.roundClosed ? '<div class="sub">No form open.</div><h3 class="mini-head">Past forms</h3>' : '<h3 class="mini-head">Open</h3>'}
+					${formTile}
+				</section>
+				<section class="section"><h2>Practices</h2>
+					<button type="button" class="tile" id="adm-practices">
+						<span class="tile-top"><b>${next ? `Next: ${label(byIso[next.iso])}${next.start ? ` · ${fmtTime(next.start)}` : ''}` : 'Nothing scheduled'}</b><span class="state state--open">${ups.length} upcoming</span></span>
+						<span class="sub">${tbd ? `${tbd} still need a time` : 'All have times'} · edit times, places, songs and recaps</span>
+					</button>
+				</section>
+				<div class="sub">New forms are built in code and show up here when they’re deployed. More admin tools get their own tile as they’re added.</div>`;
+		}
+		function responsesList() {
+			return `<ul class="responses">${MEMBERS.map((m) => {
+				const a = S.askAnswers[m.id];
+				const q = !a ? '<span class="sub">Not answered</span>' : !a.yes ? 'No' : a.songs.length ? `Yes: ${a.songs.map((s) => `<b>${esc(s.song)}</b> – ${esc(s.band)}`).join('; ')}` : 'Yes (no song yet)';
+				return `<li><div class="resp-top"><b>${m.short}</b><span class="state state--${S.submitted[m.id] ? 'ready' : 'open'}">${S.submitted[m.id] ? 'Signed off' : 'Not yet'}</span></div>
+					<div class="resp-line"><span>Dates</span><span>${answered(m.id)} of ${days.length}</span></div>
+					<div class="resp-line"><span>New songs?</span><span>${q}</span></div></li>`;
+			}).join('')}</ul>`;
+		}
+		function adminForm() {
+			const st = formStatus();
+			let html = `<h1 style="font-size:26px">${FORM.title}</h1>
+				<div class="tile-top"><span class="sub">Due ${FORM.due}</span><span class="state state--${st.cls}">${st.text}</span></div>`;
+			if (!S.roundClosed && allIn()) {
+				const cands = days.filter((d) => !isPast(d) && !isBooked(d));
+				const poss = cands.filter((d) => dayStatus(d) === 'possible');
+				const near = cands.filter((d) => dayStatus(d) !== 'possible' && nearMiss(d));
+				const n = S.pick.length;
+				const chip = (d, note) => `<button type="button" class="pick ${S.pick.includes(d.iso) ? 'pick--on' : ''}" data-pickday="${d.iso}" aria-pressed="${S.pick.includes(d.iso)}"><b>${label(d)}</b>${note ? `<small>${note}</small>` : ''}</button>`;
+				html += `<section class="section"><h2>Pick practice dates</h2>
+					<div class="pick-count"><b>${n} of 3 picked</b> before the March show${n > 3 ? ' (over the target, which is fine)' : ''}</div>
+					<h3 class="mini-head">Everyone said Yes (${poss.length})</h3><div class="picks">${poss.map((d) => chip(d)).join('')}</div>
+					<h3 class="mini-head">One short (${near.length}) · for when four of five will do</h3><div class="picks">${near.map((d) => chip(d, nearMiss(d).replace('Everyone but ', 'no '))).join('')}</div></section>`;
+			} else if (!S.roundClosed) {
+				const waiting = MEMBERS.filter((m) => !S.submitted[m.id]);
+				html += `<div class="card"><div class="sub">Waiting on ${waiting.map((m) => m.short).join(', ')}. Picking dates opens once everyone’s in.</div>
+					<div class="row-actions"><button class="btn btn--ghost" type="button" id="copy-nudge">${S.copied === 'nudge' ? 'Copied' : 'Copy a nudge'}</button><button class="btn btn--ghost" type="button" id="close-form">Close form</button></div></div>`;
+			} else {
+				html += `<div class="card"><b>Closed.</b><div class="sub">${S.locked.length ? `${S.locked.length} practices locked in: ${S.locked.map((i) => label(byIso[i])).join(', ')}.` : 'Closed without picking dates.'} Answers stay on everyone’s calendar.</div></div>`;
+			}
+			html += `<section class="section"><h2>Responses</h2>${responsesList()}</section>
+				<section class="section"><h2>What this form asks</h2>
+					${partCard({ kind: 'availability', start: '2027-01-01', end: '2027-03-31', practices: 3, target: 'the March show' }, 0, true)}
+					${partCard({ kind: 'yesno', prompt: ASK.title, fields: 'Song, Band', several: true }, 1, true)}
+				</section>`;
+			return html;
+		}
+		function adminBuilder() {
+			const B = S.builder;
+			const text = `Hey all! "${B.name}" is up on Da Band. Anything already on your calendar is filled in, so it might be quick: liesfromgranny.com/da-band`;
+			let html = `<h1 style="font-size:26px">New form</h1>
+				<div class="sub">Goes to all five members as one to-do. Build it from parts, in any order.</div>
+				<div class="two"><div class="field"><label for="b-name">Name</label><input id="b-name" value="${esc(B.name)}"></div>
+				<div class="field"><label for="b-due">Due</label><input id="b-due" type="date" value="2027-03-14"></div></div>
+				<section class="section"><h2>Parts</h2>${B.parts.map((p, i) => partCard(p, i, false)).join('') || '<div class="sub">No parts yet.</div>'}</section>
+				<div class="row-actions"><button class="btn btn--ghost" type="button" id="b-add-avail">+ Availability</button><button class="btn btn--ghost" type="button" id="b-add-q">+ Yes/no question</button></div>`;
+			if (!B.sent) html += `<button class="btn" type="button" id="b-send" ${B.parts.length ? '' : 'disabled'}>Send form</button>`;
+			else html += `<div class="card"><span class="toast">Sent. Everyone has a to-do.</span><div class="sub">The app can’t text anyone yet. Paste this in the group thread:</div><div class="textbox" id="nr-text">${esc(text)}</div><button class="btn" type="button" id="copy-invite">${S.copied === 'invite' ? 'Copied' : 'Copy text'}</button></div>`;
+			return html;
+		}
+		// One part of a form, as the admin builds or reviews it.
+		function partCard(p, i, readOnly) {
+			const dis = readOnly ? 'disabled' : '';
+			const head = `<div class="part-card-head"><span class="part-kind">${i + 1} · ${p.kind === 'availability' ? 'Availability' : 'Yes/no question'}</span>${readOnly ? '' : `<button class="linkish" type="button" data-bremove="${i}">Remove</button>`}</div>`;
+			if (p.kind === 'availability') {
+				return `<div class="card part-card">${head}
+					<div class="two"><div class="field"><label for="p${i}-start">First date</label><input id="p${i}-start" type="date" value="${p.start}" ${dis}></div>
+					<div class="field"><label for="p${i}-end">Last date</label><input id="p${i}-end" type="date" value="${p.end}" ${dis}></div></div>
+					<div class="two"><div class="field"><label for="p${i}-prac">Practices to schedule</label><input id="p${i}-prac" type="number" min="1" max="5" value="${p.practices || ''}" ${dis}></div>
+					<div class="field"><label for="p${i}-target">Practicing for (optional)</label><input id="p${i}-target" placeholder="the March show" value="${esc(p.target || '')}" ${dis}></div></div>
+				</div>`;
+			}
+			return `<div class="card part-card">${head}
+				<div class="field"><label for="p${i}-prompt">Question</label><input id="p${i}-prompt" value="${esc(p.prompt || '')}" placeholder="Keep Dec 6 with four of five?" ${dis}></div>
+				<div class="field"><label for="p${i}-fields">On Yes, ask for (optional)</label><input id="p${i}-fields" value="${esc(p.fields || '')}" placeholder="Song, Band" ${dis}></div>
+				<label class="check"><input type="checkbox" id="p${i}-several" ${p.several ? 'checked' : ''} ${dis}> Let people add several</label>
+			</div>`;
+		}
+
+		// ---------- Questions (a yes/no part, with follow-up fields on Yes) ----------
+		const FORM = { title: 'March show planning', due: 'Sun Nov 15' };
+		const ASK = { title: 'Add new songs for the March show?', fields: ['Song', 'Band'], several: true, followLabel: 'song' };
+		const askDone = (id) => { const a = S.askAnswers[id]; return !!a && (a.yes === false || a.songs.length > 0); };
+		const formLeft = (id) => ({ dates: days.length - answered(id), question: askDone(id) ? 0 : 1 });
+		function songsBlock() {
+			const ans = S.askAnswers;
+			const yes = MEMBERS.filter((m) => ans[m.id]?.yes);
+			const n = MEMBERS.filter((m) => askDone(m.id)).length;
+			const songs = yes.flatMap((m) => ans[m.id].songs.map((s) => `<li><b>${esc(s.song)}</b> – ${esc(s.band)} <span class="sub">(${m.short})</span></li>`));
+			return `<div class="songs-block"><div class="sub"><b>New songs?</b> ${n} of 5 answered · ${yes.length} yes</div>${songs.length ? `<ul class="song-list">${songs.join('')}</ul>` : ''}</div>`;
+		}
+		// Saves as you go: Yes/No and complete rows go straight into the answer.
+		function commitAsk() {
+			const d = S.askDraft;
+			if (d.yes === undefined) return;
+			S.askAnswers[S.me] = { yes: d.yes, songs: d.yes ? d.songs.filter((s) => s.song.trim() && s.band.trim()).map((s) => ({ ...s })) : [] };
+		}
+		function syncDraft() {
+			const prev = S.askAnswers[S.me];
+			S.askDraft = prev ? { yes: prev.yes, songs: prev.songs.length ? prev.songs.map((s) => ({ ...s })) : [{ song: '', band: '' }] } : { songs: [{ song: '', band: '' }] };
+		}
+		function questionPart(n) {
+			const d = S.askDraft;
+			const songRows = d.songs.map((s, i) => `<div class="two">
+				<div class="field"><label for="ask-song-${i}">Song</label><input id="ask-song-${i}" data-ask="song:${i}" value="${esc(s.song)}" autocomplete="off"></div>
+				<div class="field"><label for="ask-band-${i}">Band</label><input id="ask-band-${i}" data-ask="band:${i}" value="${esc(s.band)}" autocomplete="off"></div>
+			</div>`).join('');
+			return `<h2 class="part-head"><span>${n}</span>${esc(ASK.title)}</h2>
+				<div class="yn" role="group" aria-label="${esc(ASK.title)}">
+					<button type="button" data-yn="yes" aria-pressed="${d.yes === true}">Yes</button>
+					<button type="button" data-yn="no" aria-pressed="${d.yes === false}">No</button>
+				</div>
+				${d.yes ? `<div class="sub">Which songs? Fill both boxes for each.</div>${songRows}
+					<button class="linkish" type="button" id="ask-more">+ Add another song</button>` : ''}`;
+		}
+
+		// ---------- Practices: the card everyone sees, and the admin editor ----------
+		function practiceCard(p, featured) {
+			const d = byIso[p.iso] || { dow: new Date(p.iso + 'T12:00:00Z').getUTCDay(), m: +p.iso.slice(5, 7) - 1, dn: +p.iso.slice(8) };
+			const badge = p.status === 'tentative' ? '<span class="badge">Tentative</span>' : p.status === 'cancelled' ? '<span class="badge badge--pink">Cancelled</span>' : '';
+			const time = p.start ? `${fmtTime(p.start)} – ${fmtTime(p.end)}` : 'Time TBD';
+			return `<article class="card ${featured ? 'card--featured' : ''} ${p.status === 'cancelled' ? 'is-cancelled' : ''}" data-item>
+				${badge}
+				<div class="card-title">${longDay(d)}</div>
+				<div class="meta">${CLOCK}<b>${time}</b></div>
+				<div class="meta">${PIN}${esc(p.location || 'Burtonsville')}</div>
+				${p.songs.length ? `<details class="songs" ${featured ? 'open' : ''}><summary>Songs to prepare (${p.songs.length})</summary><ul>${p.songs.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></details>` : ''}
+				${p.recap.length ? `<div><b>Recap</b><ul>${p.recap.map((x) => `<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}
+			</article>`;
+		}
+		function adminPractices() {
+			let html = `<h1 style="font-size:26px">Practices</h1>
+				<div class="sub">Upcoming practices, soonest first. Locked-in dates from a form land here as "Time TBD".</div>`;
+			if (S.prSaved) html += '<span class="toast">Saved. The home page shows it now.</span>';
+			html += upcomingPractices().map((p) => {
+				const i = S.practices.indexOf(p);
+				if (S.prEdit === i) return practiceEditor();
+				const d = byIso[p.iso];
+				return `<button type="button" class="pr-row" data-predit="${i}"><span><b>${label(d)}</b> · ${p.start ? fmtTime(p.start) : 'Time TBD'} · ${esc(p.location || 'Burtonsville')}</span><span class="pr-status pr-status--${p.status}">${p.status}</span></button>`;
+			}).join('');
+			if (S.prEdit === undefined) html += '<button class="btn btn--ghost" type="button" id="pr-add">+ Add a practice</button>';
+			return html;
+		}
+		function practiceEditor() {
+			const p = S.prDraft;
+			const songRows = p.songs.map((x, j) => `<div class="pr-song"><input id="pr-song-${j}" data-pr="song:${j}" value="${esc(x)}" aria-label="Song ${j + 1}"><button type="button" class="linkish" data-prsongdel="${j}">Remove</button></div>`).join('');
+			return `<div class="card pr-edit">
+				<div class="field"><label for="pr-day">Date</label><input id="pr-day" type="date" data-pr="iso" value="${p.iso}"></div>
+				<div class="two"><div class="field"><label for="pr-start">Start</label><input id="pr-start" type="time" data-pr="start" value="${p.start}"></div>
+				<div class="field"><label for="pr-end">End</label><input id="pr-end" type="time" data-pr="end" value="${p.end}"></div></div>
+				<div class="sub">Leave both times empty for "Time TBD".</div>
+				<div class="field"><label for="pr-loc">Location</label><input id="pr-loc" data-pr="location" placeholder="Burtonsville" value="${esc(p.location)}"></div>
+				<div class="field"><label>Status</label><div class="stepper" role="group" aria-label="Status">${['tentative', 'scheduled', 'cancelled'].map((st) => `<button type="button" style="width:auto;padding:0 12px" data-prstatus="${st}" aria-pressed="${p.status === st}">${st[0].toUpperCase() + st.slice(1)}</button>`).join('')}</div></div>
+				<div class="field"><label>Songs to prepare</label>${songRows || '<div class="sub">None yet.</div>'}<button class="linkish" type="button" id="pr-add-song">+ Add a song</button></div>
+				<div class="field"><label for="pr-recap">Recap (one line each, after practice)</label><textarea id="pr-recap" data-pr="recap" rows="3">${esc(p.recap.join('\n'))}</textarea></div>
+				<div class="row-actions"><button class="btn" type="button" id="pr-save">Save</button><button class="btn btn--ghost" type="button" id="pr-cancel">Cancel</button></div>
+			</div>`;
+		}
+
+		// ---------- Sheets ----------
+		function renderSheet() {
+			const o = document.getElementById('overlay');
+			if (!S.sheet) { o.innerHTML = ''; return; }
+			let body = '';
+			if (S.sheet.kind === 'day') {
+				const d = byIso[S.sheet.iso];
+				const nm = nearMiss(d);
+				body = `<h3>${label(d)}</h3>${nm ? `<div class="nearmiss">${nm}</div>` : ''}
+					<ul class="answers">${MEMBERS.map((m) => { const a = S.answers[m.id][d.iso]; return `<li><span>${m.short}</span><span class="pill pill--${a || 'none'}">${a ? ANSWER_LABEL[a] : 'Pending'}</span></li>`; }).join('')}</ul>`;
+			} else if (S.sheet.kind === 'pick') {
+				const d = byIso[S.sheet.iso];
+				const cur = S.answers[S.me][d.iso];
+				body = `<h3>${label(d)}</h3><div class="three" role="group" aria-label="Your answer">${['yes', 'no', 'maybe'].map((x) => `<button type="button" data-a="${x}" data-pick="${d.iso}" aria-pressed="${cur === x}">${ANSWER_LABEL[x]}</button>`).join('')}</div>`;
+			} else if (S.sheet.kind === 'shortcut') {
+				body = `<h3>Fill a weekday at once</h3>${shortcutBlock()}`;
+			}
+			o.innerHTML = `<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true">${body}<button class="btn btn--ghost" type="button" id="close-sheet">Close</button></div></div>`;
+		}
+
+		// ---------- Actions ----------
+		function setAnswer(isoDay, a) {
+			S.answers[S.me][isoDay] = a;
+			S.taps++;
+		}
+		const CYCLE = { undefined: 'yes', yes: 'no', no: 'maybe', maybe: 'yes' };
+		function onFrameClick(e) {
+			const t = e.target.closest('button');
+			if (!t) {
+				if (e.target.id === 'scrim') { S.sheet = undefined; renderAll(); }
+				return;
+			}
+			const scroller = document.getElementById('scroller');
+			const keep = scroller.scrollTop;
+			let keepScroll = true;
+			const ds = t.dataset;
+			if (ds.page) {
+				const [key, step] = ds.page.split(':');
+				S[key] = Math.max(0, Math.min(MONTH_PAGES.length - 1, S[key] + Number(step)));
+			}
+			else if (ds.set) { setAnswer(ds.set, ds.a); }
+			else if (ds.cycle) { setAnswer(ds.cycle, CYCLE[S.answers[S.me][ds.cycle]]); }
+			else if (ds.fill) {
+				const [dw, a] = ds.fill.split(':');
+				S.taps++;
+				days.forEach((d) => { if (d.dow === +dw && !S.answers[S.me][d.iso]) S.answers[S.me][d.iso] = a; });
+			}
+			else if (ds.day) { S.sheet = { kind: 'day', iso: ds.day }; }
+			else if (ds.mine) {
+				if (S.editTap === 'cycle') setAnswer(ds.mine, CYCLE[S.answers[S.me][ds.mine]]);
+				else S.sheet = { kind: 'pick', iso: ds.mine };
+			}
+			else if (ds.pick) { setAnswer(ds.pick, ds.a); S.sheet = undefined; }
+			else if (ds.prac) { S.newRound.practices = +ds.prac; }
+			else if (ds.yn) {
+				S.askDraft.yes = ds.yn === 'yes';
+				commitAsk();
+				S.taps++;
+			}
+			else if (ds.predit) { S.prEdit = +ds.predit; S.prSaved = false; const p = S.practices[S.prEdit]; S.prDraft = { ...p, songs: [...p.songs], recap: [...p.recap] }; }
+			else if (ds.prstatus) { S.prDraft.status = ds.prstatus; }
+			else if (ds.prsongdel) { S.prDraft.songs.splice(+ds.prsongdel, 1); }
+			else if (ds.admform) { S.adminPage = 'form'; keepScroll = false; }
+			else if (ds.bremove) { S.builder.parts.splice(+ds.bremove, 1); }
+			else if (ds.pickday) { S.pick = S.pick.includes(ds.pickday) ? S.pick.filter((x) => x !== ds.pickday) : [...S.pick, ds.pickday]; }
+			else switch (t.id) {
+				case 'go-form': syncDraft(); S.view = 'form'; hintText = VIEW_HINT.form; keepScroll = false; break;
+				case 'go-edit': S.view = 'edit'; hintText = VIEW_HINT.edit; keepScroll = false; break;
+				case 'go-home': S.view = 'home'; hintText = VIEW_HINT.home; keepScroll = false; break;
+				case 'submit': S.submitted[S.me] = true; S.view = 'home'; hintText = '<strong>Signed off.</strong> The to-do is gone and the admin’s round card counts you in. Answers stay editable from Edit mine.'; keepScroll = false; break;
+				case 'open-shortcut': S.sheet = { kind: 'shortcut' }; break;
+				case 'ask-more': S.askDraft.songs.push({ song: '', band: '' }); break;
+				case 'b-add-avail': S.builder.parts.push({ kind: 'availability', start: '2027-04-01', end: '2027-06-30', practices: undefined, target: '' }); break;
+				case 'b-add-q': S.builder.parts.push({ kind: 'yesno', prompt: '', fields: '', several: false }); break;
+				case 'b-send': S.builder.sent = true; break;
+				case 'nav-admin': S.view = 'new'; hintText = VIEW_HINT.new; S.adminPage = 'dash'; S.prEdit = undefined; S.prSaved = false; keepScroll = false; break;
+				case 'adm-dash': S.adminPage = 'dash'; S.prEdit = undefined; S.prSaved = false; keepScroll = false; break;
+				case 'adm-new': S.adminPage = 'new'; keepScroll = false; break;
+				case 'adm-practices': S.adminPage = 'practices'; keepScroll = false; break;
+				case 'close-form': S.roundClosed = true; S.justLocked = false; break;
+				case 'pr-add-song': S.prDraft.songs.push(''); break;
+				case 'pr-cancel': S.prEdit = undefined; break;
+				case 'pr-save': {
+					const d = S.prDraft;
+					S.practices[S.prEdit] = { ...d, songs: d.songs.filter((x) => x.trim()), recap: d.recap.filter((x) => x.trim()) };
+					S.prEdit = undefined; S.prSaved = true; break;
+				}
+				case 'pr-add': {
+					const free = allDays.find((d) => d.iso >= TODAY_ISO() && !isBooked(d) && d.iso > '2026-12-06');
+					S.practices.push(newPractice(free.iso, 'tentative'));
+					S.prEdit = S.practices.length - 1; S.prSaved = false;
+					const p = S.practices[S.prEdit]; S.prDraft = { ...p, songs: [], recap: [] };
+					break;
+				}
+				case 'go-admin': S.view = 'new'; S.adminPage = 'form'; hintText = '<strong>Pick practice dates.</strong> Tap the dates you want, then lock them in. "One short" lists days where exactly one person isn’t a Yes, for when four of five will do.'; keepScroll = false; break;
+				case 'lock-in':
+					S.locked = [...S.pick].sort();
+					S.locked.forEach((iso) => S.practices.push(newPractice(iso, 'scheduled')));
+					S.pick = [];
+					S.roundClosed = true;
+					S.justLocked = true;
+					S.view = 'home';
+					hintText = '<strong>Locked in.</strong> The round is gone, the new practices are listed and pink on the calendar, and Possible dates moved below the calendar. Everyone can still change their answers from Edit mine.';
+					keepScroll = false;
+					break;
+				case 'close-sheet': S.sheet = undefined; break;
+				case 'nr-open': S.newRound.created = true; break;
+				case 'copy-invite': copyText(document.getElementById('nr-text').textContent, 'invite'); return;
+				case 'copy-nudge': {
+					const waiting = MEMBERS.filter((m) => !S.submitted[m.id]).map((m) => m.short);
+					copyText(`Reminder: Jan–Mar availability is due Sun 11/15. Still waiting on ${waiting.join(' and ')}: liesfromgranny.com/da-band`, 'nudge');
+					return;
+				}
+				case 'copy-list': copyText(`Dates that work for all five so far: ${possibleDates().map(label).join(', ')}`, 'list'); return;
+				case 'jump': {
+					const next = days.find((d) => !S.answers[S.me][d.iso]);
+					const row = scroller.querySelector(`[data-row="${next.iso}"]`);
+					if (row) {
+						const top = row.getBoundingClientRect().top - scroller.getBoundingClientRect().top + scroller.scrollTop - stickyH() - 30;
+						scroller.scrollTo({ top, behavior: 'smooth' });
+						row.classList.remove('qrow--flash');
+						void row.offsetWidth;
+						row.classList.add('qrow--flash');
+					}
+					return;
+				}
+				default: return;
+			}
+			renderAll();
+			document.getElementById('scroller').scrollTop = keepScroll ? keep : 0;
+		}
+		const stickyH = () => { const s = document.getElementById('sticky'); return s ? s.offsetHeight : 0; };
+
+		// ---------- Render + live measurement ----------
+		function renderFrame() {
+			const f = document.getElementById('frame');
+			f.dataset.w = String(S.w);
+			const scroller = document.getElementById('scroller');
+			scroller.innerHTML = { home: viewHome, form: viewForm, edit: viewEdit, new: viewNew }[S.view]();
+			const picking = S.view === 'new' && S.adminPage === 'form' && isAdmin() && !S.roundClosed && allIn();
+			document.getElementById('bottom').innerHTML = S.view === 'form' ? formBottom()
+				: picking ? `<div class="bottom"><span class="sub">${S.pick.length ? S.pick.map((i) => label(byIso[i])).join(', ') : 'Nothing picked yet'}</span><button class="btn" type="button" id="lock-in" ${S.pick.length ? '' : 'disabled'}>Lock in ${S.pick.length || ''}</button></div>` : '';
+			scroller.style.setProperty('--sticky-h', stickyH() + 'px');
+			renderSheet();
+		}
+		function measure() {
+			const scroller = document.getElementById('scroller');
+			const frame = document.getElementById('frame');
+			const sTop = scroller.getBoundingClientRect().top;
+			const fits = [...scroller.querySelectorAll('[data-row]')].filter((el) => el.getBoundingClientRect().bottom - sTop + scroller.scrollTop <= scroller.clientHeight).length;
+			const screens = (scroller.scrollHeight / scroller.clientHeight).toFixed(1);
+			const tabs = [...frame.querySelectorAll('button, a[href], input, select, textarea')].filter((el) => !el.disabled).length;
+			const poss = possibleDates().length;
+			const items = [
+				[`${answered(S.me)}/${days.length}`, 'Your dates answered'],
+				[S.taps, 'Taps so far'],
+				[screens, 'Screens to scroll']
+			];
+			if (S.view === 'form') items.push([fits, 'Dates on first screen']);
+			items.push([poss, 'Possible dates'], [tabs, 'Tab stops']);
+			document.getElementById('readout').innerHTML = items.map(([v, k]) => `<div class="metric"><b>${v}</b><span>${k}</span></div>`).join('');
+		}
+		function renderAll() {
+			renderControls();
+			document.getElementById('hint').innerHTML = hintText;
+			renderFrame();
+			measure();
+		}
+
+		document.getElementById('frame').addEventListener('click', onFrameClick);
+		// Typing updates the draft without a re-render, so focus stays put.
+		document.getElementById('frame').addEventListener('input', (e) => {
+			const pr = e.target.dataset && e.target.dataset.pr;
+			if (pr) {
+				if (pr.startsWith('song:')) S.prDraft.songs[+pr.slice(5)] = e.target.value;
+				else if (pr === 'recap') S.prDraft.recap = e.target.value.split('\n');
+				else S.prDraft[pr] = e.target.value;
+				return;
+			}
+			const key = e.target.dataset && e.target.dataset.ask;
+			if (!key) return;
+			const [field, i] = key.split(':');
+			S.askDraft.songs[+i][field] = e.target.value;
+			commitAsk();
+			document.getElementById('bottom').innerHTML = formBottom();
+			const prog = document.querySelector('#sticky .progress-line b');
+			if (prog) prog.textContent = `Dates ${answered(S.me)}/${days.length} · Question ${askDone(S.me) ? '✓' : '—'}`;
+			measure();
+		});
+		renderAll();
+		if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+	})();
+</script>
