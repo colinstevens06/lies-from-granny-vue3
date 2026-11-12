@@ -4,6 +4,10 @@
 			<div class="da-band">
 				<h1 class="da-band__title">Da Band</h1>
 
+				<p v-if="band.loadState !== 'ready'" class="band-card band-card__empty">
+					{{ band.loadState === 'error' ? "Couldn't load. Refresh to try again." : 'Loading…' }}
+				</p>
+
 				<section class="da-band__section">
 					<h2>Next practice</h2>
 					<PracticeCard v-if="nextPractice" :practice="nextPractice" featured />
@@ -27,20 +31,24 @@
 </template>
 
 <script setup lang="ts">
+	import { computed, onMounted } from 'vue';
 	import Layout from '@router/layouts/main.vue';
 	import NextGig from '@components/band/next-gig.vue';
 	import PracticeCard from '@components/band/practice-card.vue';
-	import { practices } from '@components/band/practices';
 	import { shows } from '@components/shows/shows';
 	import { easternNow } from '@utils/dates';
 	import { upcomingPractices } from '@utils/practices';
 	import { upcomingShows } from '@utils/shows';
+	import { useBandStore } from '@/stores/band';
+
+	const band = useBandStore();
+	onMounted(band.load);
 
 	const now = easternNow();
 	const today = now.slice(0, 10);
 
-	const upcoming = upcomingPractices(practices, now);
-	const nextPractice = upcoming.find(practice => practice.status !== 'cancelled');
-	const laterPractices = upcoming.filter(practice => practice !== nextPractice);
+	const upcoming = computed(() => upcomingPractices(band.practices, now));
+	const nextPractice = computed(() => upcoming.value.find(practice => practice.status !== 'cancelled'));
+	const laterPractices = computed(() => upcoming.value.filter(practice => practice !== nextPractice.value));
 	const nextGig = upcomingShows(shows)[0];
 </script>

@@ -20,7 +20,9 @@
 							<PracticeDetails :practice="practice" songs-open />
 						</div>
 					</details>
-					<p v-if="!history.length" class="band-card band-card__empty">No past practices yet.</p>
+					<p v-if="band.loadState === 'ready' && !history.length" class="band-card band-card__empty">
+						No past practices yet.
+					</p>
 				</section>
 			</div>
 		</div>
@@ -28,11 +30,15 @@
 </template>
 
 <script setup lang="ts">
+	import { computed, onMounted } from 'vue';
 	import Layout from '@router/layouts/main.vue';
 	import PracticeDetails from '@components/band/practice-details.vue';
 	import PracticeStatusBadge from '@components/band/practice-status-badge.vue';
-	import { practices } from '@components/band/practices';
 	import { formatPracticeDay, practiceHistory } from '@utils/practices';
+	import { useBandStore } from '@/stores/band';
 
-	const history = practiceHistory(practices);
+	const band = useBandStore();
+	onMounted(band.load);
+
+	const history = computed(() => practiceHistory(band.practices));
 </script>

@@ -43,6 +43,12 @@ Run the Netlify CLI as `yarn exec netlify <cmd>`. `yarn netlify <cmd>` runs the 
 
 List them in the gitignored `band-data/import.ts` as `practices: PracticeImport[]` (same fields as `Practice`, minus `id` and `formId`), then `yarn seed:band` (dry run) and `yarn seed:band --write`. The target is that day's row (a live one first), so re-running updates in place, and marking a day `cancelled` updates the same row. `gigId` must be a `Gig.id` in `shows.ts`. `complete` is only accepted here; the editor offers tentative, scheduled and cancelled.
 
+## Client state (P4a)
+
+- `src/stores/band.ts` is the only client holder of server data; `src/utils/band-api.ts` is the only `fetch` for `/api/band/*`. The store imports `band-api` inside actions because `nav.vue` imports the store.
+- Every `/da-band*` view calls `band.load()` on mount. Practices come from the store; `src/components/band/practices.ts` is gone. To add practices, use the admin editor (P8) or the seed.
+- Answers save through two lanes built on `src/composables/use-save-lane.ts` (availability keyed by date, form answers keyed by form). Both follow the same rules: one request in flight, retries at 2/4/8 s then every 30 s on a network error or 5xx, a dropped batch plus a reload on any other 4xx.
+
 ## Add a new band form (P3b)
 
 Worked example: `march-show-planning` (migration `0003`, `src/forms/march-show-planning/`, `netlify/forms/march-show-planning.ts`).
