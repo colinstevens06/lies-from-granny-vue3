@@ -1,55 +1,66 @@
 <template>
 	<div class="main-container">
-		<nav class="flex justify-content-between py-3 top-nav">
+		<nav class="flex justify-content-between py-3 top-nav" :class="{ 'top-nav--band': isBand }">
 			<div class="flex align-items-center">
-				<router-link class="top-nav__brand-link flex no-underline" to="/home">
+				<router-link class="top-nav__brand-link flex no-underline" :to="isBand ? '/' : '/home'">
 					<img :src="logoSrc" alt="Lies From Granny logo" class="top-nav__logo mr-2 md:mr-4" decoding="async" />
 					<h1 class="top-nav__brand-name flex m-0" id="brand-header">Lies From Granny</h1>
 				</router-link>
 			</div>
 
-			<Button
-				icon="pi pi-bars"
-				class="flex lg:hidden top-nav__hamburger h-min align-self-center"
-				@click="toggleMenu"
-				type="button"
-			/>
-			<Menu ref="menu" :model="menuItems" popup />
+			<template v-if="!isBand">
+				<Button
+					icon="pi pi-bars"
+					class="flex lg:hidden top-nav__hamburger h-min align-self-center"
+					@click="toggleMenu"
+					type="button"
+				/>
+				<Menu ref="menu" :model="menuItems" popup />
 
-			<div class="top-nav__nav-links align-items-center hidden lg:flex">
-				<router-link class="top-nav__item nav-btn" to="/home" :class="route.name === 'home' && 'top-nav__item--active'">
-					<span>Home</span>
-				</router-link>
+				<div class="top-nav__nav-links align-items-center hidden lg:flex">
+					<router-link
+						class="top-nav__item nav-btn"
+						to="/home"
+						:class="route.name === 'home' && 'top-nav__item--active'"
+					>
+						<span>Home</span>
+					</router-link>
 
-				<router-link
-					class="top-nav__item nav-btn"
-					to="/shows"
-					:class="route.name === 'shows' && 'top-nav__item--active'"
-				>
-					<span>Shows</span>
-				</router-link>
+					<router-link
+						class="top-nav__item nav-btn"
+						to="/shows"
+						:class="route.name === 'shows' && 'top-nav__item--active'"
+					>
+						<span>Shows</span>
+					</router-link>
 
-				<router-link
-					class="top-nav__item nav-btn"
-					to="/songs"
-					:class="route.name === 'songs' && 'top-nav__item--active'"
-				>
-					<span>Songs</span>
-				</router-link>
+					<router-link
+						class="top-nav__item nav-btn"
+						to="/songs"
+						:class="route.name === 'songs' && 'top-nav__item--active'"
+					>
+						<span>Songs</span>
+					</router-link>
 
-				<router-link
-					class="top-nav__item nav-btn"
-					to="/contact"
-					:class="route.name === 'contact' && 'top-nav__item--active'"
-				>
-					<span>Contact</span>
+					<router-link
+						class="top-nav__item nav-btn"
+						to="/contact"
+						:class="route.name === 'contact' && 'top-nav__item--active'"
+					>
+						<span>Contact</span>
+					</router-link>
+				</div>
+			</template>
+
+			<div v-else-if="band.me" class="top-nav__band-items">
+				<router-link v-if="band.me.role === 'admin'" class="top-nav__item nav-btn" to="/da-band/admin">
+					<span>Admin</span>
 				</router-link>
+				<p class="top-nav__session">
+					{{ signedInName }} &middot;
+					<a href="#" @click.prevent="signOutAndLeave">Sign out</a>
+				</p>
 			</div>
-
-			<p v-if="band.me" class="top-nav__session">
-				Signed in as {{ signedInName }} &middot;
-				<a href="#" @click.prevent="signOutAndLeave">Sign out</a>
-			</p>
 		</nav>
 	</div>
 </template>
@@ -98,6 +109,9 @@
 	const route = useRoute();
 	const router = useRouter();
 	const band = useBandStore();
+
+	// Every /da-band route gets a slim bar (logo, then the band items) instead of the public site nav.
+	const isBand = computed(() => route.path.startsWith('/da-band'));
 
 	const signedInName = computed(() => members.find(m => m.id === band.me?.member)?.name);
 
