@@ -70,6 +70,12 @@ const router = createRouter({
 			component: () => import('./views/da-band-admin.vue'),
 			meta: { requiresMember: true }
 		},
+		{
+			path: '/da-band/admin/forms/:id(\\d+)',
+			name: 'da-band-admin-form',
+			component: () => import('./views/da-band-admin-form.vue'),
+			meta: { requiresMember: true }
+		},
 		{ path: '/:catchAll(.*)', component: () => import('./views/_404.vue') }
 	]
 });

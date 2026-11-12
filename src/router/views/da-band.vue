@@ -8,6 +8,11 @@
 					{{ band.loadState === 'error' ? "Couldn't load. Refresh to try again." : 'Loading…' }}
 				</p>
 
+				<section v-if="band.me?.role === 'admin' && band.openForms.length" class="da-band__section">
+					<h2>Forms</h2>
+					<FormStatusCard v-for="form in band.openForms" :key="form.id" :form="form" />
+				</section>
+
 				<section class="da-band__section">
 					<h2>Next practice</h2>
 					<PracticeCard v-if="nextPractice" :practice="nextPractice" featured />
@@ -33,6 +38,7 @@
 <script setup lang="ts">
 	import { computed, onMounted } from 'vue';
 	import Layout from '@router/layouts/main.vue';
+	import FormStatusCard from '@components/band/form-status-card.vue';
 	import NextGig from '@components/band/next-gig.vue';
 	import PracticeCard from '@components/band/practice-card.vue';
 	import { shows } from '@components/shows/shows';

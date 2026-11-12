@@ -179,6 +179,12 @@ export const useBandStore = defineStore('band', () => {
 	);
 	const everyoneIn = (form: Form) => form.members.every(m => m.signedOffAt);
 
+	/** Admin: closes an open form (the server refuses anyone else). */
+	const closeForm = async (formId: number) => {
+		const { form } = await bandApi<{ form: Form }>(`forms/${formId}/close`, { method: 'POST' });
+		forms.value = forms.value.map(f => (f.id === form.id ? form : f));
+	};
+
 	// ── Identity ────────────────────────────────────────────────────────────
 
 	/** Loads who's signed in once. `signed-out` is a 401, `not-a-member` a 403. */
@@ -218,6 +224,7 @@ export const useBandStore = defineStore('band', () => {
 		load,
 		loadMe,
 		signOut,
+		closeForm,
 		setMyAnswers,
 		setMyFormAnswer,
 		pendingFormAnswer,
