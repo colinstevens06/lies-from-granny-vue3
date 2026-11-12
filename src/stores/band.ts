@@ -172,12 +172,20 @@ export const useBandStore = defineStore('band', () => {
 
 	// ── Getters ─────────────────────────────────────────────────────────────
 
+	/** My own availability, keyed by day. */
+	const myDays = computed(() => mineRow()?.days ?? {});
 	const openForms = computed(() => forms.value.filter(form => !form.closedAt));
 	const availabilityForm = computed(() => openForms.value.find(form => form.availability));
 	const myTodos = computed(() =>
 		openForms.value.filter(form => !form.members.find(m => m.member === me.value?.member)?.signedOffAt)
 	);
 	const everyoneIn = (form: Form) => form.members.every(m => m.signedOffAt);
+
+	/** Signs me off a form. Throws a `BandApiError`: 409 `incomplete` (with what's missing) or `closed`. */
+	const signOffForm = async (formId: number) => {
+		const { form } = await bandApi<{ form: Form }>(`forms/${formId}/sign-off`, { method: 'POST' });
+		forms.value = forms.value.map(f => (f.id === form.id ? form : f));
+	};
 
 	/** Admin: closes an open form (the server refuses anyone else). */
 	const closeForm = async (formId: number) => {
@@ -217,6 +225,7 @@ export const useBandStore = defineStore('band', () => {
 		saving,
 		saveNotice,
 		drafts,
+		myDays,
 		openForms,
 		availabilityForm,
 		myTodos,
@@ -225,6 +234,7 @@ export const useBandStore = defineStore('band', () => {
 		loadMe,
 		signOut,
 		closeForm,
+		signOffForm,
 		setMyAnswers,
 		setMyFormAnswer,
 		pendingFormAnswer,

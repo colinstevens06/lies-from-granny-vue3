@@ -37,6 +37,14 @@
 						<section class="da-band__section">
 							<h2>Responses</h2>
 							<FormResponses :form="form" />
+							<component :is="registered.responses" v-if="registered" :form="form" />
+						</section>
+
+						<section v-if="registered" class="da-band__section">
+							<h2>What this form asks</h2>
+							<ul class="admin-asks">
+								<li v-for="ask in registered.asks(form)" :key="ask">{{ ask }}</li>
+							</ul>
 						</section>
 					</template>
 				</AdminGate>
@@ -64,6 +72,7 @@
 	import FormResponses from '@components/band/form-responses.vue';
 	import PracticeCard from '@components/band/practice-card.vue';
 	import SignedOffDots from '@components/band/signed-off-dots.vue';
+	import { clientFormFor } from '@/forms';
 	import { nudgeText } from '@utils/band-calendar';
 	import { formatDueDay, formatInstantDay, formStateLabel, isEveryoneIn, waitingOn } from '@utils/form-status';
 	import { useBandStore } from '@/stores/band';
@@ -73,6 +82,7 @@
 	onMounted(band.load);
 
 	const form = computed(() => band.forms.find(f => f.id === Number(route.params.id)));
+	const registered = computed(() => (form.value ? clientFormFor(form.value.slug) : undefined));
 	const waiting = computed(() => (form.value ? waitingOn(form.value) : []));
 	const formPractices = computed(() => band.practices.filter(p => p.formId === form.value?.id));
 

@@ -55,9 +55,9 @@ Worked example: `march-show-planning` (migration `0003`, `src/forms/march-show-p
 
 1. Pick a slug (`^[a-z0-9-]{1,60}$`).
 2. Write a migration that inserts the form row (title, due date, and any availability columns) and its `form_members` rows, plus any new tables. Quote apostrophes in text as `''`. Never edit it once a deploy has applied it.
-3. Add `src/forms/<slug>/` with `model.ts` and `rules.ts` (`missing`). From P5, add `screen.vue` and `responses.vue`, built from the shared pieces.
+3. Add `src/forms/<slug>/` with `model.ts` and `rules.ts` (`missing`). Add `screen.vue` and `responses.vue` there too (props: `form`), built from the shared pieces in `src/components/band/forms/` (`availability-section`, `yes-no-rows`). Save answers through `band.setMyFormAnswer(form.id, body)` and, for availability, `band.setMyAnswers`.
 4. Add `netlify/forms/<slug>.ts` (`loadDetails`, and `saveAnswer` if members answer), plus `mineOf` and `missing` in `rules.ts`. A form with availability should call `availabilityMissing` from `src/utils/availability.ts` in its `missing`.
-5. Wire all three registries: `src/forms/rules.ts`, `netlify/forms/index.ts`, and from P5 `src/forms/index.ts`. They are typed `Record<FormSlug, …>`, so a missing one fails `yarn type-check`.
+5. Wire all three registries: `src/forms/rules.ts`, `netlify/forms/index.ts`, and `src/forms/index.ts` (the client registry: `summary`, `asks`, lazy `screen` and `responses`, and `todoLines` for the to-do card and progress bar). They are typed `Record<FormSlug, …>`, so a missing one fails `yarn type-check`.
 6. Extend `FormDetails` in `src/models/form.ts` (`FormSlug` follows from it).
 7. Only one open form may have availability. Close the old one before a new availability form's migration runs.
 

@@ -13,9 +13,10 @@
 	import type { Form } from '@models/form';
 	import AdminTile from '@components/band/admin-tile.vue';
 	import SignedOffDots from '@components/band/signed-off-dots.vue';
+	import { clientFormFor } from '@/forms';
 	import { availabilitySummary, formatDueDay, formStateLabel } from '@utils/form-status';
 
 	const props = defineProps<{ form: Form }>();
 
-	const summary = availabilitySummary(props.form);
+	const summary = (clientFormFor(props.form.slug)?.summary ?? availabilitySummary)(props.form);
 </script>
