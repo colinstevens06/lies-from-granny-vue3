@@ -28,6 +28,22 @@
 					<NextGig :gig="nextGig" :today="today" />
 				</section>
 
+				<section v-if="band.availabilityForm" class="da-band__section">
+					<h2>Possible dates</h2>
+					<PossibleDates :form="band.availabilityForm" />
+				</section>
+
+				<section class="da-band__section">
+					<h2>Band calendar</h2>
+					<BandCalendar :today="today" :form="band.availabilityForm" />
+					<RouterLink to="/da-band/edit" class="band-link">Edit my availability &rarr;</RouterLink>
+				</section>
+
+				<section v-if="!band.availabilityForm" class="da-band__section">
+					<h2>Possible dates</h2>
+					<PossibleDates />
+				</section>
+
 				<template v-for="form in band.openForms" :key="form.id">
 					<section v-if="clientFormFor(form.slug)" class="da-band__section">
 						<h2>{{ form.title }}: responses</h2>
@@ -49,6 +65,8 @@
 <script setup lang="ts">
 	import { computed, onMounted } from 'vue';
 	import Layout from '@router/layouts/main.vue';
+	import BandCalendar from '@components/band/band-calendar.vue';
+	import PossibleDates from '@components/band/possible-dates.vue';
 	import FormTodoCard from '@components/band/form-todo-card.vue';
 	import FormStatusCard from '@components/band/form-status-card.vue';
 	import NextGig from '@components/band/next-gig.vue';
