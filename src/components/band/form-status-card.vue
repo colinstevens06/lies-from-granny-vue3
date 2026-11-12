@@ -8,7 +8,14 @@
 		<p v-if="waiting.length" class="band-card__meta">Waiting on {{ waitingNames }}</p>
 		<div class="form-status-card__actions">
 			<CopyButton v-if="waiting.length" label="Copy a nudge" :text="nudgeText(form, waiting)" />
-			<RouterLink :to="`/da-band/admin/forms/${form.id}`" class="band-link">Open form &rarr;</RouterLink>
+			<RouterLink
+				v-if="isEveryoneIn(form) && form.availability"
+				:to="`/da-band/admin/forms/${form.id}`"
+				class="p-button form-todo__button"
+			>
+				Pick practice dates
+			</RouterLink>
+			<RouterLink v-else :to="`/da-band/admin/forms/${form.id}`" class="band-link">Open form &rarr;</RouterLink>
 		</div>
 	</article>
 </template>
@@ -19,7 +26,7 @@
 	import CopyButton from '@components/band/copy-button.vue';
 	import { members } from '@components/band/members';
 	import SignedOffDots from '@components/band/signed-off-dots.vue';
-	import { formStateLabel, waitingOn } from '@utils/form-status';
+	import { formStateLabel, isEveryoneIn, waitingOn } from '@utils/form-status';
 	import { nudgeText } from '@utils/band-calendar';
 
 	const props = defineProps<{ form: Form }>();

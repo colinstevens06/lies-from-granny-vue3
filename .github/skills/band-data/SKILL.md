@@ -61,6 +61,12 @@ Worked example: `march-show-planning` (migration `0003`, `src/forms/march-show-p
 6. Extend `FormDetails` in `src/models/form.ts` (`FormSlug` follows from it).
 7. Only one open form may have availability. Close the old one before a new availability form's migration runs.
 
+## Locking in dates and closing forms (P7)
+
+- Lock in is admin-only: open `/da-band/admin/forms/:id` once everyone has signed off (the home page's admin card has a **Pick practice dates** button). Pick dates, then **Lock in N**. The server creates a scheduled practice per day (time TBD, usual spot, the form's `gigId`) and closes the form in one transaction. If a day was booked meanwhile, nothing is written (`409 already-booked`) and the page says which days.
+- **Close form** closes without booking anything. Both close the form for good; there is no reopen. To ask again, ship a new form (see Add a new band form).
+- Locked-in practices carry `form_id`. Edit their time and place in the practice editor (P8).
+
 ## Release order
 
 Colin releases to Anna alone first, testing on production, not a preview. Previews copy production, so they start empty.

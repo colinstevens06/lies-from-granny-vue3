@@ -12,6 +12,12 @@
 					<FormTodoCard v-for="form in band.myTodos" :key="form.id" :form="form" />
 				</section>
 
+				<p v-if="band.availabilityForm && band.everyoneIn(band.availabilityForm)" class="band-card band-card--featured">
+					<strong>Everyone's in.</strong>
+					{{ possibleCount }} {{ possibleCount === 1 ? 'date works' : 'dates work' }}. Practice dates are being picked.
+					They'll show up here.
+				</p>
+
 				<section v-if="band.me?.role === 'admin' && band.openForms.length" class="da-band__section">
 					<h2>Forms</h2>
 					<FormStatusCard v-for="form in band.openForms" :key="form.id" :form="form" />
@@ -74,6 +80,7 @@
 	import { shows } from '@components/shows/shows';
 	import { easternNow } from '@utils/dates';
 	import { upcomingPractices } from '@utils/practices';
+	import { possibleDates } from '@utils/band-calendar';
 	import { upcomingShows } from '@utils/shows';
 	import { clientFormFor } from '@/forms';
 	import { useBandStore } from '@/stores/band';
@@ -88,4 +95,8 @@
 	const nextPractice = computed(() => upcoming.value.find(practice => practice.status !== 'cancelled'));
 	const laterPractices = computed(() => upcoming.value.filter(practice => practice !== nextPractice.value));
 	const nextGig = upcomingShows(shows)[0];
+
+	const possibleCount = computed(
+		() => possibleDates(band.availabilityForm, band.availability, band.practices, shows, today).length
+	);
 </script>

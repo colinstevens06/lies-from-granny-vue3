@@ -26,6 +26,7 @@
 							</template>
 							<template v-else>
 								<h2>{{ isEveryoneIn(form) ? "Everyone's in" : 'Waiting on answers' }}</h2>
+								<PickDates v-if="isEveryoneIn(form) && form.availability" :form="form" />
 								<div class="form-status-card__actions">
 									<CopyButton v-if="waiting.length" label="Copy a nudge" :text="nudgeText(form, waiting)" />
 									<Button label="Close form" severity="secondary" @click="confirming = true" />
@@ -70,6 +71,7 @@
 	import AdminGate from '@components/band/admin-gate.vue';
 	import CopyButton from '@components/band/copy-button.vue';
 	import FormResponses from '@components/band/form-responses.vue';
+	import PickDates from '@components/band/pick-dates.vue';
 	import PracticeCard from '@components/band/practice-card.vue';
 	import SignedOffDots from '@components/band/signed-off-dots.vue';
 	import { clientFormFor } from '@/forms';

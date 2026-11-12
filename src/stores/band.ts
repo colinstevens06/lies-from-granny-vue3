@@ -187,6 +187,11 @@ export const useBandStore = defineStore('band', () => {
 		forms.value = forms.value.map(f => (f.id === form.id ? form : f));
 	};
 
+	/** Admin: books the days as scheduled practices and closes the form. Throws a `BandApiError` (409 `already-booked` names the days). */
+	const lockInForm = async (formId: number, days: string[]) => {
+		await bandApi(`forms/${formId}/lock-in`, { method: 'POST', body: { days } });
+	};
+
 	/** Admin: closes an open form (the server refuses anyone else). */
 	const closeForm = async (formId: number) => {
 		const { form } = await bandApi<{ form: Form }>(`forms/${formId}/close`, { method: 'POST' });
@@ -234,6 +239,7 @@ export const useBandStore = defineStore('band', () => {
 		loadMe,
 		signOut,
 		closeForm,
+		lockInForm,
 		signOffForm,
 		setMyAnswers,
 		setMyFormAnswer,
