@@ -89,7 +89,7 @@ Instead, the login page shows **Sign in as {member}** buttons in dev (Colin is m
 Colin releases to Anna alone first, testing on production, not a preview. Previews copy production, so they start empty.
 
 1. Deploy. Migrations `0001`–`0003` run and the Early 2027 planning form row appears.
-2. Seed production: `yarn seed:band --branch main` (dry run), then `--write`, with the database's full-write access toggle on only for that run.
+2. Seed production: `yarn seed:band --branch main` (dry run), then `--write`, with the database's full-write access toggle on only for that run. The `main` database branch exists only after the first production deploy publishes (before that the CLI says "No database branch found"). The status JSON's `database.connectionString` path was checked against the local database on 2026-11-13, not yet against `main`. Fallback if it won't connect: skip the seed, add the practice in `/da-band/admin/practices`, and have Anna enter her own availability.
 3. Colin checks `/da-band`.
 4. Colin invites Anna (see Identity members).
 
