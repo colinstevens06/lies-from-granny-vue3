@@ -3,9 +3,7 @@
 	"configurations": [
 		{
 			"name": "netlify-dev",
-			"runtimeExecutable": "yarn",
-			"runtimeArgs": ["netlify"],
-			"port": 8888
+			"url": "http://localhost:8888"
 		}
 	]
 }

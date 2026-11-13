@@ -30,12 +30,13 @@ Use the established aliases from [tsconfig.json](tsconfig.json), including `@com
 
 ## Styling
 
-Use the existing SCSS organization: global entry in [src/styles/index.scss](src/styles/index.scss), shared variables/layout partials in `src/styles/`, and component or view partials in `src/styles/components/` and `src/styles/views/`. Templates primarily use PrimeFlex utilities alongside the project’s existing BEM-like class names. Preserve the configured Prettier style in [.prettierrc](.prettierrc).
+Style with PrimeFlex 3 utility classes in the template (spacing, layout, flex, grid, type); add no new BEM classes or partials for what utilities can express. SCSS is only for brand tokens and gradients, PrimeVue theme overrides and keyframes, through the existing entry [src/styles/index.scss](src/styles/index.scss). When changing a component's styling, move its existing BEM styles to utilities in the same change. Preserve the configured Prettier style in [.prettierrc](.prettierrc).
 
 ## Data And Behavior Notes
 
 - Rendered images use Netlify Image CDN URLs built with `netlifyImage(src, width, format)` from [src/utils/images.ts](src/utils/images.ts); keep original source paths in static data and transform only at render time.
 - Run `yarn netlify` (not `yarn dev`) for local development — plain Vite dev cannot resolve `/.netlify/images` URLs.
+- Colin keeps that one server running on :8888. Agents attach to it and never start, stop or restart a dev server; HMR picks up edits. If :8888 isn't up, say so.
 - The home hero preloads in [index.html](index.html) are injected by an inline script on home routes only; keep those URLs in sync with the hero srcset in [src/router/views/home.vue](src/router/views/home.vue).
 - New show or song records should preserve the existing object shape, use unique IDs where applicable, and include matching files in `public/images/`.
 - `show-card.vue` renders show descriptions with `v-html`; only trusted, intentionally authored HTML should enter `Gig.text`.
