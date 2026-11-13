@@ -103,6 +103,7 @@
 
 .form-todo {
 	border: 2px solid $lfg-pink;
+	background-image: linear-gradient(to bottom right, $lfg-pink-tint-top-left, $lfg-pink-tint-bottom-right);
 
 	&__kicker {
 		margin: 0;
@@ -139,7 +140,7 @@
 			gap: 0.25rem 0.75rem;
 			padding: 6px 10px;
 			border-radius: 6px;
-			background: $lfg-surface-gray;
+			background: rgba(255, 255, 255, 0.7);
 			font-size: 0.9rem;
 		}
 
@@ -149,8 +150,9 @@
 		}
 	}
 
+	// Darker than the answer-cell green: small bold text on the pink tint needs the contrast.
 	& &__line--ok span {
-		color: $bf-yes;
+		color: darken($bf-yes, 10%);
 		font-weight: 700;
 	}
 
@@ -168,6 +170,7 @@
 	// Overdue: the whole card turns pink, white on #ed1d7a (bold text only).
 	&--overdue {
 		background: $lfg-pink;
+		background-image: none;
 		color: #fff;
 
 		.form-todo__kicker,
