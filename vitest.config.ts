@@ -8,7 +8,7 @@ export default mergeConfig(
 	defineConfig({
 		test: {
 			environment: 'jsdom',
-			include: ['src/**/*.{spec,test}.ts'],
+			include: ['src/**/*.{spec,test}.ts', 'netlify/**/*.{spec,test}.ts'],
 			setupFiles: ['src/test-utils/setup.ts']
 		}
 	})
