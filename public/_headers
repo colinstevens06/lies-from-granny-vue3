@@ -1,5 +1,14 @@
-# Band-internal page: keep it out of search results. Reached by direct link only.
+# Band-internal pages: out of search results (reached by direct link only), never framed, no MIME sniffing, and no
+# referrer sent to other sites. Only /da-band is covered, so the public pages and Identity's callbacks are untouched.
 /da-band
   X-Robots-Tag: noindex, nofollow
+  X-Frame-Options: DENY
+  Content-Security-Policy: frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: same-origin
 /da-band/*
   X-Robots-Tag: noindex, nofollow
+  X-Frame-Options: DENY
+  Content-Security-Policy: frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: same-origin
