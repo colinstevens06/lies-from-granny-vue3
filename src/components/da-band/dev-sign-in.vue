@@ -17,7 +17,7 @@
 <script setup lang="ts">
 	import Button from 'primevue/button';
 	import type { MemberId } from '@models/band-member';
-	import { members } from '@components/band/members';
+	import { members } from '@components/da-band/members';
 	import { setDevMember } from '@utils/dev-auth';
 
 	const props = defineProps<{ redirect: string }>();

@@ -58,7 +58,9 @@ These are the things that break silently if only one side is edited.
 ## Conventions
 
 - Vue SFCs use `<script setup lang="ts">`, kebab-case filenames, PascalCase in templates.
-- Components are grouped by feature under `src/components/` (`home`, `layout`, `shows`, `songs`); route-level composition lives in `src/router/views/`.
+- **Folder structure follows `~/.claude/rules/project-structure.md`.** Route files mirror the URL under `src/router/views/` (`da-band/index.vue`, `da-band/admin/practices.vue`). Components are grouped by feature under `src/components/` (`home`, `layout`, `shows`, `songs`, `da-band`), and `da-band` splits into `admin/`, `calendar/`, `forms/` and `practices/`, with shared band pieces at its root. Component filenames stay unique project-wide. Two deliberate overrides of that rule:
+  - **Static data modules sit beside their feature's components**: `shows/shows.ts`, `songs/songs.ts`, `da-band/members.ts`. The Netlify functions import `members.ts` by relative path, so moving it means updating `netlify/` too.
+  - **`src/forms/` is a top-level registry**, one folder per form slug, shared with `netlify/forms/`. Its `screen.vue` and `responses.vue` are loaded by path through `src/forms/index.ts`, never by tag, so they repeat across slugs the way route files do.
 - Shared social links belong in `src/utils/urls.ts`.
 - Prettier config is authoritative and unusual: tabs, single quotes, no trailing commas, `printWidth` 120, `vueIndentScriptAndStyle: true`, and `endOfLine: "crlf"`. Run `yarn format` rather than hand-matching.
 - ESLint extends `vue3-essential` + TS + Prettier; `vue/multi-word-component-names` is off, which is why `nav.vue`, `footer.vue`, `shows.vue` are legal names.

@@ -1,5 +1,5 @@
 import { getDatabase } from '@netlify/database';
-import { members } from '../../src/components/band/members';
+import { members } from '../../src/components/da-band/members';
 import { shows } from '../../src/components/shows/shows';
 import { ruleFor } from '../../src/forms/rules';
 import type {

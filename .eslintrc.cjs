@@ -27,7 +27,7 @@ module.exports = {
 	overrides: [
 		{
 			// PrimeVue already provides the control: use Button or SelectButton. A plain element needs a reason comment.
-			files: ['src/components/band/**/*.vue', 'src/forms/**/*.vue', 'src/router/views/da-band*.vue'],
+			files: ['src/components/da-band/**/*.vue', 'src/forms/**/*.vue', 'src/router/views/da-band/**/*.vue'],
 			rules: {
 				'vue/no-restricted-html-elements': [
 					'error',

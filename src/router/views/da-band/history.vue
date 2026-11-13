@@ -35,10 +35,10 @@
 <script setup lang="ts">
 	import { computed, onMounted } from 'vue';
 	import Layout from '@router/layouts/main.vue';
-	import BandLink from '@components/band/band-link.vue';
-	import BandSection from '@components/band/band-section.vue';
-	import PracticeDetails from '@components/band/practice-details.vue';
-	import PracticeStatusBadge from '@components/band/practice-status-badge.vue';
+	import BandLink from '@components/da-band/band-link.vue';
+	import BandSection from '@components/da-band/band-section.vue';
+	import PracticeDetails from '@components/da-band/practices/practice-details.vue';
+	import PracticeStatusBadge from '@components/da-band/practices/practice-status-badge.vue';
 	import { formatPracticeDay, practiceHistory } from '@utils/practices';
 	import { useBandStore } from '@/stores/band';
 

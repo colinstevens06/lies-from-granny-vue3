@@ -39,7 +39,7 @@ Members answer days Yes, No or Not sure, and everyone sees one band calendar. Co
 - generic question types
 - anything the workflows doc lists as backlog
 
-**Pattern reference:** none for functions. On the client, `src/utils/practices.ts` (pure helpers over arrays) and `src/components/band/*`.
+**Pattern reference:** none for functions. On the client, `src/utils/practices.ts` (pure helpers over arrays) and `src/components/da-band/*`.
 
 **Decisions** (Colin, November 9–10, 2026):
 - **Platform:** Netlify Database (Postgres) plus Identity with Google, invite-only, on the Free plan. The whole `/da-band` area is gated.
@@ -97,12 +97,12 @@ All ✅ rows were verified on November 10, with 0 ❌.
 | Symbol | Location | Verified |
 | --- | --- | --- |
 | `Practice` (`id`, `date`, `startTime?`, `endTime?`, `location?`, `prepare?`, `recap?`, `gigId?`, `status`) | `src/models/practice.ts:1-20` | ✅ |
-| `practices`: imported only by `da-band.vue:33` and `da-band-history.vue:34`; `Practice.id` used only as `:key` | `src/components/band/practices.ts:6` | ✅ |
+| `practices`: imported only by `da-band.vue:33` and `da-band-history.vue:34`; `Practice.id` used only as `:key` | `src/components/da-band/practices.ts:6` | ✅ |
 | `upcomingPractices(practices, now)` (includes cancelled), `practiceHistory`, `PRACTICE_HOME`, `practiceLocation`, `practiceGig`; **this file uses path aliases** | `src/utils/practices.ts:1-4,15,19,31,33,36` | ✅ |
 | `Gig.id: number`; `shows` (only an `import type`, so functions can import it) | `src/models/gig.ts:2`, `src/components/shows/shows.ts:1,3` | ✅ |
 | `easternNow`, `formatCalendarDate`, `daysBetween` (`dates.ts` has no imports) | `src/utils/dates.ts:25,36,47` | ✅ |
 | `da-band`, `da-band-history` routes; noindex for `/da-band/*` | `src/router/index.ts:42-50`, `public/_headers:2-5` | ✅ |
-| reused: `practice-card`, `practice-details`, `practice-status-badge`, `next-gig`; `band-card*` and `band-link`; `$lfg-pink`, `$lfg-poster-yellow` | `src/components/band/`, `_da-band.scss`, `_variables.scss:3,6` | ✅ |
+| reused: `practice-card`, `practice-details`, `practice-status-badge`, `next-gig`; `band-card*` and `band-link`; `$lfg-pink`, `$lfg-poster-yellow` | `src/components/da-band/`, `_da-band.scss`, `_variables.scss:3,6` | ✅ |
 | PrimeVue 3.32.2 with per-component imports; Pinia registered; `index.scss` imports partials; `nav.vue` | `nav.vue:54-55`, `main.ts:18-20`, `index.scss:47-58` | ✅ |
 | TypeScript `~4.7.4`, `moduleResolution: node`, `include` covers only `src/**` | `tsconfig.json:3,16` | ✅ (see the pre-flight) |
 | `netlify database` CLI; migrations `netlify/database/migrations/<n>_<slug>.sql` (forward-only, applied on deploy) | netlify-cli 27.4.2; Netlify docs | ✅ / ⚠️ |
@@ -124,7 +124,7 @@ Stop and ask Colin if step 2, 6 or 7 fails.
 
 1. **Roster** [P1].
    - `src/models/band-member.ts` has `MemberId` (with a comment pointing to migration `0001`), `BandRole`, `BandMember` and `CurrentMember = { member: MemberId; role: 'admin' | 'member' }`.
-   - `src/components/band/members.ts` has `members: BandMember[]`.
+   - `src/components/da-band/members.ts` has `members: BandMember[]`.
    - No emails.
 
 2. **Models.** Optional fields are omitted from JSON, and `null` appears nowhere in responses.
@@ -364,7 +364,7 @@ U1. **Store** [P4a]. Phase 2 creates `me` and `loadMe()`. The store is `src/stor
      - Pending keys keep their local value.
      - Everything else always applies.
    - **`src/utils/band-api.ts`** is the only `fetch` for `/api/band/*`. It sends JSON, sends `{}` for body-less POSTs, and on `401` routes to `da-band-login`.
-   - **Practices come from the store.** `da-band.vue` and `da-band-history.vue` read `band.practices`, and `src/components/band/practices.ts` is deleted.
+   - **Practices come from the store.** `da-band.vue` and `da-band-history.vue` read `band.practices`, and `src/components/da-band/practices.ts` is deleted.
    - **Lazy imports.** Because `nav.vue` imports the store, the store imports `band-api` and `band-calendar` lazily, or only inside actions.
 
 U2. **Save queue** [P4a]. `src/composables/use-save-lane.ts` is written once and used for two lanes, with the same rules for both.
@@ -425,7 +425,7 @@ U7. **Form page and shared pieces** [P5a, P5b]: `da-band-form.vue` is the shell.
      - It's enabled when `formRules[slug].missing(...)` reports done and `!saving`, both rechecked at click time.
      - A `409 incomplete` runs `load()` and scrolls to the first missing item.
      - A `409 closed` shows "This form just closed." and goes home.
-   - **Shared pieces for building forms**, in `src/components/band/forms/`:
+   - **Shared pieces for building forms**, in `src/components/da-band/forms/`:
      - **`availability-section.vue`:** the pre-fill note, "Fill a weekday at once…" (`weekday-fill-sheet.vue`, a bottom `Sidebar` that fills only blank days in range from today on), and `week-grid.vue` of `answer-cell.vue` cells, with past days untappable. It's driven by `form.availability`.
      - **`yes-no-rows.vue`:** a prompt, then **Yes / No**, then on Yes ordered rows of labeled inputs with **+ Add another** when several are allowed. Its props are `prompt`, `fields: string[]` and `allowSeveral`, and it emits a complete-rows value. A partly filled row stays in `drafts` and shows "Fill in every field to save this one." Choosing No clears rows, after a confirmation if there were any.
      - **`form-todo-card.vue`:** the title, the due date and overdue state, the registry's `todoLines`, and a **Check and sign off** variant when nothing is missing.
@@ -481,13 +481,13 @@ There are no specialist agents, so the building session does each phase, one com
 
 | Phase | Files (new unless noted) |
 | --- | --- |
-| P1 | `src/models/band-member.ts`, `src/components/band/members.ts`, `src/models/availability.ts`, `src/utils/availability.ts`, migration `0001`, `netlify/lib/current-member.ts`, `netlify/lib/band-db.ts`, `netlify/functions/band-me.ts`, `netlify/functions/band-availability.ts`, `scripts/seed-band-data.ts`; edits to `package.json`, `tsconfig.json`, `.gitignore` |
+| P1 | `src/models/band-member.ts`, `src/components/da-band/members.ts`, `src/models/availability.ts`, `src/utils/availability.ts`, migration `0001`, `netlify/lib/current-member.ts`, `netlify/lib/band-db.ts`, `netlify/functions/band-me.ts`, `netlify/functions/band-availability.ts`, `scripts/seed-band-data.ts`; edits to `package.json`, `tsconfig.json`, `.gitignore` |
 | P3 | `src/models/form.ts`, `src/utils/forms.ts`, `src/utils/practice-input.ts`, migration `0002`, `netlify/forms/index.ts`, `netlify/functions/band-forms.ts`, `netlify/functions/band-practices.ts`; edits to `src/models/practice.ts`, `band-db.ts`, the seed |
 | P3b | `src/forms/march-show-planning/model.ts`, `src/forms/march-show-planning/rules.ts`, `src/forms/rules.ts`, migration `0003`, `netlify/forms/march-show-planning.ts`; edits to `src/models/form.ts` (the union) and `netlify/forms/index.ts` |
-| P4a | `src/stores/band.ts` (edit), `src/utils/band-api.ts`, `src/composables/use-save-lane.ts`; edits to `da-band.vue` and `da-band-history.vue`; delete `src/components/band/practices.ts` |
+| P4a | `src/stores/band.ts` (edit), `src/utils/band-api.ts`, `src/composables/use-save-lane.ts`; edits to `da-band.vue` and `da-band-history.vue`; delete `src/components/da-band/practices.ts` |
 | P4b | `src/utils/band-calendar.ts`, `admin-gate.vue`, `admin-tile.vue`, `signed-off-dots.vue`, `copy-button.vue`, `da-band-admin.vue`; edits to the router, `nav.vue`, SCSS (the new partial and `index.scss`) |
 | P4c | `da-band-admin-form.vue`, `form-responses.vue`, `form-status-card.vue`; edits to the router, `da-band.vue` |
-| P5a | `availability-section.vue`, `week-grid.vue`, `answer-cell.vue`, `weekday-fill-sheet.vue`, `yes-no-rows.vue` (in `src/components/band/forms/`) |
+| P5a | `availability-section.vue`, `week-grid.vue`, `answer-cell.vue`, `weekday-fill-sheet.vue`, `yes-no-rows.vue` (in `src/components/da-band/forms/`) |
 | P5b | `src/forms/index.ts`, `src/forms/march-show-planning/screen.vue`, `src/forms/march-show-planning/responses.vue`, `form-todo-card.vue`, `da-band-form.vue`; edits to the router, `da-band.vue`, `da-band-admin-form.vue` |
 | P6 | `month-grid.vue`, `calendar-day.vue`, `day-answers-sheet.vue`, `possible-dates.vue`, `da-band-edit.vue`; edits to the router, `da-band.vue` |
 | P7 | `pick-dates.vue`; edits to `da-band-admin-form.vue`, `form-status-card.vue`, `da-band.vue` |

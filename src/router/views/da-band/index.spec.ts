@@ -1,9 +1,9 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises } from '@vue/test-utils';
-import { mountWithPrime } from '../../test-utils/mount';
+import { mountWithPrime } from '../../../test-utils/mount';
 import { useBandStore } from '@/stores/band';
-import DaBand from './da-band.vue';
+import DaBand from './index.vue';
 
 // Stub the child components but keep their slots, so the page's own text is what's under test.
 const mountHome = () => mountWithPrime(DaBand, { shallow: true, global: { renderStubDefaultSlot: true } });

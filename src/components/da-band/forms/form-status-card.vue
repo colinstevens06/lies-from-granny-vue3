@@ -20,10 +20,10 @@
 <script setup lang="ts">
 	import { computed } from 'vue';
 	import type { Form } from '@models/form';
-	import BandLink from '@components/band/band-link.vue';
-	import CopyButton from '@components/band/copy-button.vue';
-	import FormState from '@components/band/form-state.vue';
-	import { members } from '@components/band/members';
+	import BandLink from '@components/da-band/band-link.vue';
+	import CopyButton from '@components/da-band/copy-button.vue';
+	import FormState from '@components/da-band/forms/form-state.vue';
+	import { members } from '@components/da-band/members';
 	import { isEveryoneIn, waitingOn } from '@utils/form-status';
 	import { nudgeText } from '@utils/band-calendar';
 

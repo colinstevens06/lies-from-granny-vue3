@@ -3,7 +3,7 @@ import type { Answer, MemberAvailability } from '@models/availability';
 import type { MemberId } from '@models/band-member';
 import type { Form } from '@models/form';
 import type { Practice } from '@models/practice';
-import { members } from '@components/band/members';
+import { members } from '@components/da-band/members';
 import { addDays, easternNow, formatCalendarDate, toIsoDate, weekdayIndex } from '@utils/dates';
 import { showIsoDate } from '@utils/shows';
 

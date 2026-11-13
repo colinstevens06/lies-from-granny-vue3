@@ -8,7 +8,7 @@
 </template>
 
 <script setup lang="ts">
-	import BandLink from '@components/band/band-link.vue';
+	import BandLink from '@components/da-band/band-link.vue';
 	import { useBandStore } from '@/stores/band';
 
 	// The server is the real gate (every admin endpoint checks the role). This only decides what to show.

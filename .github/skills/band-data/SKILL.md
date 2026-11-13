@@ -22,7 +22,7 @@ Run the Netlify CLI as `yarn exec netlify <cmd>`. `yarn netlify <cmd>` runs the 
 
 `netlify/database/migrations/<number>_<slug>.sql`, forward-only. Never edit a migration a deploy has applied; fix it with a new one. That includes a form's due date or title: add a migration with `update forms set due_day = …`.
 
-`members` (migration 0001) must match `MemberId` in `src/models/band-member.ts` and `src/components/band/members.ts`. To add or rename a member: a new migration for the `members` row (`on update cascade` renames the references), the three code spots, and the member's Identity role.
+`members` (migration 0001) must match `MemberId` in `src/models/band-member.ts` and `src/components/da-band/members.ts`. To add or rename a member: a new migration for the `members` row (`on update cascade` renames the references), the three code spots, and the member's Identity role.
 
 ## Seeding (P1)
 
@@ -46,7 +46,7 @@ List them in the gitignored `band-data/import.ts` as `practices: PracticeImport[
 ## Client state (P4a)
 
 - `src/stores/band.ts` is the only client holder of server data; `src/utils/band-api.ts` is the only `fetch` for `/api/band/*`. The store imports `band-api` inside actions because `nav.vue` imports the store.
-- Every `/da-band*` view calls `band.load()` on mount. Practices come from the store; `src/components/band/practices.ts` is gone. To add practices, use the admin editor (P8) or the seed.
+- Every `/da-band*` view calls `band.load()` on mount. Practices come from the store; `src/components/da-band/practices.ts` is gone. To add practices, use the admin editor (P8) or the seed.
 - Answers save through two lanes built on `src/composables/use-save-lane.ts` (availability keyed by date, form answers keyed by form). Both follow the same rules: one request in flight, retries at 2/4/8 s then every 30 s on a network error or 5xx, a dropped batch plus a reload on any other 4xx.
 
 ## Add a new band form (P3b)
@@ -55,7 +55,7 @@ Worked example: `early-2027-planning` (migration `0003`, `src/forms/early-2027-p
 
 1. Pick a slug (`^[a-z0-9-]{1,60}$`).
 2. Write a migration that inserts the form row (title, due date, and any availability columns) and its `form_members` rows, plus any new tables. Quote apostrophes in text as `''`. Never edit it once a deploy has applied it.
-3. Add `src/forms/<slug>/` with `model.ts` and `rules.ts` (`missing`). Add `screen.vue` and `responses.vue` there too (props: `form`), built from the shared pieces in `src/components/band/forms/` (`availability-section`, `yes-no-text`). Save answers through `band.setMyFormAnswer(form.id, body)` and, for availability, `band.setMyAnswers`.
+3. Add `src/forms/<slug>/` with `model.ts` and `rules.ts` (`missing`). Add `screen.vue` and `responses.vue` there too (props: `form`), built from the shared pieces in `src/components/da-band/forms/` (`availability-section`, `yes-no-text`). Save answers through `band.setMyFormAnswer(form.id, body)` and, for availability, `band.setMyAnswers`.
 4. Add `netlify/forms/<slug>.ts` (`loadDetails`, and `saveAnswer` if members answer), plus `mineOf` and `missing` in `rules.ts`. A form with availability should call `availabilityMissing` from `src/utils/availability.ts` in its `missing`.
 5. Wire all three registries: `src/forms/rules.ts`, `netlify/forms/index.ts`, and `src/forms/index.ts` (the client registry: `summary`, `asks`, lazy `screen` and `responses`, and `todoLines` for the to-do card and progress bar). They are typed `Record<FormSlug, …>`, so a missing one fails `yarn type-check`.
 6. Extend `FormDetails` in `src/models/form.ts` (`FormSlug` follows from it).

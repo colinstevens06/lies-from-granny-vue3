@@ -68,14 +68,14 @@
 <script setup lang="ts">
 	import { computed, onMounted } from 'vue';
 	import Layout from '@router/layouts/main.vue';
-	import BandCalendar from '@components/band/band-calendar.vue';
-	import BandLink from '@components/band/band-link.vue';
-	import BandSection from '@components/band/band-section.vue';
-	import PossibleDates from '@components/band/possible-dates.vue';
-	import FormTodoCard from '@components/band/form-todo-card.vue';
-	import FormStatusCard from '@components/band/form-status-card.vue';
-	import NextGig from '@components/band/next-gig.vue';
-	import PracticeCard from '@components/band/practice-card.vue';
+	import BandCalendar from '@components/da-band/calendar/band-calendar.vue';
+	import BandLink from '@components/da-band/band-link.vue';
+	import BandSection from '@components/da-band/band-section.vue';
+	import PossibleDates from '@components/da-band/calendar/possible-dates.vue';
+	import FormTodoCard from '@components/da-band/forms/form-todo-card.vue';
+	import FormStatusCard from '@components/da-band/forms/form-status-card.vue';
+	import NextGig from '@components/da-band/next-gig.vue';
+	import PracticeCard from '@components/da-band/practices/practice-card.vue';
 	import { shows } from '@components/shows/shows';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { upcomingPractices } from '@utils/practices';

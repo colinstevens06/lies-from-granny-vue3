@@ -47,7 +47,7 @@
 	import { useRoute, useRouter } from 'vue-router';
 	import Button from 'primevue/button';
 	import Layout from '@router/layouts/main.vue';
-	import BandLink from '@components/band/band-link.vue';
+	import BandLink from '@components/da-band/band-link.vue';
 	import { BandApiError } from '@utils/band-api';
 	import { daysBetween, formatCalendarDate } from '@utils/dates';
 	import { clientFormFor } from '@/forms';

@@ -18,8 +18,8 @@
 	import { computed } from 'vue';
 	import type { AvailabilityChange } from '@models/availability';
 	import type { Form } from '@models/form';
-	import AvailabilitySection from '@components/band/forms/availability-section.vue';
-	import YesNoText from '@components/band/forms/yes-no-text.vue';
+	import AvailabilitySection from '@components/da-band/forms/availability-section.vue';
+	import YesNoText from '@components/da-band/forms/yes-no-text.vue';
 	import { useFormProgress } from '@/composables/use-form-progress';
 	import { useBandStore } from '@/stores/band';
 	import type { SongPitch, SongPitchInput } from './model';

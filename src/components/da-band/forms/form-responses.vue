@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
 	import type { Form } from '@models/form';
-	import { members } from '@components/band/members';
+	import { members } from '@components/da-band/members';
 	import { answeredCount, rangeDayCount } from '@utils/form-status';
 	import { useBandStore } from '@/stores/band';
 

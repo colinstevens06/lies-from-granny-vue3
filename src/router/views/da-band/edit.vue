@@ -30,9 +30,9 @@
 <script setup lang="ts">
 	import { onMounted } from 'vue';
 	import Layout from '@router/layouts/main.vue';
-	import AnswerCell from '@components/band/forms/answer-cell.vue';
-	import BandLink from '@components/band/band-link.vue';
-	import MonthGrid from '@components/band/month-grid.vue';
+	import AnswerCell from '@components/da-band/forms/answer-cell.vue';
+	import BandLink from '@components/da-band/band-link.vue';
+	import MonthGrid from '@components/da-band/calendar/month-grid.vue';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandStore } from '@/stores/band';
 

@@ -49,49 +49,49 @@ const router = createRouter({
 			// Band-internal page: unlisted (not in the nav) and noindexed via public/_headers.
 			path: '/da-band',
 			name: 'da-band',
-			component: () => import('./views/da-band.vue'),
+			component: () => import('./views/da-band/index.vue'),
 			meta: { requiresMember: true }
 		},
 		{
 			path: '/da-band/login',
 			name: 'da-band-login',
-			component: () => import('./views/da-band-login.vue')
+			component: () => import('./views/da-band/login.vue')
 		},
 		{
 			// Covered by the same /da-band/* noindex rule in public/_headers.
 			path: '/da-band/history',
 			name: 'da-band-history',
-			component: () => import('./views/da-band-history.vue'),
+			component: () => import('./views/da-band/history.vue'),
 			meta: { requiresMember: true }
 		},
 		{
 			path: '/da-band/admin',
 			name: 'da-band-admin',
-			component: () => import('./views/da-band-admin.vue'),
+			component: () => import('./views/da-band/admin/index.vue'),
 			meta: { requiresMember: true }
 		},
 		{
 			path: '/da-band/admin/forms/:id(\\d+)',
 			name: 'da-band-admin-form',
-			component: () => import('./views/da-band-admin-form.vue'),
+			component: () => import('./views/da-band/admin/form.vue'),
 			meta: { requiresMember: true }
 		},
 		{
 			path: '/da-band/form/:id(\\d+)',
 			name: 'da-band-form',
-			component: () => import('./views/da-band-form.vue'),
+			component: () => import('./views/da-band/form.vue'),
 			meta: { requiresMember: true }
 		},
 		{
 			path: '/da-band/edit',
 			name: 'da-band-edit',
-			component: () => import('./views/da-band-edit.vue'),
+			component: () => import('./views/da-band/edit.vue'),
 			meta: { requiresMember: true }
 		},
 		{
 			path: '/da-band/admin/practices',
 			name: 'da-band-admin-practices',
-			component: () => import('./views/da-band-admin-practices.vue'),
+			component: () => import('./views/da-band/admin/practices.vue'),
 			meta: { requiresMember: true }
 		},
 		{ path: '/:catchAll(.*)', component: () => import('./views/_404.vue') }

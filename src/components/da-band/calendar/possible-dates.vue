@@ -14,7 +14,7 @@
 <script setup lang="ts">
 	import { computed } from 'vue';
 	import type { Form } from '@models/form';
-	import CopyButton from '@components/band/copy-button.vue';
+	import CopyButton from '@components/da-band/copy-button.vue';
 	import { shows } from '@components/shows/shows';
 	import { possibleDates, possibleListText, practicesStillNeeded, targetOf } from '@utils/band-calendar';
 	import { formatCalendarDate } from '@utils/dates';

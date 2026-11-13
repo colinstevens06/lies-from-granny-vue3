@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 	import type { Form } from '@models/form';
-	import SignedOffDots from '@components/band/signed-off-dots.vue';
+	import SignedOffDots from '@components/da-band/forms/signed-off-dots.vue';
 	import { formStateLabel } from '@utils/form-status';
 
 	// A form's state pill (Open, Closed, …) with the sign-off dots beside it.

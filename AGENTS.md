@@ -21,7 +21,7 @@ Tests: `yarn test` (Vitest, specs beside the code, shared helpers in `src/test-u
 - `src/main.ts` bootstraps Vue and registers Pinia, Vue Router, PrimeVue, PrimeFlex, PrimeIcons, and global SCSS.
 - `src/router/index.ts` defines lazy-loaded routes; page composition belongs in `src/router/views/`.
 - `src/router/layouts/main.vue` owns shared page framing with the navigation and footer components.
-- Reusable components live in `src/components/`, grouped by feature (`home`, `shows`, `songs`, and `layout`).
+- Reusable components live in `src/components/`, grouped by feature (`home`, `shows`, `songs`, `layout`, and `da-band`, which splits into `admin/`, `calendar/`, `forms/` and `practices/`). Route files mirror the URL (`src/router/views/da-band/admin/practices.vue`). Component filenames stay unique project-wide; `src/forms/<slug>/` registry screens and route files are the exceptions. See CLAUDE.md § Conventions for the full layout.
 - Show and song records are static data in [src/components/shows/shows.ts](src/components/shows/shows.ts) and [src/components/songs/songs.ts](src/components/songs/songs.ts), shaped by [src/models/gig.ts](src/models/gig.ts) and [src/models/song.ts](src/models/song.ts).
 - Static media is under `public/images/` and should be referenced with root-relative paths such as `/images/home/...`.
 - Shared social links belong in [src/utils/urls.ts](src/utils/urls.ts).

@@ -1,4 +1,4 @@
-import { members } from '../../src/components/band/members';
+import { members } from '../../src/components/da-band/members';
 import type { Early2027PlanningDetails, SongPitch } from '../../src/forms/early-2027-planning/model';
 import { parseSongPitch } from '../../src/forms/early-2027-planning/rules';
 import type { MemberId } from '../../src/models/band-member';

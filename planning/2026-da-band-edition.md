@@ -186,13 +186,13 @@ and they address every incident that actually happened.
 New route `/da-band`, lazily imported like the others in [src/router/index.ts](src/router/index.ts).
 
 ```
-src/router/views/da-band.vue          # route-level composition
-src/components/band/next-practice.vue # the headline block
-src/components/band/practice-card.vue
-src/components/band/practice-songs.vue  # the drawer contents
-src/components/band/availability-strip.vue  # phase 2, see §6
-src/components/band/practices.ts      # Practice[]
-src/components/band/members.ts        # BandMember[]
+src/router/views/da-band/index.vue          # route-level composition
+src/components/da-band/next-practice.vue # the headline block
+src/components/da-band/practices/practice-card.vue
+src/components/da-band/practice-songs.vue  # the drawer contents
+src/components/da-band/availability-strip.vue  # phase 2, see §6
+src/components/da-band/practices.ts      # Practice[]
+src/components/da-band/members.ts        # BandMember[]
 src/models/practice.ts
 src/models/band-member.ts
 src/styles/views/_da-band.scss        # MUST be added to src/styles/index.scss or it won't load
@@ -266,7 +266,7 @@ export interface BandMember {
 The roster, concretely:
 
 ```ts
-// src/components/band/members.ts
+// src/components/da-band/members.ts
 export const members: BandMember[] = [
 	{ id: 1, name: 'Anna', shortName: 'Anna', roles: ['lead-vocals'] },
 	{ id: 2, name: 'Kyle', shortName: 'Fives', roles: ['lead-guitar', 'backup-vocals'] },

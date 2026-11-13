@@ -24,7 +24,7 @@ Fix: in `onRejected`, delete the rejected `entries` from `row.days` (or remember
 
 ### 2. Admin lock-in can send days that are no longer offered (Plausible)
 
-`src/components/band/pick-dates.vue:~88-101` (`setPicked`, `lockIn`)
+`src/components/da-band/calendar/pick-dates.vue:~88-101` (`setPicked`, `lockIn`)
 
 `picked` is local state; the two lists are computed from the store and `pickedIn()` filters what each SelectButton shows. If a day drops out of both lists after a refresh (a member flips to No, a practice gets booked, midnight passes), it disappears from the chips but stays in `picked`. The sticky bar still names it ("Lock in 3") and `lockIn` posts it.
 
@@ -34,7 +34,7 @@ Fix: `watch(groups, ...)` and drop picks not in `everyoneYesDays` or `oneShortDa
 
 ### 3. Weekday sheet: re-tapping the selected answer does nothing (Confirmed)
 
-`src/components/band/forms/weekday-fill-sheet.vue:23-32`
+`src/components/da-band/forms/weekday-fill-sheet.vue:23-32`
 
 The SelectButton uses `:allow-empty="false"` and `:model-value="last[weekday]?.answer"`. In the installed PrimeVue 3.53.1 (`selectbutton/SelectButton.vue:85`), clicking the already-selected option returns without emitting when `allowEmpty` is false. After a fill, the tapped answer stays selected, so the same answer can't be tapped again.
 
@@ -64,7 +64,7 @@ Fix: keep the local copy only for the forms with a pending or just-saved body (`
 
 ### 6. "Today" is read once and goes stale past midnight (Plausible)
 
-`src/router/views/da-band.vue:85-86`, `da-band-edit.vue:~38`, `src/composables/use-form-progress.ts:14`, `src/components/band/pick-dates.vue:~74`
+`src/router/views/da-band/index.vue:85-86`, `da-band-edit.vue:~38`, `src/composables/use-form-progress.ts:14`, `src/components/da-band/calendar/pick-dates.vue:~74`
 
 All capture `easternNow()` at setup. A tab left open overnight still treats yesterday as today: yesterday's cells stay tappable, "next practice" and "possible dates" keep yesterday, and the sign-off progress counts yesterday as required. The server refuses `date < today` (shared parser), so the tap hits rejection #1.
 
@@ -72,7 +72,7 @@ Fix: a small shared `useEasternToday()` composable (a ref refreshed on `visibili
 
 ### 7. Song question: required-text message, no way to clear a saved suggestion, local state never resyncs (Plausible)
 
-`src/components/band/forms/yes-no-text.vue:15-17, 48-62`
+`src/components/da-band/forms/yes-no-text.vue:15-17, 48-62`
 
 - The prompt says "(optional)" but a red "Song is required when Yes is selected." shows. The sign-off isn't gated on it (`forms/rules.ts` is correct), so the message contradicts the rule.
 - `publish()` returns early for a Yes with empty text, so clearing the box never saves. The server keeps the old suggestion while the screen shows an empty Yes, and leaving the page loses the edit with no notice.
@@ -96,7 +96,7 @@ If `onSaved` throws (a store bug), the catch sees `status` undefined → treated
 
 ### 10. Weekday sheet status overstates what happened (Confirmed)
 
-`src/components/band/forms/weekday-fill-sheet.vue:83-95`
+`src/components/da-band/forms/weekday-fill-sheet.vue:83-95`
 
 With overwrite on, `filled` is the count of every open day for that weekday (`dayCounts`), but `fillWeekday` in `availability-section.vue:83-89` sends only the days whose answer differs. If all are already Yes, the sheet says "8 days filled ✓" and nothing was sent. Also `last` isn't cleared when the overwrite switch is flipped, so a stale "filled" line sits next to a different mode.
 
@@ -112,7 +112,7 @@ Fix: use "Sep" in the data, or parse with an explicit month map in `showIsoDate`
 
 ### 12. Loading and error states reuse the page as if it were empty (Plausible)
 
-`src/router/views/da-band.vue:7-9, 25-28, 53`
+`src/router/views/da-band/index.vue:7-9, 25-28, 53`
 
 While `loadState` is `loading` (or `error`), the home page still renders "No practice on the calendar.", the next-gig block and an empty calendar under the "Loading…" or "Couldn't load" line. On error the message says to refresh but the cards below say there are no practices. Same pattern is fine on the form, edit and admin-form pages, which return early.
 

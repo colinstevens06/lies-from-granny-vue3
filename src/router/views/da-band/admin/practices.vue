@@ -44,11 +44,11 @@
 	import { computed, onMounted, ref } from 'vue';
 	import Button from 'primevue/button';
 	import Layout from '@router/layouts/main.vue';
-	import AdminGate from '@components/band/admin-gate.vue';
-	import BandLink from '@components/band/band-link.vue';
-	import BandSection from '@components/band/band-section.vue';
-	import PracticeEditor from '@components/band/practice-editor.vue';
-	import PracticeStatusBadge from '@components/band/practice-status-badge.vue';
+	import AdminGate from '@components/da-band/admin/admin-gate.vue';
+	import BandLink from '@components/da-band/band-link.vue';
+	import BandSection from '@components/da-band/band-section.vue';
+	import PracticeEditor from '@components/da-band/practices/practice-editor.vue';
+	import PracticeStatusBadge from '@components/da-band/practices/practice-status-badge.vue';
 	import type { Practice } from '@models/practice';
 	import { formatPracticeDay, formatPracticeTime, practiceLocation, upcomingPractices } from '@utils/practices';
 	import { useBandStore } from '@/stores/band';

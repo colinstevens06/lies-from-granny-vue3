@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { makeBandAvailability, makeForm } from '../../test-utils/factories';
-import { mountWithPrime } from '../../test-utils/mount';
+import { makeBandAvailability, makeForm } from '../../../test-utils/factories';
+import { mountWithPrime } from '../../../test-utils/mount';
 import { useBandStore } from '@/stores/band';
 import PickDates from './pick-dates.vue';
 

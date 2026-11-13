@@ -84,7 +84,7 @@
 	import Menu from 'primevue/menu';
 	import { netlifyImage } from '@utils/images';
 	import { computed, ref } from 'vue';
-	import { members } from '@components/band/members';
+	import { members } from '@components/da-band/members';
 	import { useBandStore } from '@/stores/band';
 
 	const menu = ref();

@@ -30,12 +30,12 @@
 	import { useRoute, useRouter } from 'vue-router';
 	import Button from 'primevue/button';
 	import Layout from '@router/layouts/main.vue';
-	import BandSection from '@components/band/band-section.vue';
+	import BandSection from '@components/da-band/band-section.vue';
 	import { useBandStore } from '@/stores/band';
 
 	// Local testing only. Behind import.meta.env.DEV so the production build drops the component and its import.
 	const DevSignIn = import.meta.env.DEV
-		? defineAsyncComponent(() => import('@components/band/dev-sign-in.vue'))
+		? defineAsyncComponent(() => import('@components/da-band/dev-sign-in.vue'))
 		: undefined;
 
 	const route = useRoute();

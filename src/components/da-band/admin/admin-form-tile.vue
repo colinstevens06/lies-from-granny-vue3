@@ -8,8 +8,8 @@
 
 <script setup lang="ts">
 	import type { Form } from '@models/form';
-	import AdminTile from '@components/band/admin-tile.vue';
-	import FormState from '@components/band/form-state.vue';
+	import AdminTile from '@components/da-band/admin/admin-tile.vue';
+	import FormState from '@components/da-band/forms/form-state.vue';
 	import { clientFormFor } from '@/forms';
 	import { availabilitySummary, formatDueDay } from '@utils/form-status';
 

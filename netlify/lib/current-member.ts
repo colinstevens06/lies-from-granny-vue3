@@ -1,5 +1,5 @@
 import { getUser } from '@netlify/identity';
-import { members } from '../../src/components/band/members';
+import { members } from '../../src/components/da-band/members';
 import type { CurrentMember, MemberId } from '../../src/models/band-member';
 
 // The only importer of @netlify/identity on the server.

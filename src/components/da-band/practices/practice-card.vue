@@ -16,8 +16,8 @@
 <script setup lang="ts">
 	import { computed } from 'vue';
 	import type { Practice } from '@models/practice';
-	import PracticeDetails from '@components/band/practice-details.vue';
-	import PracticeStatusBadge from '@components/band/practice-status-badge.vue';
+	import PracticeDetails from '@components/da-band/practices/practice-details.vue';
+	import PracticeStatusBadge from '@components/da-band/practices/practice-status-badge.vue';
 	import { formatPracticeDay } from '@utils/practices';
 
 	const props = defineProps<{

@@ -38,11 +38,11 @@
 <script setup lang="ts">
 	import { computed, onMounted } from 'vue';
 	import Layout from '@router/layouts/main.vue';
-	import AdminFormTile from '@components/band/admin-form-tile.vue';
-	import AdminGate from '@components/band/admin-gate.vue';
-	import AdminTile from '@components/band/admin-tile.vue';
-	import BandLink from '@components/band/band-link.vue';
-	import BandSection from '@components/band/band-section.vue';
+	import AdminFormTile from '@components/da-band/admin/admin-form-tile.vue';
+	import AdminGate from '@components/da-band/admin/admin-gate.vue';
+	import AdminTile from '@components/da-band/admin/admin-tile.vue';
+	import BandLink from '@components/da-band/band-link.vue';
+	import BandSection from '@components/da-band/band-section.vue';
 	import { formatPracticeDay, formatPracticeTime, needsTime, upcomingPractices } from '@utils/practices';
 	import { useBandStore } from '@/stores/band';
 

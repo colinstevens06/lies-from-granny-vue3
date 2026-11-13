@@ -44,7 +44,7 @@ Scope: `feature/da-band` vs `main` plus the uncommitted restyle. Read-only revie
 
 ### 4. LOW: Band names, nicknames and the first form's schedule are public in the repo (Confirmed, by design)
 
-`src/components/band/members.ts`, `netlify/database/migrations/0003_form_early_2027_planning.sql:14` (due 2026-12-06, window Jan 1 to Apr 30, 2027), `src/utils/practices.ts:31` (`PRACTICE_HOME = 'Burtonsville'`).
+`src/components/da-band/members.ts`, `netlify/database/migrations/0003_form_early_2027_planning.sql:14` (due 2026-12-06, window Jan 1 to Apr 30, 2027), `src/utils/practices.ts:31` (`PRACTICE_HOME = 'Burtonsville'`).
 
 - **Scenario:** Anyone reading the public repo sees first names and nicknames, the planning window, and the usual practice town. It is low sensitivity, but the brief says schedules shouldn't land in the repo. No emails, concrete practice times or addresses are present.
 - **Fix:** Decide whether the town default and the planning window are fine to publish. If not, move them to `band-data/` and the seed script. Migrations applied by a deploy can't be edited later, so decide before the first deploy.

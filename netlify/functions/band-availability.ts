@@ -1,5 +1,5 @@
 import type { Config } from '@netlify/functions';
-import { members } from '../../src/components/band/members';
+import { members } from '../../src/components/da-band/members';
 import type { MemberId } from '../../src/models/band-member';
 import { parseAvailabilityChanges } from '../../src/utils/availability';
 import { easternNow } from '../../src/utils/dates';

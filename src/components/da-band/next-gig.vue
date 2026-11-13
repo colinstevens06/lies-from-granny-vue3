@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 	import type { Gig } from '@models/gig';
-	import BandLink from '@components/band/band-link.vue';
+	import BandLink from '@components/da-band/band-link.vue';
 	import { daysBetween } from '@utils/dates';
 	import { showIsoDate } from '@utils/shows';
 	import { computed } from 'vue';
