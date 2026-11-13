@@ -41,3 +41,7 @@ coverage
 
 # Real band data for the seed script (see scripts/seed-band-data.ts)
 /band-data
+
+# Playwright
+test-results/
+playwright-report/

@@ -14,7 +14,7 @@ This is a Vue 3 + Vite static website for Lies From Granny. Use Yarn as the pack
 - Lint: `yarn lint` (ESLint runs with `--fix`)
 - Format source: `yarn format`
 
-There is currently no test script or test-runner configuration. Run `yarn type-check` and the relevant build or lint command after changes.
+Tests: `yarn test` (Vitest, specs beside the code, shared helpers in `src/test-utils/`) and `yarn test:e2e` (Playwright smoke specs in `e2e/`, read-only against the dev server on :8888, which must already be running; never start it). After changes run `yarn type-check`, `yarn lint` and `yarn test`, plus `yarn build` for config or build changes.
 
 ## Structure
 

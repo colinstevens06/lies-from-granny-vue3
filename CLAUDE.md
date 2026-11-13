@@ -20,7 +20,10 @@ Package manager is Yarn 3 (Berry, pinned via `.yarnrc.yml` → `.yarn/releases/`
 - `yarn build` — runs `type-check` and `build-only` in parallel (`npm-run-all`)
 - `yarn preview` — serve the production build
 
-**There is no test script and no test runner configured.** Do not invent `yarn test`. The verification gate after a change is `yarn type-check` plus `yarn lint`, and `yarn build` for anything touching config or build output.
+- `yarn test` — Vitest (`vitest run`, jsdom). Specs sit next to the code as `*.spec.ts`; shared factories (`makeForm`, `makeMyDays`, `makeBandAvailability`) and the PrimeVue `mountWithPrime` helper are in `src/test-utils/`. `yarn test:watch` for watch mode.
+- `yarn test:e2e` — Playwright smoke specs in `e2e/` (Chromium only), read-only against Colin's dev server on :8888. Needs `yarn netlify` already running; there is no `webServer` block and sessions never start it. Not part of `yarn test`.
+
+**Verification gate after a change:** `yarn type-check`, `yarn lint` and `yarn test`, plus `yarn build` for anything touching config or build output. Run `yarn test:e2e` when :8888 is up and the change touches `/da-band` flows. Pins to know: `@vue/test-utils` is held at 2.4.6 (2.4.7+ needs Vue 3.5; the repo is on 3.3) and Vitest at 0.34 (Vitest 1+ needs Vite 5).
 
 ## Architecture
 
