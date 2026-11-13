@@ -70,7 +70,10 @@ const main = async () => {
 	const url = connectionString();
 	console.log(`Target: ${new URL(url).host}${write ? ' (WRITING)' : ' (dry run; add --write to commit)'}`);
 
-	const { availability, practices } = (await import('../band-data/import')) as {
+	// A variable path on purpose: `band-data/` is gitignored, so on Netlify's build machine the file doesn't exist and a
+	// literal specifier would fail `vue-tsc` (and with it every deploy). tsx resolves it at run time.
+	const importPath = '../band-data/import';
+	const { availability, practices } = (await import(importPath)) as {
 		availability: AvailabilityImport[];
 		practices: PracticeImport[];
 	};
