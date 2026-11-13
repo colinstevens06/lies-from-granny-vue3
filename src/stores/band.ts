@@ -70,7 +70,11 @@ export const useBandStore = defineStore('band', () => {
 			availability.value = availability.value.map(r => (r.member === row.member ? row : r));
 			reapplyPendingAnswers();
 		},
-		onRejected() {
+		onRejected(entries) {
+			// The refused answers were applied optimistically. Drop them (unless a newer tap for that day is queued) so
+			// they can't outlive the reload while the lane is still busy.
+			const row = mineRow();
+			for (const [date] of entries) if (row && answerLane.pendingValue(date) === undefined) delete row.days[date];
 			reloadedNotice.value = true;
 			void load();
 		}
@@ -137,7 +141,7 @@ export const useBandStore = defineStore('band', () => {
 
 	/**
 	 * Fetches availability, forms and practices in parallel. Merge rule: my availability and my form answers apply only
-	 * if no save finished since the load began, and answers still pending keep their local value. Everything else applies.
+	 * if no save finished since the load began, and answers still pending are laid back over the server's row. Everything else applies.
 	 */
 	async function load() {
 		const startedAt = saveVersion;
@@ -153,7 +157,7 @@ export const useBandStore = defineStore('band', () => {
 			const mine = mineRow();
 
 			availability.value = avail.members.map(row =>
-				row.member === me.value?.member && (mineChanged || answerLane.busy.value) && mine ? mine : row
+				row.member === me.value?.member && mineChanged && mine ? mine : row
 			);
 			reapplyPendingAnswers();
 
