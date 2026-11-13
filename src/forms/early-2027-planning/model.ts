@@ -1,17 +1,12 @@
 import type { MemberId } from '../../models/band-member';
 
-export interface SongSuggestion {
-	title: string;
-	artist: string;
-}
-
 export interface SongPitch {
 	member: MemberId;
 	wantsNew: boolean;
 	/** ISO UTC instant. */
 	answeredAt: string;
-	/** In position order. */
-	songs: SongSuggestion[];
+	/** "Song – Artist" as typed. Present exactly when `wantsNew` is true. */
+	suggestion?: string;
 }
 
 export interface Early2027PlanningDetails {
@@ -21,5 +16,5 @@ export interface Early2027PlanningDetails {
 
 export interface SongPitchInput {
 	wantsNew: boolean;
-	songs?: SongSuggestion[];
+	suggestion?: string;
 }

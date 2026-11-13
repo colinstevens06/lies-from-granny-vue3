@@ -1,12 +1,10 @@
 <template>
 	<section class="form-responses-extra">
-		<h3>New songs</h3>
-		<ul v-if="songs.length" class="form-responses__songs">
-			<li v-for="song in songs" :key="`${song.short}-${song.title}`">
-				{{ song.title }} – {{ song.artist }} ({{ song.short }})
-			</li>
+		<h3>Song suggestions</h3>
+		<ul v-if="suggestions.length" class="form-responses__songs">
+			<li v-for="item in suggestions" :key="item.short">{{ item.suggestion }} ({{ item.short }})</li>
 		</ul>
-		<p v-else class="band-card__meta">No songs yet.</p>
+		<p v-else class="band-card__meta">No suggestions yet.</p>
 	</section>
 </template>
 
@@ -17,11 +15,11 @@
 
 	const props = defineProps<{ form: Form }>();
 
-	/** Every member's suggestions, in roster order, each tagged with who suggested it. */
-	const songs = computed(() =>
+	/** Every suggestion, in roster order, tagged with who made it. */
+	const suggestions = computed(() =>
 		props.form.details.songPitches.flatMap(pitch => {
 			const short = members.find(m => m.id === pitch.member)?.short ?? pitch.member;
-			return pitch.songs.map(song => ({ ...song, short }));
+			return pitch.suggestion ? [{ suggestion: pitch.suggestion, short }] : [];
 		})
 	);
 </script>

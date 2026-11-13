@@ -21,9 +21,10 @@ export interface FormRule {
 export const formRules: Record<FormSlug, FormRule> = {
 	'early-2027-planning': {
 		mineOf,
-		missing: (form, myDays, mine, today) => {
-			const result = missing(form, myDays, mine as ReturnType<typeof mineOf>, today);
-			return { ...result, done: result.missingDays === 0 && !result.songsMissing };
+		// The song question is optional, so only availability gates the sign-off.
+		missing: (form, myDays, _mine, today) => {
+			const result = missing(form, myDays, today);
+			return { ...result, done: result.missingDays === 0 };
 		}
 	}
 };

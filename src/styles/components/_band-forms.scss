@@ -195,7 +195,14 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 	}
 }
 
-// ---- Yes/no rows ----
+// ---- Yes/no text ----
+// The form screen: its sections sit a clear gap apart.
+.form-screen {
+	display: flex;
+	flex-direction: column;
+	gap: 2.5rem;
+}
+
 .yes-no {
 	display: flex;
 	flex-direction: column;
@@ -242,15 +249,6 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 		}
 	}
 
-	&__row {
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-		padding: 0.75rem;
-		border: 1px solid $bf-line;
-		border-radius: 8px;
-	}
-
 	&__field {
 		display: flex;
 		flex-direction: column;
@@ -264,18 +262,5 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 	&__hint {
 		color: $lfg-pink--hover-dark;
 		font-weight: 700;
-	}
-
-	&__remove,
-	&__add {
-		align-self: flex-start;
-		padding: 0;
-		border: none;
-		background: none;
-		color: $lfg-pink--hover-dark;
-		font: inherit;
-		font-weight: 700;
-		text-decoration: underline;
-		cursor: pointer;
 	}
 }
