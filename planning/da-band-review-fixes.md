@@ -8,16 +8,18 @@ The work list from the two reviews: [security](2026-11-da-band-security-review.m
 
 ## Fix before release
 
-1. **Code #3, confirmed:** in the weekday sheet, re-tapping the selected answer does nothing, so the overwrite switch can't re-apply the same answer. Stop driving the selection from `last`, and show the last tap in the status text only.
-2. **Code #1:** a rejected availability save leaves the refused answers on screen. Drop the rejected entries from `row.days` before `load()`.
-3. **Code #2:** admin lock-in can send days that are no longer offered. Send only `picked.filter(inEither)`, or prune `picked` on change.
-4. **Code #4:** a network or 5xx error from `loadMe` blanks navigation, and a failed auth chunk keeps the whole site from mounting. Catch the error in the guard, and always mount in `main.ts`.
-5. **Security #1:** harden the dev-bypass gate. Also require no `DEPLOY_ID` and no `NETLIFY`, after checking what `netlify dev` sets, or load the bypass with a dynamic import. Add a runbook note never to set those env vars in the Netlify UI.
-6. **Security #3:** add `X-Frame-Options: DENY`, `frame-ancestors 'none'`, `nosniff` and a `Referrer-Policy` for `/da-band/*` in `public/_headers`.
+Done 2026-11-13 on `feature/da-band`; the hash is the commit.
+
+- [x] (b8da458) **Code #3, confirmed:** in the weekday sheet, re-tapping the selected answer does nothing, so the overwrite switch can't re-apply the same answer. Stop driving the selection from `last`, and show the last tap in the status text only.
+- [x] (38becb4) **Code #1:** a rejected availability save leaves the refused answers on screen. Drop the rejected entries from `row.days` before `load()`.
+- [x] (9a92a1a) **Code #2:** admin lock-in can send days that are no longer offered. Send only `picked.filter(inEither)`, or prune `picked` on change.
+- [x] (825ad2b) **Code #4:** a network or 5xx error from `loadMe` blanks navigation, and a failed auth chunk keeps the whole site from mounting. Catch the error in the guard, and always mount in `main.ts`.
+- [x] (a3252d6) **Security #1:** harden the dev-bypass gate. Also require no `DEPLOY_ID` and no `NETLIFY`, after checking what `netlify dev` sets, or load the bypass with a dynamic import. Add a runbook note never to set those env vars in the Netlify UI.
+- [x] (275e371) **Security #3:** add `X-Frame-Options: DENY`, `frame-ancestors 'none'`, `nosniff` and a `Referrer-Policy` for `/da-band/*` in `public/_headers`.
 
 ## Batch of small fixes (one commit is fine)
 
-Code #5–#12: the forms list freezing during `load()`, "today" going stale past midnight, clearing a saved song suggestion, the retry storm while failing, `onSaved` ordering, the weekday status overstating what happened, `showIsoDate` parsing "Sept", and loading/error states that look like empty pages. Security #2 (an hour of access after a role is removed) and #5–#7 are runbook notes, not code.
+- [x] (ecb7c85) Code #5–#12, with the runbook notes for security #2 and #5–#7: the forms list freezing during `load()`, "today" going stale past midnight, clearing a saved song suggestion, the retry storm while failing, `onSaved` ordering, the weekday status overstating what happened, `showIsoDate` parsing "Sept", and loading/error states that look like empty pages. Security #2 (an hour of access after a role is removed) and #5–#7 are runbook notes, not code.
 
 ## Not covered by either review
 
