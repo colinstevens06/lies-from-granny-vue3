@@ -44,10 +44,9 @@ Do these on a separate branch off `main`, after the da-band work lands. Open a P
    - Remove the `# Yarn` block from `.gitignore`.
 3. **Command references**, swapping `yarn` for `pnpm`:
    - `CLAUDE.md`: the "Yarn 3 (Berry...)" line and the commands list. Say "never `npm` or `yarn`".
-   - `AGENTS.md`: the commands list and the `yarn netlify` note. Keep it consistent with `CLAUDE.md`.
    - `README.md`: "uses yarn" line and the command list.
    - `.claude/launch.json`: `"runtimeExecutable": "yarn"` becomes `pnpm`.
-   - `.github/skills/site-images/SKILL.md` and `.github/skills/show-blurb-writing/SKILL.md`: one `yarn type-check` line each.
+   - `.claude/skills/site-images/SKILL.md` and `.claude/skills/show-blurb-writing/SKILL.md`: one `yarn type-check` line each.
    - `planning/2026-da-band-edition.md` and `planning/2026-11-da-band-auth-plan.md`: about 20 `yarn` mentions, including `yarn netlify link`, `yarn seed:band`, and `yarn prettier --write`. The last becomes `pnpm exec prettier --write`.
    - Re-run `grep -rIn yarn . --exclude-dir=node_modules --exclude-dir=.git` at the end. It should return nothing but this file and history.
 4. **Verify locally**: `pnpm install --frozen-lockfile`, `pnpm type-check`, `pnpm lint`, `pnpm build`, and `pnpm netlify` (open the site, check that images load). `pnpm lint` runs `--fix`, so check `git status` afterward for unintended edits.

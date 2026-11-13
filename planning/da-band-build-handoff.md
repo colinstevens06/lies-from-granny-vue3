@@ -1,6 +1,6 @@
 # /da-band build: handoff (November 12, 2026)
 
-The plan is `2026-11-da-band-auth-plan.md` (frozen). Operating notes are in `.github/skills/band-data/SKILL.md`. Project rules are in `CLAUDE.md` and `AGENTS.md`. This file only covers what those don't.
+The plan is `2026-11-da-band-auth-plan.md` (frozen). Operating notes are in `.claude/skills/band-data/SKILL.md`. Project rules are in `CLAUDE.md`. This file only covers what those don't.
 
 ## Where things stand
 

@@ -67,10 +67,11 @@ These are the things that break silently if only one side is edited.
 
 ## Repo skills
 
-`.github/skills/` holds task-specific guidance worth reading before the matching work:
+`.claude/skills/` holds task-specific guidance that loads when the task matches:
 
+- `band-data` — the `/da-band` database, Netlify Functions, migrations, the seed script, Identity members and roles, adding a band form
 - `show-blurb-writing` — adding a `Gig` entry to `shows.ts`, including band voice and required fields
 - `show-poster-placeholders` — generating the minimal ring-poster placeholder PNG for an upcoming show with no real flyer (SVG + `sharp`; `<textPath>` does not render, arc text must be placed per character)
 - `site-images` — the full image rules: asset paths, CDN widths per slot, preload mechanics, alt text and dimensions
 
-`AGENTS.md` is a shorter sibling of this file covering the same ground; keep the two consistent if you change project conventions. `planning/` holds a UI/UX review and priority board — background on what's intentionally unfinished (contact-form wiring, page `h1`s, song search), not a task list to act on unprompted.
+This repo is Claude-only: no `AGENTS.md`, `.github/skills/` or other Copilot instruction files. `planning/` holds a UI/UX review and priority board — background on what's intentionally unfinished (contact-form wiring, page `h1`s, song search), not a task list to act on unprompted.

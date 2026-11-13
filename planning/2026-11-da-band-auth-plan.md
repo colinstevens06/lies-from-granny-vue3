@@ -493,8 +493,8 @@ There are no specialist agents, so the building session does each phase, one com
 | P7 | `pick-dates.vue`; edits to `da-band-admin-form.vue`, `form-status-card.vue`, `da-band.vue` |
 | P8 | `da-band-admin-practices.vue`, `practice-editor.vue`; edits to the router, the store, `da-band-admin.vue` (the Practices tile) |
 
-**Runbook** (`.github/skills/band-data/SKILL.md`, part of each phase):
-- **P1:** local dev and migrations, the seed, the production `DATABASE_URL`, the promote path, adding or renaming a member, and the commands in `CLAUDE.md` and `AGENTS.md`.
+**Runbook** (`.claude/skills/band-data/SKILL.md`, part of each phase):
+- **P1:** local dev and migrations, the seed, the production `DATABASE_URL`, the promote path, adding or renaming a member, and the commands in `CLAUDE.md`.
 - **Fixing a form's due date or title:** a new forward migration.
 - **P2:** inviting a member: invite their Google address in the Identity dashboard, then give them exactly one slug role (and `admin` for Colin only). Renaming a member also means renaming their role.
 - **P3:** importing practices.
@@ -576,7 +576,7 @@ Paste this into `CLAUDE.md`. This planning session wasn't cleared to edit that f
 - **Plans:** `planning/` (flat, `YYYY-MM-<topic>-plan.md`); backlog in `planning/da-band-backlog.md`.
 - **Specialist agents:** none; the building session does the work itself.
 - **Reviewers:** `plan-reviewer` (plans), `/code-review` and `/security-review` (code; security for anything under `netlify/` or touching auth).
-- **Rules to read first:** this file's Cross-file invariants; `.github/skills/` for shows, posters, images and band data (including "add a new band form").
+- **Rules to read first:** this file's Cross-file invariants; `.claude/skills/` for shows, posters, images and band data (including "add a new band form").
 - **Extra Risk Flags:** anything that makes band-internal data reachable without `getCurrentMember`; anything that puts emails or schedules in the repo (it's public).
 - **Deploy:** Netlify builds `main` on push; deploy previews per PR, each with a database branch copied from production. Functions in `netlify/functions/`; migrations in `netlify/database/migrations/` (forward-only, applied on deploy, applied locally by hand).
 ```

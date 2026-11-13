@@ -137,4 +137,4 @@ Fix: wrap the sections in `v-else` after the loading/error line.
 - Not read: `practice-editor.vue`, `utils/practice-input.ts`, `da-band-admin*.vue` beyond the form page, `da-band-history.vue`, `day-answers-sheet.vue`, `form-responses.vue`, `form-status-card.vue`, `utils/form-status.ts`, `copy-button.vue`, the nav template, `shows.vue` changes.
 - The SCSS (`_da-band.scss`, `_primevue-structure.scss`, `_nav.scss`) was not audited for leftover BEM spacing/layout; I only saw that `answer-cell--*`, `answer-dot--*` and `yes-no*` classes are still used by templates and presumably style colors. Whether those belong under "brand tokens" is not decided here.
 - Whether the server refuses a lock-in day that is no longer valid (#2), and what it returns for an out-of-range save (#1), is the other session's area.
-- `.github/skills` and `planning/` docs were not reviewed against the code.
+- `.claude/skills` and `planning/` docs were not reviewed against the code.
