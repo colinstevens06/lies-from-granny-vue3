@@ -102,11 +102,15 @@
 /* ==================== FORM TO-DO CARD, PROGRESS, SIGN-OFF ===================== */
 
 .form-todo {
+	border: 2px solid $lfg-pink;
+
 	&__kicker {
 		margin: 0;
-		font-size: 0.8rem;
-		font-weight: bold;
+		font-size: 0.75rem;
+		font-weight: 700;
 		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		color: $lfg-pink--hover-dark;
 	}
 
 	&__due {
@@ -118,37 +122,73 @@
 		}
 	}
 
-	&--overdue {
-		border-color: $lfg-pink;
-
-		.form-todo__due {
-			color: $lfg-pink;
-		}
-	}
-
-	&__lines {
+	// `& &__lines` out-ranks `.band-card ul` (da-band view), which adds a 1.5rem start padding meant for bulleted lists.
+	& &__lines {
 		display: flex;
 		flex-direction: column;
-		gap: 0.25rem;
+		gap: 0.4rem;
 		margin: 0.25rem 0;
 		padding: 0;
 		list-style: none;
 
 		li {
 			display: flex;
-			flex-wrap: wrap;
+			align-items: baseline;
 			justify-content: space-between;
 			gap: 0.25rem 1rem;
+			padding: 6px 10px;
+			border-radius: 6px;
+			background: $lfg-surface-gray;
+			font-size: 0.9rem;
+		}
+
+		span {
+			flex: none;
+			color: rgba(0, 0, 0, 0.6);
+			font-size: 0.85rem;
+			white-space: nowrap;
 		}
 	}
 
-	&__line--ok span {
-		color: rgba(0, 0, 0, 0.6);
+	& &__line--ok span {
+		color: $bf-yes;
+		font-weight: 700;
 	}
 
-	&__button {
+	& &__button {
 		align-self: flex-start;
+		padding: 10px 16px;
+		border: none;
+		border-radius: 6px;
+		background: $lfg-pink;
+		color: #fff;
+		font-weight: 700;
 		text-decoration: none;
+	}
+
+	// Overdue: the whole card turns pink, white on #ed1d7a (bold text only).
+	&--overdue {
+		background: $lfg-pink;
+		color: #fff;
+
+		.form-todo__kicker,
+		.form-todo__due {
+			color: rgba(255, 255, 255, 0.9);
+		}
+
+		.form-todo__lines li {
+			background: rgba(255, 255, 255, 0.15);
+		}
+
+		.form-todo__lines span,
+		.form-todo__line--ok span {
+			color: #fff;
+		}
+
+		.form-todo__button {
+			background: #fff;
+			color: $lfg-pink--hover-dark;
+		}
 	}
 }
 
