@@ -25,14 +25,14 @@
 				@input="publish"
 			/>
 			<small v-if="textValue.trim() === ''" class="font-bold text-pink-600">
-				Song is required when Yes is selected.
+				Type the song to save it, or choose No.
 			</small>
 		</div>
 	</fieldset>
 </template>
 
 <script setup lang="ts">
-	import { ref } from 'vue';
+	import { ref, watch } from 'vue';
 	import InputText from 'primevue/inputtext';
 	import SelectButton from 'primevue/selectbutton';
 
@@ -61,6 +61,17 @@
 	const inputId = `yes-no-${Math.random().toString(36).slice(2, 8)}`;
 	const wantsValue = ref(props.wants);
 	const textValue = ref(props.text ?? '');
+
+	// A refresh (a reload after a refused save, say) changes what's saved. Follow it, but leave the box alone when it
+	// only differs by whitespace the member is still typing.
+	watch(
+		() => [props.wants, props.text] as const,
+		([wants, text]) => {
+			if (wants !== wantsValue.value) wantsValue.value = wants;
+			if (wants && text !== undefined && text !== textValue.value.trim()) textValue.value = text;
+			if (wants === false) textValue.value = '';
+		}
+	);
 
 	const publish = () => {
 		if (wantsValue.value === undefined) return;

@@ -25,6 +25,7 @@
 			v-model:visible="sheetOpen"
 			:blank-counts="blankCounts"
 			:day-counts="dayCounts"
+			:count-changes="(weekday, answer, overwrite) => changesFor(weekday, answer, overwrite).length"
 			@fill="fillWeekday"
 		/>
 	</section>
@@ -79,12 +80,15 @@
 	const blankCounts = computed(() => blankDaysByWeekday.value.map(days => days.length));
 	const dayCounts = computed(() => openDaysByWeekday.value.map(days => days.length));
 
-	/** `overwrite` also changes days already answered; otherwise only blank days are filled. */
-	const fillWeekday = (weekday: number, answer: Answer, overwrite: boolean) => {
-		const days = overwrite
+	/** The changes a weekday fill makes. `overwrite` also changes days already answered; otherwise only blank days fill. */
+	const changesFor = (weekday: number, answer: Answer, overwrite: boolean) =>
+		(overwrite
 			? openDaysByWeekday.value[weekday].filter(day => props.myDays[day]?.answer !== answer)
-			: blankDaysByWeekday.value[weekday];
-		const changes = days.map(date => ({ date, answer }));
+			: blankDaysByWeekday.value[weekday]
+		).map(date => ({ date, answer }));
+
+	const fillWeekday = (weekday: number, answer: Answer, overwrite: boolean) => {
+		const changes = changesFor(weekday, answer, overwrite);
 		if (changes.length > 0) emit('change', changes, true);
 	};
 </script>

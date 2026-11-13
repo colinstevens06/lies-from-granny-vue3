@@ -33,11 +33,11 @@
 	import AnswerCell from '@components/band/forms/answer-cell.vue';
 	import BandLink from '@components/band/band-link.vue';
 	import MonthGrid from '@components/band/month-grid.vue';
-	import { easternNow } from '@utils/dates';
+	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandStore } from '@/stores/band';
 
 	const band = useBandStore();
 	onMounted(band.load);
 
-	const today = easternNow().slice(0, 10);
+	const { today } = useEasternNow();
 </script>

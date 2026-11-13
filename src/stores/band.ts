@@ -80,18 +80,24 @@ export const useBandStore = defineStore('band', () => {
 		}
 	});
 
-	const formLane = useSaveLane<unknown, Form>({
+	/** Forms whose answers saved since the current load began: that load's copy of them may predate the save. */
+	const formsSavedDuringLoad = new Set<number>();
+
+	const formLane = useSaveLane<unknown, Form[]>({
 		delayMs: 600,
 		async send(entries) {
-			// Latest whole body per form wins; one request per form.
-			let result!: { form: Form };
-			for (const [formId, body] of entries) result = await bandApi(`forms/${formId}/answers`, { method: 'PUT', body });
-			return result.form;
+			// Latest whole body per form wins; one request per form, and every form's server copy is kept.
+			const saved: Form[] = [];
+			for (const [formId, body] of entries) {
+				saved.push((await bandApi<{ form: Form }>(`forms/${formId}/answers`, { method: 'PUT', body })).form);
+			}
+			return saved;
 		},
-		onSaved(_entries, form) {
+		onSaved(_entries, savedForms) {
 			saveVersion++;
 			reloadedNotice.value = false;
-			forms.value = forms.value.map(f => (f.id === form.id ? form : f));
+			for (const saved of savedForms) formsSavedDuringLoad.add(saved.id);
+			forms.value = forms.value.map(f => savedForms.find(saved => saved.id === f.id) ?? f);
 		},
 		onRejected() {
 			reloadedNotice.value = true;
@@ -140,11 +146,13 @@ export const useBandStore = defineStore('band', () => {
 	// ── Loading ─────────────────────────────────────────────────────────────
 
 	/**
-	 * Fetches availability, forms and practices in parallel. Merge rule: my availability and my form answers apply only
-	 * if no save finished since the load began, and answers still pending are laid back over the server's row. Everything else applies.
+	 * Fetches availability, forms and practices in parallel. Merge rule: my availability applies only if no save finished
+	 * since the load began, and answers still pending are laid back over the server's row. A form keeps its local copy only
+	 * while its answers are pending or just saved; every other form takes the server's copy. Everything else applies.
 	 */
 	async function load() {
 		const startedAt = saveVersion;
+		formsSavedDuringLoad.clear();
 		if (loadState.value !== 'ready') loadState.value = 'loading';
 
 		try {
@@ -162,8 +170,8 @@ export const useBandStore = defineStore('band', () => {
 			reapplyPendingAnswers();
 
 			forms.value = formList.forms.map(form =>
-				(mineChanged || formLane.pendingValue(String(form.id)) !== undefined) && forms.value.some(f => f.id === form.id)
-					? forms.value.find(f => f.id === form.id)!
+				formLane.pendingValue(String(form.id)) !== undefined || formsSavedDuringLoad.has(form.id)
+					? forms.value.find(f => f.id === form.id) ?? form
 					: form
 			);
 			practices.value = practiceList.practices;

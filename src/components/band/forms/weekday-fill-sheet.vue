@@ -58,6 +58,8 @@
 		blankCounts: number[];
 		/** All days from today on, per weekday, answered or not. */
 		dayCounts: number[];
+		/** How many days a fill would actually change, so the status never claims more than was sent. */
+		countChanges: (weekday: number, answer: Answer, overwrite: boolean) => number;
 	}>();
 
 	const emit = defineEmits<{
@@ -80,11 +82,13 @@
 		}
 	);
 
-	const reachable = (weekday: number) => (overwrite.value ? props.dayCounts : props.blankCounts)[weekday];
+	// A status from the other mode would sit next to the wrong switch position.
+	watch(overwrite, () => Object.keys(last).forEach(key => delete last[Number(key)]));
 
 	const fill = (weekday: number, answer: Answer) => {
-		last[weekday] = { answer, filled: reachable(weekday) };
-		if (reachable(weekday) > 0) emit('fill', weekday, answer, overwrite.value);
+		const changed = props.countChanges(weekday, answer, overwrite.value);
+		last[weekday] = { answer, filled: changed };
+		if (changed > 0) emit('fill', weekday, answer, overwrite.value);
 	};
 
 	const status = (weekday: number) => {

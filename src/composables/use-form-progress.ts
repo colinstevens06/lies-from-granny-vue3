@@ -2,7 +2,7 @@ import { computed } from 'vue';
 import type { Form } from '@models/form';
 import { clientFormFor } from '@/forms';
 import { ruleFor } from '@/forms/rules';
-import { easternNow } from '@utils/dates';
+import { useEasternNow } from '@/composables/use-eastern-now';
 import { useBandStore } from '@/stores/band';
 
 /**
@@ -11,17 +11,17 @@ import { useBandStore } from '@/stores/band';
  */
 export const useFormProgress = (form: () => Form) => {
 	const band = useBandStore();
-	const today = easternNow().slice(0, 10);
+	const { today } = useEasternNow();
 
 	const myDays = computed(() => band.myDays);
 	const mine = computed(() => (band.me ? ruleFor(form().slug)?.mineOf(form(), band.me.member) : undefined));
-	const missing = computed(() => ruleFor(form().slug)?.missing(form(), myDays.value, mine.value, today));
+	const missing = computed(() => ruleFor(form().slug)?.missing(form(), myDays.value, mine.value, today.value));
 	const done = computed(() => missing.value?.done === true);
 	const lines = computed(() =>
 		missing.value
 			? clientFormFor(form().slug)?.todoLines(form(), mine.value, {
 					myDays: myDays.value,
-					today,
+					today: today.value,
 					missing: missing.value
 			  }) ?? []
 			: []

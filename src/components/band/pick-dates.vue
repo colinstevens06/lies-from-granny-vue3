@@ -60,7 +60,8 @@
 	import { shows } from '@components/shows/shows';
 	import { pickGroups } from '@utils/band-calendar';
 	import { BandApiError } from '@utils/band-api';
-	import { easternNow, formatCalendarDate } from '@utils/dates';
+	import { formatCalendarDate } from '@utils/dates';
+	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandStore } from '@/stores/band';
 
 	// The admin's lock-in: pick dates, then Lock in creates those practices (time TBD) and closes the form.
@@ -70,9 +71,9 @@
 	const CHIP_PT = { button: { class: 'border-1 border-round-3xl' } };
 
 	const band = useBandStore();
-	const today = easternNow().slice(0, 10);
+	const { today } = useEasternNow();
 
-	const groups = computed(() => pickGroups(props.form, band.availability, band.practices, today, shows));
+	const groups = computed(() => pickGroups(props.form, band.availability, band.practices, today.value, shows));
 
 	const picked = ref<string[]>([]);
 	const message = ref('');

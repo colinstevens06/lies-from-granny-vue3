@@ -66,7 +66,7 @@
 	// The progress composable wants a form even before one loads; it's only read once `form` exists.
 	const { today, done, lines } = useFormProgress(() => form.value!);
 
-	const overdueDays = computed(() => (form.value ? Math.max(0, daysBetween(form.value.dueDay, today)) : 0));
+	const overdueDays = computed(() => (form.value ? Math.max(0, daysBetween(form.value.dueDay, today.value)) : 0));
 	const dueText = computed(() =>
 		!form.value
 			? ''

@@ -43,7 +43,7 @@
 
 	const { today, done, lines } = useFormProgress(() => props.form);
 
-	const overdueDays = computed(() => Math.max(0, daysBetween(props.form.dueDay, today)));
+	const overdueDays = computed(() => Math.max(0, daysBetween(props.form.dueDay, today.value)));
 	const overdue = computed(() => overdueDays.value > 0);
 	const dueText = computed(() =>
 		overdue.value

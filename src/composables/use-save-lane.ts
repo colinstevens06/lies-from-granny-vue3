@@ -50,12 +50,13 @@ export const useSaveLane = <V, R>({ delayMs, send, onSaved, onRejected }: SaveLa
 		touch();
 		const entries = [...batch];
 
+		let saved: { result: R } | undefined;
 		try {
 			const result = await send(entries);
 			inflight = undefined;
 			failures = 0;
 			failing.value = false;
-			onSaved(entries, result);
+			saved = { result };
 		} catch (error) {
 			// A BandApiError, matched by shape so this file doesn't pull band-api into the main bundle. Status 0 is no response.
 			const status = (error as { status?: number }).status ?? 0;
@@ -75,15 +76,25 @@ export const useSaveLane = <V, R>({ delayMs, send, onSaved, onRejected }: SaveLa
 		}
 
 		touch();
-		if (queue.size > 0 && !timer) schedule(delayMs);
+		if (queue.size > 0 && !timer && !failing.value) schedule(delayMs);
+
+		// After the lane's own bookkeeping, so a throw here can't look like a failed send and resend a saved batch.
+		if (saved) {
+			try {
+				onSaved(entries, saved.result);
+			} catch (error) {
+				console.error('Save lane: onSaved threw', error);
+			}
+		}
 	}
 
-	/** Queues a change. `immediate` flushes now; any change while failing retries at once. */
+	/** Queues a change. `immediate` flushes now. While failing it only joins the queue: the scheduled retry sends it. */
 	const enqueue = (key: string, value: V, { immediate = false } = {}) => {
 		queue.set(key, value);
 		touch();
 
-		if (immediate || failing.value) void flush();
+		if (failing.value) return;
+		if (immediate) void flush();
 		else schedule(delayMs);
 	};
 
