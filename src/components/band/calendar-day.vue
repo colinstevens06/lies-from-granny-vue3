@@ -1,4 +1,5 @@
 <template>
+	<!-- eslint-disable-next-line vue/no-restricted-html-elements -- a calendar cell with its own status styling and dots, not a standard button -->
 	<button
 		type="button"
 		class="calendar-day"

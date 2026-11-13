@@ -1,4 +1,5 @@
 <template>
+	<!-- eslint-disable-next-line vue/no-restricted-html-elements -- a calendar cell with a 3-state tap cycle, not a standard button -->
 	<button
 		type="button"
 		class="answer-cell"

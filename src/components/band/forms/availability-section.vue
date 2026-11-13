@@ -4,7 +4,7 @@
 			{{ prefilled }} {{ prefilled === 1 ? 'date' : 'dates' }} came in from your calendar. Check them, change anything
 			that's off, then sign off.
 		</p>
-		<button type="button" class="availability-section__link" @click="sheetOpen = true">Fill a weekday at once…</button>
+		<Button label="Fill a weekday at once…" link class="availability-section__link" @click="sheetOpen = true" />
 		<WeekGrid
 			:start-day="form.availability.startDay"
 			:end-day="form.availability.endDay"
@@ -18,6 +18,7 @@
 
 <script setup lang="ts">
 	import { computed, ref } from 'vue';
+	import Button from 'primevue/button';
 	import type { Answer, AvailabilityChange, DayAnswer } from '@models/availability';
 	import type { Form } from '@models/form';
 	import { addDays, weekdayIndex } from '@utils/dates';

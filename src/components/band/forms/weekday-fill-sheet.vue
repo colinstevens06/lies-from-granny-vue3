@@ -9,16 +9,15 @@
 		<p class="weekday-fill__note">Fills only the days you haven't answered. Anything you picked stays as it is.</p>
 		<div v-for="(name, weekday) in WEEKDAYS" :key="name" class="weekday-fill__row">
 			<b>{{ name }}</b>
-			<button
-				v-for="answer in ANSWERS"
-				:key="answer"
-				type="button"
-				class="weekday-fill__button"
-				:class="{ 'weekday-fill__button--done': last[weekday]?.answer === answer }"
-				@click="fill(weekday, answer)"
-			>
-				{{ ANSWER_LABEL[answer] }}
-			</button>
+			<SelectButton
+				:model-value="last[weekday]?.answer"
+				:options="ANSWER_OPTIONS"
+				option-label="label"
+				option-value="value"
+				:allow-empty="false"
+				:aria-label="`Fill every blank ${name}`"
+				@update:model-value="fill(weekday, $event)"
+			/>
 			<small role="status">{{ status(weekday) }}</small>
 		</div>
 	</Sidebar>
@@ -26,12 +25,16 @@
 
 <script setup lang="ts">
 	import { reactive, watch } from 'vue';
+	import SelectButton from 'primevue/selectbutton';
 	import Sidebar from 'primevue/sidebar';
 	import type { Answer } from '@models/availability';
 	import { ANSWER_LABEL } from '@utils/band-calendar';
 
 	const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-	const ANSWERS: Answer[] = ['yes', 'no', 'maybe'];
+	const ANSWER_OPTIONS = (['yes', 'no', 'maybe'] as Answer[]).map(answer => ({
+		value: answer,
+		label: ANSWER_LABEL[answer]
+	}));
 
 	const props = defineProps<{
 		visible: boolean;

@@ -24,6 +24,21 @@ module.exports = {
 		// Enable vue/scrip-setup-uses-vars rule
 		'vue/script-setup-uses-vars': 'error'
 	},
+	overrides: [
+		{
+			// PrimeVue already provides the control: use Button or SelectButton. A plain element needs a reason comment.
+			files: ['src/components/band/**/*.vue', 'src/forms/**/*.vue', 'src/router/views/da-band*.vue'],
+			rules: {
+				'vue/no-restricted-html-elements': [
+					'error',
+					{
+						element: 'button',
+						message: 'Use PrimeVue Button (or SelectButton for a choice). Disable with a reason if a plain button fits.'
+					}
+				]
+			}
+		}
+	],
 	parserOptions: {
 		ecmaVersion: 'latest'
 	}

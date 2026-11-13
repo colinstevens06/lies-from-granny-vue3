@@ -74,13 +74,14 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 	&__link {
 		align-self: flex-start;
 		padding: 0;
-		border: none;
-		background: none;
-		color: $lfg-pink--hover-dark;
-		font: inherit;
 		font-weight: 700;
-		text-decoration: underline;
-		cursor: pointer;
+		color: $lfg-pink--hover-dark;
+
+		&:enabled:hover {
+			background: none;
+			color: $lfg-pink;
+			text-decoration: underline;
+		}
 	}
 }
 
@@ -160,7 +161,7 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 
 	&__row {
 		display: grid;
-		grid-template-columns: 40px repeat(3, minmax(0, 1fr)) 84px;
+		grid-template-columns: 40px minmax(0, 1fr) 84px;
 		gap: 6px;
 		align-items: center;
 		padding: 4px 0;
@@ -173,25 +174,12 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 		}
 	}
 
-	&__button {
-		min-height: 40px;
-		border: 1px solid #ced4da;
-		border-radius: 6px;
-		background: #fff;
-		font: inherit;
-		font-size: 14px;
-		cursor: pointer;
-
-		&:disabled {
-			opacity: 0.35;
-			cursor: default;
-		}
-
-		&--done {
-			border-color: $bf-yes;
-			background: $bf-yes;
-			color: #fff;
-		}
+	// The chosen answer turns green, so a tap shows it landed.
+	.p-selectbutton .p-button.p-highlight,
+	.p-selectbutton .p-button.p-highlight:hover {
+		border-color: $bf-yes;
+		background: $bf-yes;
+		color: #fff;
 	}
 }
 
@@ -221,32 +209,24 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 	&__choice {
 		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 6px;
+
+		.p-button {
+			justify-content: center;
+			min-height: 48px;
+			font-weight: 700;
+		}
 	}
 
-	&__button {
-		min-height: 48px;
-		border: 1px solid #ced4da;
-		border-radius: 6px;
-		background: #fff;
-		font: inherit;
-		font-size: 16px;
-		font-weight: 700;
-		cursor: pointer;
+	&--yes .p-button.p-highlight,
+	&--yes .p-button.p-highlight:hover {
+		border-color: $bf-yes;
+		background: $bf-yes;
+	}
 
-		&[aria-pressed='true'] {
-			color: #fff;
-		}
-
-		&--yes[aria-pressed='true'] {
-			border-color: $bf-yes;
-			background: $bf-yes;
-		}
-
-		&--no[aria-pressed='true'] {
-			border-color: $bf-no;
-			background: $bf-no;
-		}
+	&--no .p-button.p-highlight,
+	&--no .p-button.p-highlight:hover {
+		border-color: $bf-no;
+		background: $bf-no;
 	}
 
 	&__field {

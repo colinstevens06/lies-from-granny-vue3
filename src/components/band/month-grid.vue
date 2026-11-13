@@ -1,28 +1,18 @@
 <template>
 	<section class="month-grid">
 		<header class="month-grid__header">
-			<button
-				type="button"
-				class="month-grid__nav"
-				:disabled="index === 0"
-				aria-label="Previous month"
-				@click="index--"
-			>
-				&lsaquo;
-			</button>
+			<Button icon="pi pi-chevron-left" text :disabled="index === 0" aria-label="Previous month" @click="index--" />
 			<div class="month-grid__title">
 				<strong>{{ month.label }}</strong>
 				<small v-if="inForm">In the {{ form?.title }} form</small>
 			</div>
-			<button
-				type="button"
-				class="month-grid__nav"
+			<Button
+				icon="pi pi-chevron-right"
+				text
 				:disabled="index === months.length - 1"
 				aria-label="Next month"
 				@click="index++"
-			>
-				&rsaquo;
-			</button>
+			/>
 		</header>
 
 		<div class="month-grid__row month-grid__row--dow">
@@ -39,6 +29,7 @@
 
 <script setup lang="ts">
 	import { computed, ref } from 'vue';
+	import Button from 'primevue/button';
 	import type { Form } from '@models/form';
 	import { monthsFrom, weeksInRange } from '@utils/band-calendar';
 

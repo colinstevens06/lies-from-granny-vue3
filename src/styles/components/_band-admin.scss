@@ -261,18 +261,16 @@
 		gap: 0.4rem;
 	}
 
-	&__chip {
-		padding: 0.35rem 0.75rem;
-		border: 1px solid rgba(0, 0, 0, 0.25);
+	// Separate pills, not one joined group.
+	&__chips.p-selectbutton.p-button-group .p-button {
+		border-width: 1px;
 		border-radius: 999px;
-		background: #fff;
-		cursor: pointer;
+	}
 
-		&[aria-pressed='true'] {
-			border-color: $lfg-pink;
-			background: $lfg-pink;
-			color: #fff;
-		}
+	&__option small {
+		display: block;
+		font-size: 0.7rem;
+		font-weight: normal;
 	}
 
 	&__message {

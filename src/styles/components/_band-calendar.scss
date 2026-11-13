@@ -23,21 +23,6 @@ $bc-possible: $lfg-poster-yellow;
 		text-align: center;
 	}
 
-	&__nav {
-		width: 2.5rem;
-		height: 2.5rem;
-		border: 1px solid rgba(0, 0, 0, 0.2);
-		border-radius: 8px;
-		background: #fff;
-		font-size: 1.4rem;
-		cursor: pointer;
-
-		&:disabled {
-			opacity: 0.35;
-			cursor: default;
-		}
-	}
-
 	&__row {
 		display: grid;
 		grid-template-columns: repeat(7, minmax(0, 1fr));

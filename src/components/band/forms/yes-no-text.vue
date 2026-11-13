@@ -1,21 +1,17 @@
 <template>
-	<fieldset class="yes-no">
+	<fieldset class="yes-no" :class="{ 'yes-no--yes': wantsValue === true, 'yes-no--no': wantsValue === false }">
 		<legend class="yes-no__prompt">{{ prompt }}</legend>
-		<div class="yes-no__choice">
-			<button
-				v-for="choice in CHOICES"
-				:key="choice.label"
-				type="button"
-				class="yes-no__button"
-				:class="`yes-no__button--${choice.label.toLowerCase()}`"
-				:aria-pressed="wantsValue === choice.value"
-				@click="choose(choice.value)"
-			>
-				{{ choice.label }}
-			</button>
-		</div>
+		<SelectButton
+			:model-value="wantsValue"
+			:options="CHOICES"
+			option-label="label"
+			option-value="value"
+			:allow-empty="false"
+			class="yes-no__choice"
+			@update:model-value="choose"
+		/>
 		<div v-if="wantsValue" class="yes-no__field">
-			<label :for="inputId" class="yes-no__label">{{ label }}</label>
+			<label :for="inputId">{{ label }}</label>
 			<InputText :id="inputId" v-model="textValue" :placeholder="placeholder" :maxlength="maxLength" @input="publish" />
 			<small v-if="textValue.trim() === ''" class="yes-no__hint">Type the song to save your Yes.</small>
 		</div>
@@ -25,6 +21,7 @@
 <script setup lang="ts">
 	import { ref } from 'vue';
 	import InputText from 'primevue/inputtext';
+	import SelectButton from 'primevue/selectbutton';
 
 	// A yes/no question; Yes reveals one text input. It emits only a savable answer: No, or Yes with text. A Yes with
 	// an empty box stays here until something is typed, so a blank Yes never reaches the server.

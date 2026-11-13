@@ -18,6 +18,7 @@
 
 					<section v-else class="da-band__section">
 						<Button label="+ Add a practice" @click="editing = 'new'" />
+						<!-- eslint-disable-next-line vue/no-restricted-html-elements -- a whole card is the click target, not a standard button -->
 						<button
 							v-for="practice in upcoming"
 							:key="practice.id"

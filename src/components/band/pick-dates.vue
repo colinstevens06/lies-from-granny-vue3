@@ -5,35 +5,35 @@
 		<template v-if="groups.everyoneYes.length || groups.oneShort.length">
 			<div v-if="groups.everyoneYes.length" class="pick-dates__group">
 				<h3>Everyone said Yes</h3>
-				<div class="pick-dates__chips">
-					<button
-						v-for="day in groups.everyoneYes"
-						:key="day"
-						type="button"
-						class="pick-dates__chip"
-						:aria-pressed="picked.includes(day)"
-						@click="toggle(day)"
-					>
-						{{ dayLabel(day) }}
-					</button>
-				</div>
+				<SelectButton
+					:model-value="pickedIn(everyoneYesDays)"
+					:options="everyoneYesDays.map(day => ({ day, label: dayLabel(day) }))"
+					option-label="label"
+					option-value="day"
+					multiple
+					class="pick-dates__chips"
+					@update:model-value="setPicked(everyoneYesDays, $event)"
+				/>
 			</div>
 
 			<div v-if="groups.oneShort.length" class="pick-dates__group">
 				<h3>One short</h3>
-				<div class="pick-dates__chips">
-					<button
-						v-for="entry in groups.oneShort"
-						:key="entry.day"
-						type="button"
-						class="pick-dates__chip"
-						:aria-pressed="picked.includes(entry.day)"
-						@click="toggle(entry.day)"
-					>
-						{{ dayLabel(entry.day) }}
-						<small>no {{ entry.short }}</small>
-					</button>
-				</div>
+				<SelectButton
+					:model-value="pickedIn(oneShortDays)"
+					:options="groups.oneShort.map(entry => ({ day: entry.day, label: dayLabel(entry.day), short: entry.short }))"
+					option-label="label"
+					option-value="day"
+					multiple
+					class="pick-dates__chips"
+					@update:model-value="setPicked(oneShortDays, $event)"
+				>
+					<template #option="{ option }">
+						<span class="pick-dates__option">
+							{{ option.label }}
+							<small>no {{ option.short }}</small>
+						</span>
+					</template>
+				</SelectButton>
 			</div>
 		</template>
 		<p v-else class="band-card__meta">No unbooked dates in this form's range work yet.</p>
@@ -50,6 +50,7 @@
 <script setup lang="ts">
 	import { computed, ref } from 'vue';
 	import Button from 'primevue/button';
+	import SelectButton from 'primevue/selectbutton';
 	import type { Form } from '@models/form';
 	import { shows } from '@components/shows/shows';
 	import { pickGroups } from '@utils/band-calendar';
@@ -76,8 +77,15 @@
 
 	const dayLabel = (day: string) => formatCalendarDate(day, { weekday: 'short', month: 'short', day: 'numeric' });
 
-	const toggle = (day: string) => {
-		picked.value = picked.value.includes(day) ? picked.value.filter(d => d !== day) : [...picked.value, day].sort();
+	const everyoneYesDays = computed(() => groups.value.everyoneYes);
+	const oneShortDays = computed(() => groups.value.oneShort.map(entry => entry.day));
+
+	/** The picked days that belong to one list, which is what that list's SelectButton shows. */
+	const pickedIn = (days: string[]) => picked.value.filter(day => days.includes(day));
+
+	/** A list changed: swap its days in `picked` and keep the whole thing sorted. */
+	const setPicked = (days: string[], value: string[] | null) => {
+		picked.value = [...picked.value.filter(day => !days.includes(day)), ...(value ?? [])].sort();
 	};
 
 	const lockIn = async () => {
