@@ -46,8 +46,8 @@
 		<div
 			class="sticky bottom-0 z-2 flex flex-wrap align-items-center justify-content-between gap-3 p-3 border-top-1 border-black-alpha-10 surface-100"
 		>
-			<span>{{ picked.length ? picked.map(dayLabel).join(', ') : 'Nothing picked yet' }}</span>
-			<Button :label="`Lock in ${picked.length}`" :disabled="!picked.length || locking" @click="lockIn" />
+			<span>{{ chosen.length ? chosen.map(dayLabel).join(', ') : 'Nothing picked yet' }}</span>
+			<Button :label="`Lock in ${chosen.length}`" :disabled="!chosen.length || locking" @click="lockIn" />
 		</div>
 	</section>
 </template>
@@ -78,9 +78,14 @@
 	const message = ref('');
 	const locking = ref(false);
 
+	/** What's picked and still offered. A day that drops out of both lists (a member's answer changed, it got booked) stops counting and is never sent. */
+	const chosen = computed(() =>
+		picked.value.filter(day => groups.value.everyoneYes.includes(day) || groups.value.oneShort.some(e => e.day === day))
+	);
+
 	const needed = computed(() => props.form.availability?.practicesNeeded);
 	const counter = computed(() =>
-		needed.value === undefined ? `${picked.value.length} picked` : `${picked.value.length} of ${needed.value} picked`
+		needed.value === undefined ? `${chosen.value.length} picked` : `${chosen.value.length} of ${needed.value} picked`
 	);
 
 	const dayLabel = (day: string) => formatCalendarDate(day, { weekday: 'short', month: 'short', day: 'numeric' });
@@ -100,7 +105,7 @@
 		locking.value = true;
 		message.value = '';
 		try {
-			await band.lockInForm(props.form.id, picked.value);
+			await band.lockInForm(props.form.id, chosen.value);
 			await band.load();
 		} catch (error) {
 			if (error instanceof BandApiError && error.code === 'already-booked') {
