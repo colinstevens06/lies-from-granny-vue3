@@ -1,6 +1,6 @@
 import type { MemberId } from '../models/band-member';
 import type { Form, FormSlug } from '../models/form';
-import { mineOf, missing } from './march-show-planning/rules';
+import { mineOf, missing } from './early-2027-planning/rules';
 
 // The shared rule registry. The server's sign-off and the client's Sign off button both call `mineOf`, then
 // `missing`, on the same `Form` shape, so they can't disagree. Import no .vue files and nothing from
@@ -19,7 +19,7 @@ export interface FormRule {
 }
 
 export const formRules: Record<FormSlug, FormRule> = {
-	'march-show-planning': {
+	'early-2027-planning': {
 		mineOf,
 		missing: (form, myDays, mine, today) => {
 			const result = missing(form, myDays, mine as ReturnType<typeof mineOf>, today);

@@ -1,6 +1,6 @@
 import type { MemberId } from '../../src/models/band-member';
 import type { Form, FormDetails, FormSlug } from '../../src/models/form';
-import { marchShowPlanning } from './march-show-planning';
+import { early2027Planning } from './early-2027-planning';
 import type { Queryable } from '../lib/band-db';
 import type { Failure } from '../lib/failure';
 
@@ -15,7 +15,7 @@ export interface FormHandler<D> {
 }
 
 export const formHandlers: Record<FormSlug, FormHandler<FormDetails>> = {
-	'march-show-planning': marchShowPlanning
+	'early-2027-planning': early2027Planning
 };
 
 /** The handler for a slug, or undefined for a slug this build doesn't know (an old preview branch, a rollback). */

@@ -3,7 +3,7 @@
 		<AvailabilitySection :form="form" :my-days="band.myDays" :today="today" @change="onChange" />
 
 		<YesNoRows
-			:prompt="`Add new songs for ${targetName(form)}?`"
+			prompt="Add new songs for early 2027?"
 			:fields="['Song', 'Band']"
 			allow-several
 			:wants="answer?.wantsNew"
@@ -23,7 +23,6 @@
 	import YesNoRows from '@components/band/forms/yes-no-rows.vue';
 	import { useFormProgress } from '@/composables/use-form-progress';
 	import { useBandStore } from '@/stores/band';
-	import { targetName } from './index';
 	import type { SongPitchInput } from './model';
 
 	const props = defineProps<{ form: Form }>();

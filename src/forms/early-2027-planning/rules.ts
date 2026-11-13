@@ -31,7 +31,7 @@ export const parseSongPitch = (body: unknown): Parsed<Required<SongPitchInput>> 
 export const mineOf = (form: Form, member: MemberId): SongPitch | undefined =>
 	form.details.songPitches.find(pitch => pitch.member === member);
 
-export interface MarchShowPlanningMissing extends AvailabilityMissing {
+export interface Early2027PlanningMissing extends AvailabilityMissing {
 	/** True when there's no pitch, or when "yes, new songs" lists none. */
 	songsMissing: boolean;
 }
@@ -41,7 +41,7 @@ export const missing = (
 	myDays: Record<string, unknown>,
 	myPitch: SongPitch | undefined,
 	today: string
-): MarchShowPlanningMissing => ({
+): Early2027PlanningMissing => ({
 	...(form.availability ? availabilityMissing(form.availability, myDays, today) : { missingDays: 0 }),
 	songsMissing: !myPitch || (myPitch.wantsNew && myPitch.songs.length === 0)
 });

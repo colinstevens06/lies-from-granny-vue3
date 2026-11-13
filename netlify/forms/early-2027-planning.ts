@@ -1,12 +1,12 @@
 import { members } from '../../src/components/band/members';
-import type { MarchShowPlanningDetails, SongPitch } from '../../src/forms/march-show-planning/model';
-import { parseSongPitch } from '../../src/forms/march-show-planning/rules';
+import type { Early2027PlanningDetails, SongPitch } from '../../src/forms/early-2027-planning/model';
+import { parseSongPitch } from '../../src/forms/early-2027-planning/rules';
 import type { MemberId } from '../../src/models/band-member';
 import type { Queryable } from '../lib/band-db';
 import { failure } from '../lib/failure';
 import type { FormHandler } from '.';
 
-const loadDetails = async (client: Queryable, formId: number): Promise<MarchShowPlanningDetails> => {
+const loadDetails = async (client: Queryable, formId: number): Promise<Early2027PlanningDetails> => {
 	const [pitches, songs] = await Promise.all([
 		client.query('select member_id, wants_new, answered_at from song_pitches where form_id = $1', [formId]),
 		client.query(
@@ -25,10 +25,10 @@ const loadDetails = async (client: Queryable, formId: number): Promise<MarchShow
 			songs: songs.rows.filter(s => s.member_id === row.member_id).map(({ title, artist }) => ({ title, artist }))
 		}));
 
-	return { slug: 'march-show-planning', songPitches };
+	return { slug: 'early-2027-planning', songPitches };
 };
 
-export const marchShowPlanning: FormHandler<MarchShowPlanningDetails> = {
+export const early2027Planning: FormHandler<Early2027PlanningDetails> = {
 	loadDetails,
 
 	/** The caller's own answer: parse first, then replace their pitch and songs (the caller holds the form's share lock). */

@@ -1,6 +1,6 @@
 import { defineAsyncComponent, type Component } from 'vue';
 import type { Form, FormSlug } from '@models/form';
-import { marchShowPlanning } from './march-show-planning';
+import { early2027Planning } from './early-2027-planning';
 
 // The client form registry: slug → how the app shows that form. Typed Record<FormSlug, …> so a missing registration
 // fails `yarn type-check`. The sign-off rule lives in ./rules (shared with the server), never here.
@@ -36,10 +36,10 @@ export interface ClientForm {
 }
 
 export const clientForms: Record<FormSlug, ClientForm> = {
-	'march-show-planning': {
-		...marchShowPlanning,
-		screen: defineAsyncComponent(() => import('./march-show-planning/screen.vue')),
-		responses: defineAsyncComponent(() => import('./march-show-planning/responses.vue'))
+	'early-2027-planning': {
+		...early2027Planning,
+		screen: defineAsyncComponent(() => import('./early-2027-planning/screen.vue')),
+		responses: defineAsyncComponent(() => import('./early-2027-planning/responses.vue'))
 	}
 };
 

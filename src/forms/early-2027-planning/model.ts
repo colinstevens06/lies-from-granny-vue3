@@ -14,8 +14,8 @@ export interface SongPitch {
 	songs: SongSuggestion[];
 }
 
-export interface MarchShowPlanningDetails {
-	slug: 'march-show-planning';
+export interface Early2027PlanningDetails {
+	slug: 'early-2027-planning';
 	songPitches: SongPitch[];
 }
 

@@ -33,7 +33,7 @@
 
 		const needed = practicesStillNeeded(props.form, band.practices, shows);
 		const found = targetOf(props.form, shows);
-		const target = found && (found.gig ? found.label : `the ${found.label}`);
+		const target = found?.label;
 		if (needed === undefined || !target) return `Possible dates · ${works}`;
 
 		return `${needed} ${needed === 1 ? 'practice' : 'practices'} to schedule before ${target} · ${works}`;

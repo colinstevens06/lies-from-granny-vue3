@@ -51,7 +51,7 @@ List them in the gitignored `band-data/import.ts` as `practices: PracticeImport[
 
 ## Add a new band form (P3b)
 
-Worked example: `march-show-planning` (migration `0003`, `src/forms/march-show-planning/`, `netlify/forms/march-show-planning.ts`).
+Worked example: `early-2027-planning` (migration `0003`, `src/forms/early-2027-planning/`, `netlify/forms/early-2027-planning.ts`).
 
 1. Pick a slug (`^[a-z0-9-]{1,60}$`).
 2. Write a migration that inserts the form row (title, due date, and any availability columns) and its `form_members` rows, plus any new tables. Quote apostrophes in text as `''`. Never edit it once a deploy has applied it.
@@ -88,7 +88,7 @@ Instead, the login page shows **Sign in as {member}** buttons in dev (Colin is m
 
 Colin releases to Anna alone first, testing on production, not a preview. Previews copy production, so they start empty.
 
-1. Deploy. Migrations `0001`–`0003` run and the March show planning form row appears.
+1. Deploy. Migrations `0001`–`0003` run and the Early 2027 planning form row appears.
 2. Seed production: `yarn seed:band --branch main` (dry run), then `--write`, with the database's full-write access toggle on only for that run.
 3. Colin checks `/da-band`.
 4. Colin invites Anna (see Identity members).
