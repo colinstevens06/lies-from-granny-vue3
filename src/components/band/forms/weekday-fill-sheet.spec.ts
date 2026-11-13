@@ -52,13 +52,14 @@ describe('weekday-fill-sheet', () => {
 		expect(document.body.textContent).not.toContain('days filled ✓');
 	});
 
-	// Code review #3 (planning/2026-11-da-band-code-review.md): on PrimeVue 3.53.1, SelectButton with
-	// :allow-empty="false" swallows a re-tap of the selected answer, so "Yes" can't be re-applied after flipping
-	// overwrite on. yarn.lock pins 3.32.2, where it still emits, so this passes today. It fails on a fresh install
-	// that floats to 3.53.1 (verified), which is the regression the build session's fix must keep out.
-	it('re-tapping the already-selected answer emits again (code review #3)', async () => {
+	// Code review #3 (planning/2026-11-da-band-code-review.md): a selected SelectButton option swallows a re-tap on
+	// newer PrimeVue 3 releases (3.53.1), so the sheet must never mark an answer as selected. The last tap is shown in
+	// the status text only.
+	it('never marks a tapped answer as selected, so a re-tap always emits (code review #3)', async () => {
 		const wrapper = await openSheet();
 		await tap(1, 'Yes');
+		expect(row(1).querySelector('[aria-checked="true"]')).toBeNull();
+
 		switchInput().click();
 		await wrapper.vm.$nextTick();
 		await tap(1, 'Yes');

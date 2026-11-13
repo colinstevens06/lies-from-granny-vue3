@@ -19,15 +19,15 @@
 		</p>
 		<div v-for="(name, weekday) in WEEKDAYS" :key="name" class="flex align-items-center gap-2 py-1">
 			<b class="w-2rem flex-none">{{ name }}</b>
+			<!-- Nothing stays selected, so tapping the same answer again (after flipping overwrite) still emits. -->
 			<!-- Yes / No / Not sure stay on one line at phone width: equal-width options, tight padding, no wrap. -->
 			<SelectButton
 				class="flex flex-nowrap flex-1 min-w-0"
 				:pt="{ button: { class: 'flex-1 min-w-0 py-2 px-1 text-sm white-space-nowrap' } }"
-				:model-value="last[weekday]?.answer"
+				:model-value="undefined"
 				:options="ANSWER_OPTIONS"
 				option-label="label"
 				option-value="value"
-				:allow-empty="false"
 				:aria-label="`Fill every blank ${name}`"
 				@update:model-value="fill(weekday, $event)"
 			/>
