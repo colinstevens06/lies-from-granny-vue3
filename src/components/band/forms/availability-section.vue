@@ -1,10 +1,19 @@
 <template>
-	<section v-if="form.availability" class="availability-section">
-		<p v-if="prefilled > 0" class="availability-section__note">
+	<section v-if="form.availability" class="flex flex-column gap-3">
+		<p v-if="prefilled > 0" class="m-0 py-2 px-2 border-1 border-yellow-300 border-round bg-yellow-100 text-sm">
 			{{ prefilled }} {{ prefilled === 1 ? 'date' : 'dates' }} came in from your calendar. Check them, change anything
 			that's off, then sign off.
 		</p>
-		<Button label="Fill a weekday at once…" link class="availability-section__link" @click="sheetOpen = true" />
+		<div class="flex justify-content-center mt-4 mb-2">
+			<Button
+				label="Fill a weekday at once…"
+				icon="pi pi-calendar-plus"
+				severity="secondary"
+				outlined
+				size="small"
+				@click="sheetOpen = true"
+			/>
+		</div>
 		<WeekGrid
 			:start-day="form.availability.startDay"
 			:end-day="form.availability.endDay"
@@ -12,7 +21,12 @@
 			:today="today"
 			@change="(date, answer) => emit('change', [{ date, answer }], false)"
 		/>
-		<WeekdayFillSheet v-model:visible="sheetOpen" :blank-counts="blankCounts" @fill="fillWeekday" />
+		<WeekdayFillSheet
+			v-model:visible="sheetOpen"
+			:blank-counts="blankCounts"
+			:day-counts="dayCounts"
+			@fill="fillWeekday"
+		/>
 	</section>
 </template>
 
@@ -46,22 +60,31 @@
 	// Counted once, when the form opens: it describes what was already on the calendar, not what was just tapped.
 	const prefilled = ref(prefilledCount(props.form, props.myDays, props.today));
 
-	/** Blank days from today through the range's end, grouped by weekday. */
-	const blankDaysByWeekday = computed(() => {
+	/** Days from today through the range's end, grouped by weekday (Sunday = 0). Past days are never filled. */
+	const openDaysByWeekday = computed(() => {
 		const byWeekday: string[][] = Array.from({ length: 7 }, () => []);
 		if (!props.form.availability) return byWeekday;
 
 		const { startDay, endDay } = props.form.availability;
 		for (let day = startDay < props.today ? props.today : startDay; day <= endDay; day = addDays(day, 1)) {
-			if (props.myDays[day] === undefined) byWeekday[weekdayIndex(day)].push(day);
+			byWeekday[weekdayIndex(day)].push(day);
 		}
 		return byWeekday;
 	});
 
-	const blankCounts = computed(() => blankDaysByWeekday.value.map(days => days.length));
+	const blankDaysByWeekday = computed(() =>
+		openDaysByWeekday.value.map(days => days.filter(day => props.myDays[day] === undefined))
+	);
 
-	const fillWeekday = (weekday: number, answer: Answer) => {
-		const changes = blankDaysByWeekday.value[weekday].map(date => ({ date, answer }));
+	const blankCounts = computed(() => blankDaysByWeekday.value.map(days => days.length));
+	const dayCounts = computed(() => openDaysByWeekday.value.map(days => days.length));
+
+	/** `overwrite` also changes days already answered; otherwise only blank days are filled. */
+	const fillWeekday = (weekday: number, answer: Answer, overwrite: boolean) => {
+		const days = overwrite
+			? openDaysByWeekday.value[weekday].filter(day => props.myDays[day]?.answer !== answer)
+			: blankDaysByWeekday.value[weekday];
+		const changes = days.map(date => ({ date, answer }));
 		if (changes.length > 0) emit('change', changes, true);
 	};
 </script>

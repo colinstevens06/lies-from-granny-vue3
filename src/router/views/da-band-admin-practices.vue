@@ -2,11 +2,11 @@
 	<Layout>
 		<div class="main-container">
 			<div class="da-band">
-				<RouterLink to="/da-band/admin" class="band-link">&larr; Admin</RouterLink>
-				<h1 class="da-band__title">Practices</h1>
+				<BandLink to="/da-band/admin" class="inline-block mb-3">&larr; Admin</BandLink>
+				<h1 class="font-permanent-marker m-0">Practices</h1>
 
 				<AdminGate>
-					<p v-if="band.loadState !== 'ready'" class="band-card band-card__empty">
+					<p v-if="band.loadState !== 'ready'" class="band-card m-0 text-xl font-bold">
 						{{ band.loadState === 'error' ? "Couldn't load. Refresh to try again." : 'Loading…' }}
 					</p>
 
@@ -16,22 +16,24 @@
 						@close="editing = undefined"
 					/>
 
-					<section v-else class="da-band__section">
+					<BandSection v-else>
 						<Button label="+ Add a practice" @click="editing = 'new'" />
 						<!-- eslint-disable-next-line vue/no-restricted-html-elements -- a whole card is the click target, not a standard button -->
 						<button
 							v-for="practice in upcoming"
 							:key="practice.id"
 							type="button"
-							class="band-card practice-row"
+							class="band-card align-items-start text-left cursor-pointer"
 							@click="editing = practice"
 						>
-							<span class="band-card__title">{{ formatPracticeDay(practice) }}</span>
+							<span class="text-xl font-bold">{{ formatPracticeDay(practice) }}</span>
 							<PracticeStatusBadge :status="practice.status" />
-							<span class="band-card__meta">{{ formatPracticeTime(practice) }} · {{ practiceLocation(practice) }}</span>
+							<span class="text-black-alpha-70">
+								{{ formatPracticeTime(practice) }} · {{ practiceLocation(practice) }}
+							</span>
 						</button>
-						<p v-if="!upcoming.length" class="band-card band-card__empty">No upcoming practices.</p>
-					</section>
+						<p v-if="!upcoming.length" class="band-card m-0 text-xl font-bold">No upcoming practices.</p>
+					</BandSection>
 				</AdminGate>
 			</div>
 		</div>
@@ -43,6 +45,8 @@
 	import Button from 'primevue/button';
 	import Layout from '@router/layouts/main.vue';
 	import AdminGate from '@components/band/admin-gate.vue';
+	import BandLink from '@components/band/band-link.vue';
+	import BandSection from '@components/band/band-section.vue';
 	import PracticeEditor from '@components/band/practice-editor.vue';
 	import PracticeStatusBadge from '@components/band/practice-status-badge.vue';
 	import type { Practice } from '@models/practice';

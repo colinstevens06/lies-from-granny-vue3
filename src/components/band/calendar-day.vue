@@ -2,19 +2,21 @@
 	<!-- eslint-disable-next-line vue/no-restricted-html-elements -- a calendar cell with its own status styling and dots, not a standard button -->
 	<button
 		type="button"
-		class="calendar-day"
-		:class="[`calendar-day--${status}`, { 'calendar-day--past': past }]"
+		class="flex flex-column align-items-center justify-content-between py-1 px-0 border-1 border-round-lg"
+		:class="[STATUS_CLASS[status], past ? 'opacity-40' : 'cursor-pointer']"
+		style="min-height: 3.2rem"
 		:disabled="past"
 		:aria-label="`${label}: ${STATUS_LABEL[status]}`"
 		@click="emit('select', date)"
 	>
-		<span class="calendar-day__number">{{ Number(date.slice(8)) }}</span>
-		<span class="calendar-day__dots">
+		<span class="font-bold">{{ Number(date.slice(8)) }}</span>
+		<span class="flex" style="gap: 2px">
 			<i
 				v-for="entry in answers"
 				:key="entry.member.id"
-				class="calendar-day__dot"
-				:class="`calendar-day__dot--${entry.answer ?? 'none'}`"
+				class="inline-block border-circle border-1 answer-dot"
+				:class="`answer-dot--${entry.answer ?? 'none'}`"
+				style="width: 6px; height: 6px"
 			/>
 		</span>
 	</button>
@@ -40,6 +42,13 @@
 		blocked: 'someone is busy',
 		possible: 'everyone is free',
 		open: 'open'
+	};
+
+	const STATUS_CLASS: Record<DayStatus, string> = {
+		booked: 'bg-lfg-pink border-lfg-pink text-white',
+		blocked: 'bg-gray-900 border-gray-900 text-white',
+		possible: 'bg-poster-yellow border-poster-yellow',
+		open: 'bg-white border-black-alpha-20'
 	};
 
 	// Five dots, one per member in roster order: green Yes, pink No, orange Not sure, hollow Pending.

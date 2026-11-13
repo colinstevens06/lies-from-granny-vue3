@@ -1,8 +1,8 @@
 <template>
-	<section class="month-grid">
-		<header class="month-grid__header">
+	<section class="flex flex-column gap-1">
+		<header class="flex align-items-center justify-content-between gap-2">
 			<Button icon="pi pi-chevron-left" text :disabled="index === 0" aria-label="Previous month" @click="index--" />
-			<div class="month-grid__title">
+			<div class="flex flex-column align-items-center text-center">
 				<strong>{{ month.label }}</strong>
 				<small v-if="inForm">In the {{ form?.title }} form</small>
 			</div>
@@ -15,10 +15,10 @@
 			/>
 		</header>
 
-		<div class="month-grid__row month-grid__row--dow">
+		<div :style="ROW_STYLE" class="text-center text-xs text-black-alpha-60">
 			<span v-for="(name, i) in WEEKDAY_NAMES" :key="i">{{ name }}</span>
 		</div>
-		<div v-for="(week, weekIndex) in weeks" :key="weekIndex" class="month-grid__row">
+		<div v-for="(week, weekIndex) in weeks" :key="weekIndex" :style="ROW_STYLE">
 			<template v-for="(day, dayIndex) in week" :key="dayIndex">
 				<slot v-if="day" name="day" :date="day" :past="day < today" />
 				<span v-else />
@@ -43,6 +43,9 @@
 	}>();
 
 	const WEEKDAY_NAMES = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+
+	// Seven equal columns, Sunday first. PrimeFlex 3 has no grid-template utilities.
+	const ROW_STYLE = { display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: '4px' };
 
 	const months = monthsFrom(props.today);
 	const index = ref(0);

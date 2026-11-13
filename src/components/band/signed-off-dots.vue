@@ -1,10 +1,10 @@
 <template>
-	<span class="signed-off-dots" :aria-label="`${signedOffCount(form)} of ${form.members.length} signed off`">
+	<span class="inline-flex gap-1" :aria-label="`${signedOffCount(form)} of ${form.members.length} signed off`">
 		<span
 			v-for="entry in form.members"
 			:key="entry.member"
-			class="signed-off-dots__dot"
-			:class="{ 'signed-off-dots__dot--on': entry.signedOffAt }"
+			class="inline-block w-1rem h-1rem border-circle border-2 border-lfg-pink"
+			:class="{ 'bg-lfg-pink': entry.signedOffAt }"
 			:title="`${nameOf(entry.member)}: ${entry.signedOffAt ? 'signed off' : 'not yet'}`"
 		/>
 	</span>

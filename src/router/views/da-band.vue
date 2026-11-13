@@ -2,15 +2,15 @@
 	<Layout>
 		<div class="main-container">
 			<div class="da-band">
-				<h1 class="da-band__title">Da Band</h1>
+				<h1 class="font-permanent-marker m-0">Da Band</h1>
 
-				<p v-if="band.loadState !== 'ready'" class="band-card band-card__empty">
+				<p v-if="band.loadState !== 'ready'" class="band-card m-0 text-xl font-bold">
 					{{ band.loadState === 'error' ? "Couldn't load. Refresh to try again." : 'Loading…' }}
 				</p>
 
-				<section v-if="band.myTodos.length" class="da-band__section">
+				<BandSection v-if="band.myTodos.length">
 					<FormTodoCard v-for="form in band.myTodos" :key="form.id" :form="form" />
-				</section>
+				</BandSection>
 
 				<p v-if="band.availabilityForm && band.everyoneIn(band.availabilityForm)" class="band-card band-card--featured">
 					<strong>Everyone's in.</strong>
@@ -18,51 +18,43 @@
 					They'll show up here.
 				</p>
 
-				<section v-if="band.me?.role === 'admin' && band.openForms.length" class="da-band__section">
-					<h2>Forms</h2>
+				<BandSection v-if="band.me?.role === 'admin' && band.openForms.length" title="Forms">
 					<FormStatusCard v-for="form in band.openForms" :key="form.id" :form="form" />
-				</section>
+				</BandSection>
 
-				<section class="da-band__section">
-					<h2>Next practice</h2>
+				<BandSection title="Next practice">
 					<PracticeCard v-if="nextPractice" :practice="nextPractice" featured />
-					<p v-else class="band-card band-card--featured band-card__empty">No practice on the calendar.</p>
-				</section>
+					<p v-else class="band-card band-card--featured m-0 text-xl font-bold">No practice on the calendar.</p>
+				</BandSection>
 
-				<section class="da-band__section">
-					<h2>Next gig</h2>
+				<BandSection title="Next gig">
 					<NextGig :gig="nextGig" :today="today" />
-				</section>
+				</BandSection>
 
-				<section v-if="band.availabilityForm" class="da-band__section">
-					<h2>Possible dates</h2>
+				<BandSection v-if="band.availabilityForm" title="Possible dates">
 					<PossibleDates :form="band.availabilityForm" />
-				</section>
+				</BandSection>
 
-				<section class="da-band__section">
-					<h2>Band calendar</h2>
+				<BandSection title="Band calendar">
 					<BandCalendar :today="today" :form="band.availabilityForm" />
-					<RouterLink to="/da-band/edit" class="band-link">Edit my availability &rarr;</RouterLink>
-				</section>
+					<BandLink to="/da-band/edit">Edit my availability &rarr;</BandLink>
+				</BandSection>
 
-				<section v-if="!band.availabilityForm" class="da-band__section">
-					<h2>Possible dates</h2>
+				<BandSection v-if="!band.availabilityForm" title="Possible dates">
 					<PossibleDates />
-				</section>
+				</BandSection>
 
 				<template v-for="form in band.openForms" :key="form.id">
-					<section v-if="clientFormFor(form.slug)" class="da-band__section">
-						<h2>{{ form.title }}: responses</h2>
+					<BandSection v-if="clientFormFor(form.slug)" :title="`${form.title}: responses`">
 						<component :is="clientFormFor(form.slug)!.responses" :form="form" />
-					</section>
+					</BandSection>
 				</template>
 
-				<section v-if="laterPractices.length" class="da-band__section">
-					<h2>Upcoming practices</h2>
+				<BandSection v-if="laterPractices.length" title="Upcoming practices">
 					<PracticeCard v-for="practice in laterPractices" :key="practice.id" :practice="practice" />
-				</section>
+				</BandSection>
 
-				<RouterLink to="/da-band/history" class="band-link">Practice history &rarr;</RouterLink>
+				<BandLink to="/da-band/history" class="inline-block mt-4">Practice history &rarr;</BandLink>
 			</div>
 		</div>
 	</Layout>
@@ -72,6 +64,8 @@
 	import { computed, onMounted } from 'vue';
 	import Layout from '@router/layouts/main.vue';
 	import BandCalendar from '@components/band/band-calendar.vue';
+	import BandLink from '@components/band/band-link.vue';
+	import BandSection from '@components/band/band-section.vue';
 	import PossibleDates from '@components/band/possible-dates.vue';
 	import FormTodoCard from '@components/band/form-todo-card.vue';
 	import FormStatusCard from '@components/band/form-status-card.vue';

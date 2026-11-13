@@ -1,19 +1,32 @@
 <template>
-	<fieldset class="yes-no" :class="{ 'yes-no--yes': wantsValue === true, 'yes-no--no': wantsValue === false }">
-		<legend class="yes-no__prompt">{{ prompt }}</legend>
+	<fieldset
+		class="yes-no flex flex-column gap-3 min-w-0 m-0 p-0 border-none"
+		:class="{ 'yes-no--yes': wantsValue === true, 'yes-no--no': wantsValue === false }"
+	>
+		<legend class="p-0 mb-4 text-xl font-bold">{{ prompt }}</legend>
 		<SelectButton
 			:model-value="wantsValue"
 			:options="CHOICES"
 			option-label="label"
 			option-value="value"
 			:allow-empty="false"
-			class="yes-no__choice"
+			class="flex w-full"
+			:pt="{ button: { class: 'flex-1 justify-content-center py-3 font-bold' } }"
 			@update:model-value="choose"
 		/>
-		<div v-if="wantsValue" class="yes-no__field">
+		<div v-if="wantsValue" class="flex flex-column gap-1">
 			<label :for="inputId">{{ label }}</label>
-			<InputText :id="inputId" v-model="textValue" :placeholder="placeholder" :maxlength="maxLength" @input="publish" />
-			<small v-if="textValue.trim() === ''" class="yes-no__hint">Type the song to save your Yes.</small>
+			<InputText
+				:id="inputId"
+				v-model="textValue"
+				class="w-full"
+				:placeholder="placeholder"
+				:maxlength="maxLength"
+				@input="publish"
+			/>
+			<small v-if="textValue.trim() === ''" class="font-bold text-pink-600">
+				Song is required when Yes is selected.
+			</small>
 		</div>
 	</fieldset>
 </template>

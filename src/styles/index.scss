@@ -45,9 +45,9 @@ form {
 }
 
 @import './theme';
-@import './selectbutton';
 @import './primeflex-variables';
 @import './variables';
+@import './primevue-structure';
 @import './layout';
 @import './components/nav';
 @import './components/footer';
@@ -57,6 +57,3 @@ form {
 @import './fades';
 @import './components/home';
 @import './components/songs-list';
-@import './components/band-forms';
-@import './components/band-admin';
-@import './components/band-calendar';

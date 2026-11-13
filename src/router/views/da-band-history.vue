@@ -2,28 +2,31 @@
 	<Layout>
 		<div class="main-container">
 			<div class="da-band">
-				<RouterLink to="/da-band" class="band-link">&larr; Da Band</RouterLink>
-				<h1 class="da-band__title">Practice history</h1>
+				<BandLink to="/da-band" class="inline-block mb-3">&larr; Da Band</BandLink>
+				<h1 class="font-permanent-marker m-0">Practice history</h1>
 
-				<section class="da-band__section">
+				<BandSection>
 					<details
 						v-for="practice in history"
 						:key="practice.id"
-						class="band-card practice-history"
-						:class="{ 'practice-card--cancelled': practice.status === 'cancelled' }"
+						class="band-card block"
+						:class="{ 'text-600': practice.status === 'cancelled' }"
 					>
-						<summary class="band-card__title">
+						<summary
+							class="cursor-pointer text-xl font-bold"
+							:class="{ 'line-through': practice.status === 'cancelled' }"
+						>
 							{{ formatPracticeDay(practice) }}
-							<PracticeStatusBadge :status="practice.status" />
+							<PracticeStatusBadge :status="practice.status" class="ml-2" />
 						</summary>
-						<div class="practice-history__body">
+						<div class="flex flex-column gap-1 mt-2">
 							<PracticeDetails :practice="practice" songs-open />
 						</div>
 					</details>
-					<p v-if="band.loadState === 'ready' && !history.length" class="band-card band-card__empty">
+					<p v-if="band.loadState === 'ready' && !history.length" class="band-card m-0 text-xl font-bold">
 						No past practices yet.
 					</p>
-				</section>
+				</BandSection>
 			</div>
 		</div>
 	</Layout>
@@ -32,6 +35,8 @@
 <script setup lang="ts">
 	import { computed, onMounted } from 'vue';
 	import Layout from '@router/layouts/main.vue';
+	import BandLink from '@components/band/band-link.vue';
+	import BandSection from '@components/band/band-section.vue';
 	import PracticeDetails from '@components/band/practice-details.vue';
 	import PracticeStatusBadge from '@components/band/practice-status-badge.vue';
 	import { formatPracticeDay, practiceHistory } from '@utils/practices';

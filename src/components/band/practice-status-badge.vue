@@ -1,5 +1,11 @@
 <template>
-	<span v-if="label" class="practice-badge" :class="`practice-badge--${status}`">{{ label }}</span>
+	<span
+		v-if="label"
+		class="inline-block align-self-start py-1 px-2 border-round-3xl text-white text-xs font-bold line-height-3 uppercase vertical-align-middle"
+		:class="status === 'cancelled' ? 'bg-lfg-pink' : 'bg-gray-900'"
+	>
+		{{ label }}
+	</span>
 </template>
 
 <script setup lang="ts">

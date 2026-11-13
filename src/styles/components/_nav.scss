@@ -1,23 +1,5 @@
 /* ==================== NAV ===================== */
 .top-nav {
-	&__band-items {
-		display: flex;
-		align-items: center;
-		gap: 0.75rem;
-
-		.top-nav__item {
-			margin-left: 0;
-			padding: 6px 12px;
-		}
-	}
-
-	&__session {
-		align-self: center;
-		margin: 0;
-		font-size: 0.8rem;
-		white-space: nowrap;
-	}
-
 	&__nav-links {
 		flex-direction: row;
 		justify-content: center;
@@ -99,23 +81,5 @@
 		&__brand-name {
 			font-size: 2.75rem;
 		}
-	}
-}
-
-// The slim bar on /da-band routes: the same logo and name, kept small at every width.
-.top-nav--band {
-	.top-nav__logo {
-		height: 40px;
-	}
-
-	.top-nav__brand-name {
-		font-size: 1rem;
-		line-height: 1.2;
-	}
-}
-
-@media screen and (min-width: $breakpoint-md) {
-	.top-nav--band .top-nav__brand-name {
-		font-size: 1.75rem;
 	}
 }

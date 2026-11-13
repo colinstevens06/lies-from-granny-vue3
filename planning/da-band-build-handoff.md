@@ -30,7 +30,7 @@ Another session built `band-calendar.ts` (`e4de980`) and P5a (`b560400`, `823f30
 - Production seeding (`yarn seed:band --branch main`) has never run. Its credentials JSON shape and the branch name are assumptions.
 - `/security-review` (server phases and the dev switch) and `/code-review` (client) have not run.
 - Sign-off, lock-in and the practice editor were checked only on the server or with a faked store, not clicked through against the real API.
-- `$bf-*` colors in `_band-forms.scss` should move to `_variables.scss` (plan U12).
+- `$bf-*` colors (now at the top of `views/_da-band.scss`, since `_band-forms.scss` was folded into it) should move to `_variables.scss` (plan U12).
 - Planning docs and the prototype still say "March show".
 - The plan's Project profile for `CLAUDE.md` is not applied.
 

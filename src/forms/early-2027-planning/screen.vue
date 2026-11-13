@@ -1,11 +1,11 @@
 <template>
-	<div class="form-screen">
+	<div class="flex flex-column gap-5">
 		<AvailabilitySection :form="form" :my-days="band.myDays" :today="today" @change="onChange" />
 
 		<YesNoText
 			prompt="Would you like to suggest a new song? (optional)"
 			label="Song – Artist"
-			placeholder="Song – Artist"
+			placeholder="Bangers only"
 			:max-length="MAX_SUGGESTION"
 			:wants="answer?.wantsNew"
 			:text="answer?.suggestion"

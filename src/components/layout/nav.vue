@@ -1,10 +1,23 @@
 <template>
 	<div class="main-container">
-		<nav class="flex justify-content-between py-3 top-nav" :class="{ 'top-nav--band': isBand }">
+		<nav class="flex justify-content-between py-3 top-nav">
 			<div class="flex align-items-center">
 				<router-link class="top-nav__brand-link flex no-underline" :to="isBand ? '/' : '/home'">
-					<img :src="logoSrc" alt="Lies From Granny logo" class="top-nav__logo mr-2 md:mr-4" decoding="async" />
-					<h1 class="top-nav__brand-name flex m-0" id="brand-header">Lies From Granny</h1>
+					<!-- /da-band gets a slim bar: the same logo and name, kept small at every width. -->
+					<img
+						:src="logoSrc"
+						alt="Lies From Granny logo"
+						class="top-nav__logo mr-2 md:mr-4"
+						:class="{ 'h-3rem': isBand }"
+						decoding="async"
+					/>
+					<h1
+						class="top-nav__brand-name flex m-0"
+						:class="{ 'text-base md:text-3xl line-height-2': isBand }"
+						id="brand-header"
+					>
+						Lies From Granny
+					</h1>
 				</router-link>
 			</div>
 
@@ -52,11 +65,11 @@
 				</div>
 			</template>
 
-			<div v-else-if="band.me" class="top-nav__band-items">
-				<router-link v-if="band.me.role === 'admin'" class="top-nav__item nav-btn" to="/da-band/admin">
+			<div v-else-if="band.me" class="flex align-items-center gap-3">
+				<router-link v-if="band.me.role === 'admin'" class="top-nav__item nav-btn ml-0 py-2 px-3" to="/da-band/admin">
 					<span>Admin</span>
 				</router-link>
-				<p class="top-nav__session">
+				<p class="align-self-center m-0 text-sm white-space-nowrap">
 					{{ signedInName }} &middot;
 					<a href="#" @click.prevent="signOutAndLeave">Sign out</a>
 				</p>

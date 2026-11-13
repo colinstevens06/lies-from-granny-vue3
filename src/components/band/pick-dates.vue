@@ -1,46 +1,51 @@
 <template>
-	<section class="pick-dates">
-		<p class="pick-dates__count">{{ counter }}</p>
+	<section class="flex flex-column gap-3">
+		<p class="m-0 font-bold">{{ counter }}</p>
 
 		<template v-if="groups.everyoneYes.length || groups.oneShort.length">
-			<div v-if="groups.everyoneYes.length" class="pick-dates__group">
-				<h3>Everyone said Yes</h3>
+			<div v-if="groups.everyoneYes.length">
+				<h3 class="mt-0 mb-2 text-base">Everyone said Yes</h3>
 				<SelectButton
 					:model-value="pickedIn(everyoneYesDays)"
 					:options="everyoneYesDays.map(day => ({ day, label: dayLabel(day) }))"
 					option-label="label"
 					option-value="day"
 					multiple
-					class="pick-dates__chips"
+					class="gap-2"
+					:pt="CHIP_PT"
 					@update:model-value="setPicked(everyoneYesDays, $event)"
 				/>
 			</div>
 
-			<div v-if="groups.oneShort.length" class="pick-dates__group">
-				<h3>One short</h3>
+			<div v-if="groups.oneShort.length">
+				<h3 class="mt-0 mb-2 text-base">One short</h3>
 				<SelectButton
 					:model-value="pickedIn(oneShortDays)"
 					:options="groups.oneShort.map(entry => ({ day: entry.day, label: dayLabel(entry.day), short: entry.short }))"
 					option-label="label"
 					option-value="day"
 					multiple
-					class="pick-dates__chips"
+					class="gap-2"
+					:pt="CHIP_PT"
 					@update:model-value="setPicked(oneShortDays, $event)"
 				>
 					<template #option="{ option }">
-						<span class="pick-dates__option">
+						<span>
 							{{ option.label }}
-							<small>no {{ option.short }}</small>
+							<small class="block text-xs font-normal">no {{ option.short }}</small>
 						</span>
 					</template>
 				</SelectButton>
 			</div>
 		</template>
-		<p v-else class="band-card__meta">No unbooked dates in this form's range work yet.</p>
+		<p v-else class="text-black-alpha-70">No unbooked dates in this form's range work yet.</p>
 
-		<p v-if="message" class="pick-dates__message">{{ message }}</p>
+		<p v-if="message" class="m-0 font-bold text-pink-600">{{ message }}</p>
 
-		<div class="pick-dates__bar">
+		<!-- Sticky in normal flow, never fixed, so it can't cover the content. -->
+		<div
+			class="sticky bottom-0 z-2 flex flex-wrap align-items-center justify-content-between gap-3 p-3 border-top-1 border-black-alpha-10 surface-100"
+		>
 			<span>{{ picked.length ? picked.map(dayLabel).join(', ') : 'Nothing picked yet' }}</span>
 			<Button :label="`Lock in ${picked.length}`" :disabled="!picked.length || locking" @click="lockIn" />
 		</div>
@@ -60,6 +65,9 @@
 
 	// The admin's lock-in: pick dates, then Lock in creates those practices (time TBD) and closes the form.
 	const props = defineProps<{ form: Form }>();
+
+	// Separate pills, not one joined group.
+	const CHIP_PT = { button: { class: 'border-1 border-round-3xl' } };
 
 	const band = useBandStore();
 	const today = easternNow().slice(0, 10);

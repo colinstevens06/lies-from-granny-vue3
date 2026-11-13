@@ -1,8 +1,8 @@
 <template>
-	<section class="band-card dev-sign-in">
-		<h2 class="band-card__title">Local testing</h2>
-		<p class="band-card__meta">Google sign-in only works on the deployed site. Pick a member to test as.</p>
-		<div class="form-status-card__actions">
+	<section class="band-card">
+		<h2 class="text-xl font-bold">Local testing</h2>
+		<p class="text-black-alpha-70">Google sign-in only works on the deployed site. Pick a member to test as.</p>
+		<div class="flex flex-wrap align-items-center gap-3 mt-2">
 			<Button
 				v-for="member in members"
 				:key="member.id"

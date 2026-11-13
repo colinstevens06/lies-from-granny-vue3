@@ -2,34 +2,39 @@
 	<Layout>
 		<div class="main-container">
 			<div class="da-band">
-				<RouterLink to="/da-band" class="band-link">&larr; Da Band</RouterLink>
+				<BandLink to="/da-band" class="inline-block mb-3">&larr; Da Band</BandLink>
 
-				<p v-if="band.loadState !== 'ready'" class="band-card band-card__empty">
+				<p v-if="band.loadState !== 'ready'" class="band-card m-0 text-xl font-bold">
 					{{ band.loadState === 'error' ? "Couldn't load. Refresh to try again." : 'Loading…' }}
 				</p>
-				<p v-else-if="!form || form.closedAt" class="band-card band-card__empty">That form isn't open.</p>
-				<p v-else-if="!registered" class="band-card band-card__empty">This form needs an app update.</p>
+				<p v-else-if="!form || form.closedAt" class="band-card m-0 text-xl font-bold">That form isn't open.</p>
+				<p v-else-if="!registered" class="band-card m-0 text-xl font-bold">This form needs an app update.</p>
 
 				<template v-else-if="form && registered">
-					<h1 class="da-band__title">{{ form.title }}</h1>
-					<p class="form-todo__due" :class="{ 'form-todo__due--overdue': overdueDays > 0 }">{{ dueText }}</p>
-					<p class="band-card__meta">Everything saves as you go. Sign off at the bottom when you're done.</p>
+					<h1 class="font-permanent-marker m-0 text-3xl md:text-5xl">{{ form.title }}</h1>
+					<p class="font-bold" :class="{ 'text-lfg-pink': overdueDays > 0 }">{{ dueText }}</p>
+					<p class="text-black-alpha-70">Everything saves as you go. Sign off at the bottom when you're done.</p>
 
-					<div class="form-progress">
-						<span v-for="line in lines" :key="line.label" :class="{ 'form-progress__line--ok': line.ok }">
+					<!-- Sticky in normal flow, never fixed, so the bars can't cover the content. -->
+					<div
+						class="sticky top-0 z-2 flex flex-wrap column-gap-3 row-gap-1 my-3 py-2 px-3 border-1 border-black-alpha-10 border-round-lg bg-poster-yellow text-sm"
+					>
+						<span v-for="line in lines" :key="line.label" :class="{ 'text-black-alpha-60': line.ok }">
 							{{ line.label }}: {{ line.value }}
 						</span>
 					</div>
 
 					<component :is="registered.screen" :form="form" />
 
-					<div class="form-signoff">
-						<p v-if="message" class="form-signoff__message">{{ message }}</p>
-						<p v-if="signedOff" class="band-card__meta">
+					<div
+						class="sticky bottom-0 z-2 flex flex-wrap align-items-center gap-3 mt-4 p-3 border-top-1 border-black-alpha-10 surface-100"
+					>
+						<p v-if="message" class="m-0 font-bold">{{ message }}</p>
+						<p v-if="signedOff" class="text-black-alpha-70">
 							You're signed off. You can still change answers until it closes.
 						</p>
 						<Button v-else label="Sign off" :disabled="!done || band.saving || signingOff" @click="signOff" />
-						<span v-if="band.saveNotice" class="form-signoff__message">{{ band.saveNotice }}</span>
+						<span v-if="band.saveNotice" class="font-bold">{{ band.saveNotice }}</span>
 					</div>
 				</template>
 			</div>
@@ -42,6 +47,7 @@
 	import { useRoute, useRouter } from 'vue-router';
 	import Button from 'primevue/button';
 	import Layout from '@router/layouts/main.vue';
+	import BandLink from '@components/band/band-link.vue';
 	import { BandApiError } from '@utils/band-api';
 	import { daysBetween, formatCalendarDate } from '@utils/dates';
 	import { clientFormFor } from '@/forms';

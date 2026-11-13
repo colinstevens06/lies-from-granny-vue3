@@ -1,17 +1,18 @@
 <template>
-	<article class="band-card next-gig">
+	<article class="band-card">
 		<template v-if="gig">
-			<div class="next-gig__countdown">{{ countdown }}</div>
-			<div class="band-card__title">{{ gig.name }}</div>
-			<div class="band-card__meta">{{ gig.date }}</div>
-			<RouterLink to="/shows" class="band-link">Show details</RouterLink>
+			<div class="text-2xl font-bold text-lfg-pink">{{ countdown }}</div>
+			<div class="text-xl font-bold">{{ gig.name }}</div>
+			<div class="text-black-alpha-70">{{ gig.date }}</div>
+			<BandLink to="/shows">Show details</BandLink>
 		</template>
-		<p v-else class="band-card__empty">Nothing on the books right now.</p>
+		<p v-else class="m-0 text-xl font-bold">Nothing on the books right now.</p>
 	</article>
 </template>
 
 <script setup lang="ts">
 	import type { Gig } from '@models/gig';
+	import BandLink from '@components/band/band-link.vue';
 	import { daysBetween } from '@utils/dates';
 	import { showIsoDate } from '@utils/shows';
 	import { computed } from 'vue';

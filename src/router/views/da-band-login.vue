@@ -2,18 +2,18 @@
 	<Layout>
 		<div class="main-container">
 			<div class="da-band">
-				<h1 class="da-band__title">Da Band</h1>
+				<h1 class="font-permanent-marker m-0">Da Band</h1>
 
-				<section class="da-band__section">
+				<BandSection>
 					<template v-if="notAMember">
-						<p class="band-card band-card__empty">This account isn't on the band list.</p>
+						<p class="band-card m-0 text-xl font-bold">This account isn't on the band list.</p>
 						<Button label="Sign out" severity="secondary" @click="signOutAndStay" />
 					</template>
 					<template v-else>
 						<DevSignIn v-if="DevSignIn" :redirect="redirect" />
 						<Button label="Sign in with Google" icon="pi pi-google" @click="signInWithGoogle(redirect)" />
 					</template>
-				</section>
+				</BandSection>
 			</div>
 		</div>
 	</Layout>
@@ -24,6 +24,7 @@
 	import { useRoute, useRouter } from 'vue-router';
 	import Button from 'primevue/button';
 	import Layout from '@router/layouts/main.vue';
+	import BandSection from '@components/band/band-section.vue';
 	import { useBandStore } from '@/stores/band';
 
 	// Local testing only. Behind import.meta.env.DEV so the production build drops the component and its import.

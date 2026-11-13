@@ -1,11 +1,13 @@
 <template>
-	<ul class="form-responses">
-		<li v-for="entry in form.members" :key="entry.member" class="form-responses__row">
+	<ul class="flex flex-column gap-2 m-0 p-0 list-none">
+		<li
+			v-for="entry in form.members"
+			:key="entry.member"
+			class="flex flex-wrap column-gap-3 row-gap-1 py-2 px-3 border-1 border-black-alpha-10 border-round-lg bg-white"
+		>
 			<strong>{{ nameOf(entry.member) }}</strong>
-			<span class="form-responses__status">{{ entry.signedOffAt ? 'Signed off' : 'Not yet' }}</span>
-			<span v-if="total !== undefined" class="form-responses__dates">
-				{{ answeredCount(form, rowOf(entry.member)) }} of {{ total }} dates
-			</span>
+			<span class="text-black-alpha-70">{{ entry.signedOffAt ? 'Signed off' : 'Not yet' }}</span>
+			<span v-if="total !== undefined">{{ answeredCount(form, rowOf(entry.member)) }} of {{ total }} dates</span>
 		</li>
 	</ul>
 </template>

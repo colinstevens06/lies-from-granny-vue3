@@ -1,10 +1,10 @@
 <template>
-	<section class="form-responses-extra">
+	<section>
 		<h3>Song suggestions</h3>
-		<ul v-if="suggestions.length" class="form-responses__songs">
+		<ul v-if="suggestions.length" class="m-0 pl-4">
 			<li v-for="item in suggestions" :key="item.short">{{ item.suggestion }} ({{ item.short }})</li>
 		</ul>
-		<p v-else class="band-card__meta">No suggestions yet.</p>
+		<p v-else class="text-black-alpha-70">No suggestions yet.</p>
 	</section>
 </template>
 

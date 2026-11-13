@@ -1,12 +1,12 @@
 <template>
-	<Sidebar :visible="!!date" position="bottom" :header="title" class="day-answers" @update:visible="close">
-		<ul v-if="date" class="day-answers__list">
-			<li v-for="entry in dayAnswers(date, availability)" :key="entry.member.id">
+	<Sidebar :visible="!!date" position="bottom" :header="title" @update:visible="close">
+		<ul v-if="date" class="flex flex-column gap-2 m-0 p-0 list-none">
+			<li v-for="entry in dayAnswers(date, availability)" :key="entry.member.id" class="flex justify-content-between">
 				<strong>{{ entry.member.short }}</strong>
 				<span>{{ ANSWER_LABEL[entry.answer ?? 'none'] }}</span>
 			</li>
 		</ul>
-		<p v-if="nearMiss" class="day-answers__near">{{ nearMiss }}</p>
+		<p v-if="nearMiss" class="mt-3 mb-0 font-bold">{{ nearMiss }}</p>
 	</Sidebar>
 </template>
 

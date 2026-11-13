@@ -1,6 +1,6 @@
 <template>
-	<component :is="to ? 'RouterLink' : 'article'" :to="to" class="band-card admin-tile">
-		<h3 class="band-card__title admin-tile__title">{{ title }}</h3>
+	<component :is="to ? 'RouterLink' : 'article'" :to="to" class="band-card no-underline text-900 hover:border-lfg-pink">
+		<h3 class="m-0 text-xl font-bold">{{ title }}</h3>
 		<slot />
 	</component>
 </template>

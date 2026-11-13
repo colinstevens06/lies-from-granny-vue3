@@ -1,12 +1,12 @@
 <template>
-	<section v-if="days.length || form" class="possible-dates">
-		<p class="possible-dates__header">{{ header }}</p>
-		<ul v-if="days.length" class="possible-dates__list">
-			<li v-for="day in days" :key="day">
+	<section v-if="days.length || form" class="flex flex-column gap-2 p-3 border-round-lg bg-poster-yellow">
+		<p class="m-0 font-bold">{{ header }}</p>
+		<ul v-if="days.length" class="flex flex-wrap gap-2 m-0 p-0 list-none">
+			<li v-for="day in days" :key="day" class="py-1 px-2 border-round-3xl bg-white">
 				{{ formatCalendarDate(day, { weekday: 'short', month: 'short', day: 'numeric' }) }}
 			</li>
 		</ul>
-		<p v-else class="band-card__meta">No dates work for everyone yet.</p>
+		<p v-else class="text-black-alpha-70">No dates work for everyone yet.</p>
 		<CopyButton v-if="days.length" label="Copy list" :text="possibleListText(days, header)" />
 	</section>
 </template>

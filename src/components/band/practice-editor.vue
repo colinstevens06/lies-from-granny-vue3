@@ -1,30 +1,30 @@
 <template>
-	<form class="practice-editor" @submit.prevent="save">
+	<form class="flex flex-column gap-3 mt-3" @submit.prevent="save">
 		<h2>{{ practice ? 'Edit practice' : 'Add a practice' }}</h2>
 
-		<label class="practice-editor__field">
+		<label :class="FIELD">
 			Date
 			<input v-model="date" type="date" class="p-inputtext" />
 		</label>
 
-		<div class="practice-editor__times">
-			<label class="practice-editor__field">
+		<div class="flex gap-3">
+			<label :class="[FIELD, 'flex-1 min-w-0']">
 				Start
 				<input v-model="startTime" type="time" class="p-inputtext" />
 			</label>
-			<label class="practice-editor__field">
+			<label :class="[FIELD, 'flex-1 min-w-0']">
 				End
 				<input v-model="endTime" type="time" class="p-inputtext" />
 			</label>
 		</div>
-		<small class="band-card__meta">Leave both empty for "Time TBD".</small>
+		<small class="text-black-alpha-70">Leave both empty for "Time TBD".</small>
 
-		<label class="practice-editor__field">
+		<label :class="FIELD">
 			Location
 			<InputText v-model="location" :placeholder="PRACTICE_HOME" />
 		</label>
 
-		<div class="practice-editor__field">
+		<div :class="FIELD">
 			Status
 			<SelectButton
 				v-model="status"
@@ -35,23 +35,23 @@
 			/>
 		</div>
 
-		<div class="practice-editor__field">
+		<div :class="FIELD">
 			Songs to prepare
-			<div v-for="(_, index) in songs" :key="index" class="practice-editor__song">
-				<InputText v-model="songs[index]" />
+			<div v-for="(_, index) in songs" :key="index" class="flex gap-2">
+				<InputText v-model="songs[index]" class="flex-1 min-w-0" />
 				<Button type="button" label="Remove" severity="secondary" @click="songs.splice(index, 1)" />
 			</div>
 			<Button type="button" label="+ Add a song" severity="secondary" @click="songs.push('')" />
 		</div>
 
-		<label class="practice-editor__field">
+		<label :class="FIELD">
 			Recap (one line each)
 			<Textarea v-model="recapText" rows="4" auto-resize />
 		</label>
 
-		<p v-if="error" class="practice-editor__error">{{ error }}</p>
+		<p v-if="error" class="m-0 font-bold text-pink-600">{{ error }}</p>
 
-		<div class="form-status-card__actions">
+		<div class="flex flex-wrap align-items-center gap-3 mt-2">
 			<Button type="submit" label="Save" :disabled="!valid || saving" />
 			<Button type="button" label="Cancel" severity="secondary" @click="emit('close')" />
 		</div>
@@ -74,6 +74,9 @@
 	// The admin's editor for one practice (or a new one). It sends the whole record through `band.savePractice`.
 	const props = defineProps<{ practice?: Practice }>();
 	const emit = defineEmits<{ close: [] }>();
+
+	// A label (or group) stacked over its control.
+	const FIELD = 'flex flex-column gap-1 font-bold';
 
 	const band = useBandStore();
 

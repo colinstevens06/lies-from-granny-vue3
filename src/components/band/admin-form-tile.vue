@@ -1,20 +1,17 @@
 <template>
 	<AdminTile :title="form.title" :to="`/da-band/admin/forms/${form.id}`">
-		<p v-if="summary" class="band-card__meta">{{ summary }}</p>
-		<p class="band-card__meta">Due {{ formatDueDay(form) }}</p>
-		<div class="admin-tile__state">
-			<span class="admin-pill" :class="{ 'admin-pill--done': form.closedAt }">{{ formStateLabel(form) }}</span>
-			<SignedOffDots :form="form" />
-		</div>
+		<p v-if="summary" class="text-black-alpha-70">{{ summary }}</p>
+		<p class="text-black-alpha-70">Due {{ formatDueDay(form) }}</p>
+		<FormState :form="form" />
 	</AdminTile>
 </template>
 
 <script setup lang="ts">
 	import type { Form } from '@models/form';
 	import AdminTile from '@components/band/admin-tile.vue';
-	import SignedOffDots from '@components/band/signed-off-dots.vue';
+	import FormState from '@components/band/form-state.vue';
 	import { clientFormFor } from '@/forms';
-	import { availabilitySummary, formatDueDay, formStateLabel } from '@utils/form-status';
+	import { availabilitySummary, formatDueDay } from '@utils/form-status';
 
 	const props = defineProps<{ form: Form }>();
 

@@ -2,57 +2,52 @@
 	<Layout>
 		<div class="main-container">
 			<div class="da-band">
-				<RouterLink to="/da-band/admin" class="band-link">&larr; Admin</RouterLink>
+				<BandLink to="/da-band/admin" class="inline-block mb-3">&larr; Admin</BandLink>
 
 				<AdminGate>
-					<p v-if="band.loadState !== 'ready'" class="band-card band-card__empty">
+					<p v-if="band.loadState !== 'ready'" class="band-card m-0 text-xl font-bold">
 						{{ band.loadState === 'error' ? "Couldn't load. Refresh to try again." : 'Loading…' }}
 					</p>
-					<p v-else-if="!form" class="band-card band-card__empty">No such form.</p>
+					<p v-else-if="!form" class="band-card m-0 text-xl font-bold">No such form.</p>
 
 					<template v-else>
-						<h1 class="da-band__title">{{ form.title }}</h1>
-						<p class="band-card__meta">Due {{ formatDueDay(form) }}</p>
-						<div class="admin-tile__state">
-							<span class="admin-pill" :class="{ 'admin-pill--done': form.closedAt }">{{ formStateLabel(form) }}</span>
-							<SignedOffDots :form="form" />
-						</div>
+						<h1 class="font-permanent-marker m-0">{{ form.title }}</h1>
+						<p class="text-black-alpha-70">Due {{ formatDueDay(form) }}</p>
+						<FormState :form="form" />
 
-						<section class="da-band__section">
+						<BandSection>
 							<template v-if="form.closedAt">
-								<h2>Closed</h2>
-								<p class="band-card__meta">Closed {{ formatInstantDay(form.closedAt) }}.</p>
+								<h2 class="m-0">Closed</h2>
+								<p class="text-black-alpha-70">Closed {{ formatInstantDay(form.closedAt) }}.</p>
 								<PracticeCard v-for="practice in formPractices" :key="practice.id" :practice="practice" />
 							</template>
 							<template v-else>
-								<h2>{{ isEveryoneIn(form) ? "Everyone's in" : 'Waiting on answers' }}</h2>
+								<h2 class="m-0">{{ isEveryoneIn(form) ? "Everyone's in" : 'Waiting on answers' }}</h2>
 								<PickDates v-if="isEveryoneIn(form) && form.availability" :form="form" />
-								<div class="form-status-card__actions">
+								<div class="flex flex-wrap align-items-center gap-3 mt-2">
 									<CopyButton v-if="waiting.length" label="Copy a nudge" :text="nudgeText(form, waiting)" />
 									<Button label="Close form" severity="secondary" @click="confirming = true" />
 								</div>
-								<p v-if="closeError" class="band-card__meta">{{ closeError }}</p>
+								<p v-if="closeError" class="text-black-alpha-70">{{ closeError }}</p>
 							</template>
-						</section>
+						</BandSection>
 
-						<section class="da-band__section">
-							<h2>Responses</h2>
+						<BandSection title="Responses">
 							<FormResponses :form="form" />
 							<component :is="registered.responses" v-if="registered" :form="form" />
-						</section>
+						</BandSection>
 
-						<section v-if="registered" class="da-band__section">
-							<h2>What this form asks</h2>
-							<ul class="admin-asks">
+						<BandSection v-if="registered" title="What this form asks">
+							<ul class="m-0 pl-4">
 								<li v-for="ask in registered.asks(form)" :key="ask">{{ ask }}</li>
 							</ul>
-						</section>
+						</BandSection>
 					</template>
 				</AdminGate>
 
-				<Dialog v-model:visible="confirming" modal header="Close this form?" class="admin-dialog">
+				<Dialog v-model:visible="confirming" modal header="Close this form?">
 					<p>Members won't be able to answer or sign off after it closes.</p>
-					<div class="form-status-card__actions">
+					<div class="flex flex-wrap align-items-center gap-3 mt-2">
 						<Button label="Close form" :disabled="closing" @click="closeIt" />
 						<Button label="Keep it open" severity="secondary" @click="confirming = false" />
 					</div>
@@ -69,14 +64,16 @@
 	import Dialog from 'primevue/dialog';
 	import Layout from '@router/layouts/main.vue';
 	import AdminGate from '@components/band/admin-gate.vue';
+	import BandLink from '@components/band/band-link.vue';
+	import BandSection from '@components/band/band-section.vue';
 	import CopyButton from '@components/band/copy-button.vue';
 	import FormResponses from '@components/band/form-responses.vue';
+	import FormState from '@components/band/form-state.vue';
 	import PickDates from '@components/band/pick-dates.vue';
 	import PracticeCard from '@components/band/practice-card.vue';
-	import SignedOffDots from '@components/band/signed-off-dots.vue';
 	import { clientFormFor } from '@/forms';
 	import { nudgeText } from '@utils/band-calendar';
-	import { formatDueDay, formatInstantDay, formStateLabel, isEveryoneIn, waitingOn } from '@utils/form-status';
+	import { formatDueDay, formatInstantDay, isEveryoneIn, waitingOn } from '@utils/form-status';
 	import { useBandStore } from '@/stores/band';
 
 	const band = useBandStore();

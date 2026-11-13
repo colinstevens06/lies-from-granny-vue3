@@ -2,35 +2,33 @@
 	<Layout>
 		<div class="main-container">
 			<div class="da-band">
-				<RouterLink to="/da-band" class="band-link">&larr; Da Band</RouterLink>
-				<h1 class="da-band__title">Admin</h1>
+				<BandLink to="/da-band" class="inline-block mb-3">&larr; Da Band</BandLink>
+				<h1 class="font-permanent-marker m-0">Admin</h1>
 
 				<AdminGate>
-					<p v-if="band.loadState === 'error'" class="band-card band-card__empty">
+					<p v-if="band.loadState === 'error'" class="band-card m-0 text-xl font-bold">
 						Couldn't load. Refresh to try again.
 					</p>
 
-					<section class="da-band__section">
-						<h2>Forms</h2>
+					<BandSection title="Forms">
 						<AdminFormTile v-for="form in band.openForms" :key="form.id" :form="form" />
-						<p v-if="band.loadState === 'ready' && !band.openForms.length" class="band-card band-card__empty">
+						<p v-if="band.loadState === 'ready' && !band.openForms.length" class="band-card m-0 text-xl font-bold">
 							No form is open.
 						</p>
-					</section>
+					</BandSection>
 
-					<section v-if="pastForms.length" class="da-band__section">
-						<h2>Past forms</h2>
+					<BandSection v-if="pastForms.length" title="Past forms">
 						<AdminFormTile v-for="form in pastForms" :key="form.id" :form="form" />
-					</section>
+					</BandSection>
 
-					<section class="da-band__section">
+					<BandSection>
 						<AdminTile title="Practices" to="/da-band/admin/practices">
-							<p class="band-card__meta">{{ nextPracticeLine }}</p>
-							<p class="band-card__meta">{{ upcoming.length }} upcoming · {{ needTime }} need a time</p>
+							<p class="text-black-alpha-70">{{ nextPracticeLine }}</p>
+							<p class="text-black-alpha-70">{{ upcoming.length }} upcoming · {{ needTime }} need a time</p>
 						</AdminTile>
-					</section>
+					</BandSection>
 
-					<p class="admin-note">More admin tools get their own tile as they're added.</p>
+					<p class="mt-4 mb-0 text-black-alpha-60">More admin tools get their own tile as they're added.</p>
 				</AdminGate>
 			</div>
 		</div>
@@ -43,6 +41,8 @@
 	import AdminFormTile from '@components/band/admin-form-tile.vue';
 	import AdminGate from '@components/band/admin-gate.vue';
 	import AdminTile from '@components/band/admin-tile.vue';
+	import BandLink from '@components/band/band-link.vue';
+	import BandSection from '@components/band/band-section.vue';
 	import { formatPracticeDay, formatPracticeTime, needsTime, upcomingPractices } from '@utils/practices';
 	import { useBandStore } from '@/stores/band';
 

@@ -1,5 +1,5 @@
 <template>
-	<div class="band-calendar">
+	<div>
 		<MonthGrid :today="today" :form="form">
 			<template #day="{ date, past }">
 				<CalendarDay

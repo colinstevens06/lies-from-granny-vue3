@@ -1,0 +1,79 @@
+// Structural CSS for PrimeVue 3.32 components whose markup is newer than the project's theme (_theme.scss). The theme
+// only paints colors for the older markup, so each component here gets the layout it needs. Add a section per component.
+
+// ---- SelectButton: each option is a <div class="p-button"> in a .p-button-group.
+.p-selectbutton {
+	display: inline-flex;
+	flex-wrap: wrap;
+
+	.p-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		user-select: none;
+		border-radius: 0;
+
+		&:first-child {
+			border-top-left-radius: 3px;
+			border-bottom-left-radius: 3px;
+		}
+
+		&:last-child {
+			border-top-right-radius: 3px;
+			border-bottom-right-radius: 3px;
+		}
+
+		&:not(:last-child) {
+			border-right-width: 0;
+		}
+
+		&.p-disabled {
+			cursor: default;
+		}
+	}
+}
+
+// ---- InputSwitch: a transparent native checkbox over the slider; "on" is .p-highlight (the theme expects
+// .p-inputswitch-checked, so the on-state colors and knob position are repeated here).
+.p-inputswitch {
+	position: relative;
+	display: inline-block;
+	flex: none;
+
+	.p-inputswitch-input {
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		width: 100%;
+		height: 100%;
+		margin: 0;
+		padding: 0;
+		opacity: 0;
+		cursor: pointer;
+		appearance: none;
+	}
+
+	.p-inputswitch-slider {
+		position: absolute;
+		inset: 0;
+
+		&:before {
+			content: '';
+			position: absolute;
+			top: 50%;
+		}
+	}
+
+	&.p-highlight .p-inputswitch-slider {
+		background: $lfg-pink;
+
+		&:before {
+			transform: translateX(1.25rem);
+		}
+	}
+
+	&.p-highlight:not(.p-disabled):hover .p-inputswitch-slider {
+		background: $lfg-pink--hover-dark;
+	}
+}

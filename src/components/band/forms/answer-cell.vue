@@ -2,15 +2,16 @@
 	<!-- eslint-disable-next-line vue/no-restricted-html-elements -- a calendar cell with a 3-state tap cycle, not a standard button -->
 	<button
 		type="button"
-		class="answer-cell"
-		:class="[`answer-cell--${answer ?? 'none'}`, { 'answer-cell--dim': disabled }]"
+		class="answer-cell flex flex-column align-items-center justify-content-center py-1 px-0 border-none border-round text-sm font-bold line-height-1"
+		:class="[`answer-cell--${answer ?? 'none'}`, disabled ? 'opacity-40' : 'cursor-pointer']"
+		style="min-height: 46px"
 		:disabled="disabled"
 		:data-day="date"
 		:aria-label="`${label}: ${ANSWER_LABEL[answer ?? 'none']}`"
 		@click="emit('change', date, nextAnswer(answer))"
 	>
 		{{ Number(date.slice(8)) }}
-		<small>{{ answer ? ANSWER_LABEL[answer] : '—' }}</small>
+		<small class="font-medium" style="font-size: 10px">{{ answer ? ANSWER_LABEL[answer] : '—' }}</small>
 	</button>
 </template>
 
