@@ -1,12 +1,21 @@
 /* ==================== DA BAND (/da-band) ===================== */
 
+// Raised panel on the white page; the white .band-cards sit on top of it.
 .da-band {
 	max-width: 720px;
-	margin: 0 auto;
-	padding-bottom: 2rem;
+	margin: 1.5rem auto 2rem;
+	padding: 1rem 1rem 1.5rem;
+	border-radius: 12px;
+	background-color: $lfg-surface-gray;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.06);
+
+	@media screen and (min-width: $breakpoint-md) {
+		padding: 1.5rem 2rem 2rem;
+	}
 
 	&__title {
 		font-family: 'Permanent Marker', cursive;
+		margin-top: 0;
 		margin-bottom: 0;
 	}
 

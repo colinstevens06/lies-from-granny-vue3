@@ -131,11 +131,12 @@
 		padding: 0;
 		list-style: none;
 
+		// Label and value sit together on the left, and wrap on narrow screens.
 		li {
 			display: flex;
+			flex-wrap: wrap;
 			align-items: baseline;
-			justify-content: space-between;
-			gap: 0.25rem 1rem;
+			gap: 0.25rem 0.75rem;
 			padding: 6px 10px;
 			border-radius: 6px;
 			background: $lfg-surface-gray;
@@ -143,10 +144,8 @@
 		}
 
 		span {
-			flex: none;
 			color: rgba(0, 0, 0, 0.6);
 			font-size: 0.85rem;
-			white-space: nowrap;
 		}
 	}
 

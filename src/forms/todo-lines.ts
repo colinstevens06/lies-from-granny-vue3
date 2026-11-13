@@ -3,7 +3,7 @@ import { addDays, formatCalendarDate } from '@utils/dates';
 import { prefilledCount } from '@utils/band-calendar';
 import type { TodoContext, TodoLine } from '@/forms/index';
 
-/** The to-do line for a form's availability part: "45 of 90", "Already on your calendar ✓" or "Done ✓". */
+/** The to-do line for a form's availability part: "45 of 90 done", "Already on your calendar ✓" or "Done ✓". */
 export const availabilityTodoLine = (form: Form, { myDays, today, missing }: TodoContext): TodoLine => {
 	const { startDay, endDay } = form.availability!;
 	const first = startDay > today ? startDay : today;
@@ -23,7 +23,7 @@ export const availabilityTodoLine = (form: Form, { myDays, today, missing }: Tod
 
 	return {
 		label,
-		value: `${total - missingDays} of ${total}${prefilled > 0 ? ` · ${prefilled} from your calendar` : ''}`,
+		value: `${total - missingDays} of ${total} done`,
 		ok: false
 	};
 };
