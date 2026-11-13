@@ -101,7 +101,11 @@ const router = createRouter({
 router.beforeEach(async to => {
 	if (!to.meta.requiresMember) return;
 
-	const status = await useBandStore().loadMe();
+	// An offline or failing server must not reject the navigation (a blank first load, dead links); the login page says so.
+	const status = await useBandStore()
+		.loadMe()
+		.catch(() => 'error' as const);
+	if (status === 'error') return { name: 'da-band-login', query: { reason: 'error', redirect: to.fullPath } };
 	if (status === 'signed-out') return { name: 'da-band-login', query: { redirect: to.fullPath } };
 	if (status === 'not-a-member') return { name: 'da-band-login', query: { reason: 'not-a-member' } };
 });

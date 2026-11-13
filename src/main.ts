@@ -26,7 +26,10 @@ const finishSignIn = async () => {
 	window.history.replaceState(undefined, '', await completeAuthCallback());
 };
 
-(hasAuthCallbackHash() ? finishSignIn() : Promise.resolve()).then(() => {
-	app.use(router);
-	app.mount('#app');
-});
+// If the Identity chunk can't load, the public site must still mount.
+(hasAuthCallbackHash() ? finishSignIn() : Promise.resolve())
+	.catch(() => undefined)
+	.then(() => {
+		app.use(router);
+		app.mount('#app');
+	});
