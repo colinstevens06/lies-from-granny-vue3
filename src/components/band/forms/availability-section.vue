@@ -62,6 +62,5 @@
 	const fillWeekday = (weekday: number, answer: Answer) => {
 		const changes = blankDaysByWeekday.value[weekday].map(date => ({ date, answer }));
 		if (changes.length > 0) emit('change', changes, true);
-		sheetOpen.value = false;
 	};
 </script>

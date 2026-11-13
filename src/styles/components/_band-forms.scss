@@ -133,6 +133,25 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 
 // ---- Weekday fill sheet ----
 .weekday-fill {
+	// The theme's sidebar header is display: block, which drops the close button under the title.
+	.p-sidebar-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	.p-sidebar-header-content {
+		flex: 1 1 auto;
+		min-width: 0;
+		overflow-wrap: anywhere;
+		font-weight: 700;
+	}
+
+	.p-sidebar-close {
+		flex: none;
+	}
+
 	&__note {
 		margin: 0 0 0.75rem;
 		font-size: 13px;
@@ -141,12 +160,14 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 
 	&__row {
 		display: grid;
-		grid-template-columns: 44px repeat(3, minmax(0, 1fr)) 64px;
+		grid-template-columns: 40px repeat(3, minmax(0, 1fr)) 84px;
 		gap: 6px;
 		align-items: center;
 		padding: 4px 0;
 
 		small {
+			font-size: 11px;
+			line-height: 1.2;
 			text-align: right;
 			color: $bf-muted;
 		}
@@ -164,6 +185,12 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 		&:disabled {
 			opacity: 0.35;
 			cursor: default;
+		}
+
+		&--done {
+			border-color: $bf-yes;
+			background: $bf-yes;
+			color: #fff;
 		}
 	}
 }
