@@ -75,6 +75,7 @@ interface AvailabilityRow {
 	member_id: MemberId;
 	day: string;
 	answer: DayAnswer['answer'];
+	show_answer: DayAnswer['answer'] | null;
 	source: AvailabilitySource;
 	updated_by: MemberId;
 	updated_at: Date | string;
@@ -83,7 +84,7 @@ interface AvailabilityRow {
 /** Everyone's answers in roster order (or just one member's). A member with no rows still appears. */
 export const listAvailability = async (only?: MemberId, db?: Db): Promise<MemberAvailability[]> => {
 	const { rows } = await (db ?? openDb()).query(
-		`select member_id, ${DAY} as day, answer, source, updated_by, updated_at
+		`select member_id, ${DAY} as day, answer, show_answer, source, updated_by, updated_at
 		   from availability where ($1::text is null or member_id = $1) order by member_id, day`,
 		[only ?? null]
 	);
@@ -94,6 +95,7 @@ export const listAvailability = async (only?: MemberId, db?: Db): Promise<Member
 	for (const row of rows as AvailabilityRow[]) {
 		byMember.get(row.member_id)!.days[row.day] = {
 			answer: row.answer,
+			...(row.show_answer && { showAnswer: row.show_answer }),
 			source: row.source,
 			updatedBy: row.updated_by,
 			updatedAt: new Date(row.updated_at).toISOString()
@@ -115,7 +117,10 @@ export interface WriteOptions {
 	dryRun?: boolean;
 }
 
-/** The one writer of `availability`. Changes go in date order, in one transaction. `answer: null` deletes. */
+/**
+ * The one writer of `availability`. Changes go in date order, in one transaction. `answer: null` deletes. Each change
+ * replaces its whole day, so a change without `showAnswer` clears the day's show answer.
+ */
 export const writeAvailability = async (
 	member: MemberId,
 	changes: AvailabilityChange[],
@@ -134,14 +139,22 @@ export const writeAvailability = async (
 
 		if (sets.length) {
 			const result = await client.query(
-				`insert into availability (member_id, day, answer, source, updated_by)
-				 select $1, t.day, t.answer, $2, $3 from unnest($4::date[], $5::text[]) as t(day, answer)
+				`insert into availability (member_id, day, answer, show_answer, source, updated_by)
+				 select $1, t.day, t.answer, t.show_answer, $2, $3
+				   from unnest($4::date[], $5::text[], $6::text[]) as t(day, answer, show_answer)
 				 on conflict (member_id, day) do update
-				   set answer = excluded.answer, source = excluded.source,
+				   set answer = excluded.answer, show_answer = excluded.show_answer, source = excluded.source,
 				       updated_by = excluded.updated_by, updated_at = now()
 				   ${guard}
 				 returning day`,
-				[member, stamp.source, stamp.by, sets.map(c => c.date), sets.map(c => c.answer)]
+				[
+					member,
+					stamp.source,
+					stamp.by,
+					sets.map(c => c.date),
+					sets.map(c => c.answer),
+					sets.map(c => c.showAnswer ?? null)
+				]
 			);
 			written += result.rows.length;
 		}

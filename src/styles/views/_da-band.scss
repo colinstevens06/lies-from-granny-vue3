@@ -18,6 +18,11 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 	color: $lfg-pink !important;
 }
 
+// A show night everyone can play: a pale pink fill that stays distinct from the solid-pink Booked day.
+.bg-lfg-pink-tint {
+	background-color: #fde2ee !important;
+}
+
 .border-lfg-pink {
 	border-color: $lfg-pink !important;
 }
@@ -116,6 +121,13 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 	&--maybe {
 		border-color: $bf-maybe;
 		background: $bf-maybe;
+	}
+
+	// Yes to practice, no to a show: green, ringed in pink.
+	&--no-show {
+		border-color: $bf-yes;
+		background: $bf-yes;
+		box-shadow: 0 0 0 1px $lfg-pink;
 	}
 }
 

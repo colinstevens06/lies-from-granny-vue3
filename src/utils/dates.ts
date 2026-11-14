@@ -57,6 +57,9 @@ export const addDays = (date: string, days: number) =>
 /** 0 (Sunday) to 6 (Saturday) for a 'YYYY-MM-DD' date. */
 export const weekdayIndex = (date: string) => calendarDay(date).getUTCDay();
 
+/** Shows are only ever Friday or Saturday nights. */
+export const isShowNight = (date: string) => [5, 6].includes(weekdayIndex(date));
+
 /** True for a real calendar date written exactly as 'YYYY-MM-DD'. */
 export const isIsoDate = (value: unknown): value is string =>
 	typeof value === 'string' &&

@@ -15,7 +15,7 @@
 				v-for="entry in answers"
 				:key="entry.member.id"
 				class="inline-block border-circle border-1 answer-dot"
-				:class="`answer-dot--${entry.answer ?? 'none'}`"
+				:class="entry.noShow ? 'answer-dot--no-show' : `answer-dot--${entry.answer ?? 'none'}`"
 				style="width: 6px; height: 6px"
 			/>
 		</span>
@@ -26,6 +26,7 @@
 	import { computed } from 'vue';
 	import type { MemberAvailability } from '@models/availability';
 	import { dayAnswers, type DayStatus } from '@utils/band-calendar';
+	import { STATUS_CLASS, STATUS_LABEL } from './day-status';
 	import { formatCalendarDate } from '@utils/dates';
 
 	const props = defineProps<{
@@ -37,21 +38,8 @@
 
 	const emit = defineEmits<{ select: [date: string] }>();
 
-	const STATUS_LABEL: Record<DayStatus, string> = {
-		booked: 'booked',
-		blocked: 'someone is busy',
-		possible: 'everyone is free',
-		open: 'open'
-	};
-
-	const STATUS_CLASS: Record<DayStatus, string> = {
-		booked: 'bg-lfg-pink border-lfg-pink text-white',
-		blocked: 'bg-gray-900 border-gray-900 text-white',
-		possible: 'bg-poster-yellow border-poster-yellow',
-		open: 'bg-white border-black-alpha-20'
-	};
-
-	// Five dots, one per member in roster order: green Yes, pink No, orange Not sure, hollow Pending.
+	// Five dots, one per member in roster order: green Yes, pink No, orange Not sure, hollow Pending, and a green dot
+	// ringed in pink for a Yes who can't play the show.
 	const answers = computed(() => dayAnswers(props.date, props.availability));
 	const label = computed(() => formatCalendarDate(props.date, { weekday: 'short', month: 'short', day: 'numeric' }));
 </script>

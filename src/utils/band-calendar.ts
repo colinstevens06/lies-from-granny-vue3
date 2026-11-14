@@ -1,10 +1,10 @@
 import type { Gig } from '@models/gig';
-import type { Answer, MemberAvailability } from '@models/availability';
+import type { Answer, DayAnswer, MemberAvailability, MyAnswer } from '@models/availability';
 import type { MemberId } from '@models/band-member';
 import type { Form } from '@models/form';
 import type { Practice } from '@models/practice';
 import { members } from '@components/da-band/members';
-import { addDays, easternNow, formatCalendarDate, toIsoDate, weekdayIndex } from '@utils/dates';
+import { addDays, easternNow, formatCalendarDate, isShowNight, toIsoDate, weekdayIndex } from '@utils/dates';
 import { showIsoDate } from '@utils/shows';
 
 // Pure helpers behind the availability UI (plan U3): no I/O, no Vue. Dates are Eastern 'YYYY-MM-DD' strings and
@@ -21,6 +21,22 @@ export const nextAnswer = (current?: Answer): Answer => {
 	if (current === 'no') return 'maybe';
 	return 'yes';
 };
+
+/** What the show-vs-practice cycle reads from a day: the answer and, on Fridays and Saturdays, the show answer. */
+type DayFields = Pick<DayAnswer, 'answer' | 'showAnswer'>;
+
+/**
+ * The tap after `current` for one day. Fridays and Saturdays (the only show nights) add a stop after Yes:
+ * blank → Yes → Yes, no show → No → Not sure → Yes. Every other day is `nextAnswer`. The result replaces the whole
+ * day, so a tap that leaves "Yes, no show" clears the show answer.
+ */
+export const nextDayChange = (date: string, current?: Partial<DayFields>): Omit<MyAnswer, 'date'> =>
+	isShowNight(date) && current?.answer === 'yes' && current.showAnswer === undefined
+		? { answer: 'yes', showAnswer: 'no' }
+		: { answer: nextAnswer(current?.answer) };
+
+/** Can this member play a show that night? `showAnswer ?? answer`; only meaningful on Fridays and Saturdays. */
+export const effectiveShowAnswer = (day?: Partial<DayFields>): Answer | undefined => day?.showAnswer ?? day?.answer;
 
 export const ANSWER_LABEL: Record<Answer | 'none', string> = {
 	yes: 'Yes',
@@ -97,14 +113,17 @@ const todayEastern = () => easternNow().slice(0, 10);
 
 // ---- Status ----------------------------------------------------------------------------------------------
 
-export type DayStatus = 'booked' | 'blocked' | 'possible' | 'open';
+/** `possible` is "can practice"; `gig` is a possible Friday or Saturday that all five can also play. */
+export type DayStatus = 'booked' | 'blocked' | 'gig' | 'possible' | 'open';
 
-const answerOf = (availability: MemberAvailability[], member: MemberId, date: string): Answer | undefined =>
-	availability.find(row => row.member === member)?.days[date]?.answer;
-
-/** The five members' answers for a day, in roster order. */
+/** The five members' answers for a day, in roster order. `noShow` is Yes to practice but not to a show. */
 export const dayAnswers = (date: string, availability: MemberAvailability[]) =>
-	members.map(member => ({ member, answer: answerOf(availability, member.id, date) }));
+	members.map(member => {
+		const day = availability.find(row => row.member === member.id)?.days[date];
+		const noShow = isShowNight(date) && day?.answer === 'yes' && effectiveShowAnswer(day) !== 'yes';
+
+		return { member, answer: day?.answer, noShow };
+	});
 
 /** A day is booked by any practice that isn't cancelled, or by a show. */
 const isBooked = (date: string, practices: Practice[], shows: Gig[]) =>
@@ -112,8 +131,9 @@ const isBooked = (date: string, practices: Practice[], shows: Gig[]) =>
 	shows.some(show => showIsoDate(show) === date);
 
 /**
- * Booked beats everything, then any No blocks the day, then five Yes make it possible. Maybe and Pending leave
- * it open but keep it off the possible list.
+ * Booked beats everything, then any No blocks the day, then five Yes make it possible (can practice), and on a
+ * Friday or Saturday where nobody is also "no show" it's a gig night. Maybe and Pending leave it open but keep it
+ * off the possible list.
  */
 export const calendarDayStatus = (
 	date: string,
@@ -123,10 +143,20 @@ export const calendarDayStatus = (
 ): DayStatus => {
 	if (isBooked(date, practices, shows)) return 'booked';
 
-	const answers = dayAnswers(date, availability).map(entry => entry.answer);
-	if (answers.includes('no')) return 'blocked';
+	const entries = dayAnswers(date, availability);
+	if (entries.some(entry => entry.answer === 'no')) return 'blocked';
+	if (!entries.every(entry => entry.answer === 'yes')) return 'open';
 
-	return answers.every(answer => answer === 'yes') ? 'possible' : 'open';
+	return isShowNight(date) && !entries.some(entry => entry.noShow) ? 'gig' : 'possible';
+};
+
+/** "Everyone can practice · no gig: Anna" when all five can practice but someone can't play a show; otherwise undefined. */
+export const noGigText = (date: string, availability: MemberAvailability[]): string | undefined => {
+	const entries = dayAnswers(date, availability);
+	if (!entries.every(entry => entry.answer === 'yes')) return undefined;
+
+	const names = entries.filter(entry => entry.noShow).map(entry => entry.member.short);
+	return names.length === 0 ? undefined : `Everyone can practice · no gig: ${names.join(', ')}`;
 };
 
 /** "Everyone but {name} (Pending)" when exactly one member isn't a Yes and nobody said No; otherwise undefined. */
@@ -184,20 +214,38 @@ const daysBetweenInclusive = (first: string, last: string) => {
 	return days;
 };
 
-/** Upcoming days all five said Yes to and nothing is booked, soonest first. */
+const datesWithStatus = (
+	statuses: DayStatus[],
+	form: Form | undefined,
+	availability: MemberAvailability[],
+	practices: Practice[],
+	shows: Gig[],
+	today: string
+) => {
+	const { first, last } = candidateRange(form, shows, today);
+
+	return daysBetweenInclusive(first, last).filter(day =>
+		statuses.includes(calendarDayStatus(day, availability, practices, shows))
+	);
+};
+
+/** Upcoming days all five can practice and nothing is booked, soonest first. Show nights are on it too. */
 export const possibleDates = (
 	form: Form | undefined,
 	availability: MemberAvailability[],
 	practices: Practice[],
 	shows: Gig[],
 	today = todayEastern()
-): string[] => {
-	const { first, last } = candidateRange(form, shows, today);
+): string[] => datesWithStatus(['possible', 'gig'], form, availability, practices, shows, today);
 
-	return daysBetweenInclusive(first, last).filter(
-		day => calendarDayStatus(day, availability, practices, shows) === 'possible'
-	);
-};
+/** The upcoming Fridays and Saturdays all five can practice and play, nothing booked, soonest first. */
+export const showNights = (
+	form: Form | undefined,
+	availability: MemberAvailability[],
+	practices: Practice[],
+	shows: Gig[],
+	today = todayEastern()
+): string[] => datesWithStatus(['gig'], form, availability, practices, shows, today);
 
 /**
  * How many practices the form still wants scheduled, or undefined when it doesn't say. A practice counts when
@@ -261,6 +309,35 @@ export const prefilledCount = (form: Form, myDays: Record<string, unknown>, toda
 	const { startDay, endDay } = form.availability;
 	return daysBetweenInclusive(startDay > today ? startDay : today, endDay).filter(day => myDays[day] !== undefined)
 		.length;
+};
+
+export interface ShowNightSummary {
+	/** Fridays and Saturdays from today through the form's end. */
+	total: number;
+	/** The member can play a show. */
+	playable: string[];
+	/** Yes to practice, no to a show. */
+	practiceOnly: string[];
+}
+
+/** What the member's answers say about show nights, for the sheet that confirms them before sign-off. */
+export const showNightSummary = (
+	form: Form,
+	myDays: Record<string, Partial<DayFields>>,
+	today = todayEastern()
+): ShowNightSummary => {
+	const summary: ShowNightSummary = { total: 0, playable: [], practiceOnly: [] };
+	if (!form.availability) return summary;
+
+	const { startDay, endDay } = form.availability;
+	for (const day of daysBetweenInclusive(startDay > today ? startDay : today, endDay).filter(isShowNight)) {
+		summary.total++;
+
+		if (effectiveShowAnswer(myDays[day]) === 'yes') summary.playable.push(day);
+		else if (myDays[day]?.answer === 'yes') summary.practiceOnly.push(day);
+	}
+
+	return summary;
 };
 
 // ---- Copy texts ------------------------------------------------------------------------------------------

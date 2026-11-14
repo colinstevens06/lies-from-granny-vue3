@@ -33,9 +33,11 @@
 						<p v-if="signedOff" class="text-black-alpha-70">
 							You're signed off. You can still change answers until it closes.
 						</p>
-						<Button v-else label="Sign off" :disabled="!done || band.saving || signingOff" @click="signOff" />
+						<Button v-else label="Sign off" :disabled="!done || band.saving || signingOff" @click="askSignOff" />
 						<span v-if="band.saveNotice" class="font-bold">{{ band.saveNotice }}</span>
 					</div>
+
+					<ShowNightsSheet v-model:visible="confirming" :summary="nights" :busy="signingOff" @confirm="signOff" />
 				</template>
 			</div>
 		</div>
@@ -48,6 +50,8 @@
 	import Button from 'primevue/button';
 	import Layout from '@router/layouts/main.vue';
 	import BandLink from '@components/da-band/band-link.vue';
+	import ShowNightsSheet from '@components/da-band/forms/show-nights-sheet.vue';
+	import { showNightSummary } from '@utils/band-calendar';
 	import { BandApiError } from '@utils/band-api';
 	import { daysBetween, formatCalendarDate } from '@utils/dates';
 	import { clientFormFor } from '@/forms';
@@ -64,7 +68,7 @@
 	const signedOff = computed(() => form.value?.members.some(m => m.member === band.me?.member && m.signedOffAt));
 
 	// The progress composable wants a form even before one loads; it's only read once `form` exists.
-	const { today, done, lines } = useFormProgress(() => form.value!);
+	const { today, myDays, done, lines } = useFormProgress(() => form.value!);
 
 	const overdueDays = computed(() => (form.value ? Math.max(0, daysBetween(form.value.dueDay, today.value)) : 0));
 	const dueText = computed(() =>
@@ -78,10 +82,16 @@
 	const message = ref('');
 	const signingOff = ref(false);
 
+	// A form with availability asks to confirm its show nights first; any other form signs off straight away.
+	const confirming = ref(false);
+	const nights = computed(() => showNightSummary(form.value!, myDays.value, today.value));
+	const askSignOff = () => (form.value?.availability ? (confirming.value = true) : signOff());
+
 	const signOff = async () => {
 		// Rechecked at click time: the rule and the save queue can change between render and tap.
 		if (!form.value || !done.value || band.saving) return;
 
+		confirming.value = false;
 		signingOff.value = true;
 		message.value = '';
 		try {

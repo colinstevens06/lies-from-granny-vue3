@@ -7,6 +7,12 @@ export type AvailabilitySource = 'self' | 'poll' | 'manual' | 'assumed';
 
 export interface DayAnswer {
 	answer: Answer;
+	/**
+	 * The answer to "can you play a show?" when it differs from `answer`; only on Fridays and Saturdays. Empty means it
+	 * follows `answer`: the effective show answer is `showAnswer ?? answer`. The grid only ever writes 'no', on a day
+	 * whose `answer` is 'yes'.
+	 */
+	showAnswer?: Answer;
 	source: AvailabilitySource;
 	updatedBy: MemberId;
 	/** ISO UTC instant. */
@@ -19,11 +25,19 @@ export interface MemberAvailability {
 	days: Record<string, DayAnswer>;
 }
 
-/** `answer: null` clears the day, which only the admin may do. */
+/**
+ * One day replaced whole: leaving `showAnswer` out clears any show answer the day had. `answer: null` clears the day,
+ * which only the admin may do.
+ */
 export interface AvailabilityChange {
 	date: string;
 	answer: Answer | null;
+	/** 'no' only, on a Friday or Saturday whose `answer` is 'yes'. */
+	showAnswer?: 'no';
 }
+
+/** A member's own change to one day: never a clear, so the answer is always set. */
+export type MyAnswer = Omit<AvailabilityChange, 'answer'> & { answer: Answer };
 
 export type Weekday = 'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat';
 
@@ -34,4 +48,9 @@ export interface AvailabilityImport {
 	window?: { start: string; end: string; busyWeekdays?: Weekday[] };
 	/** 'yes' dates. A member who is absent is left untouched. */
 	members: Partial<Record<MemberId, string[]>>;
+	/**
+	 * Members whose 'yes' Saturday before a 'no' Sunday is practice-yes, show-no (a Sunday work shift rules out a late
+	 * show but not a practice). Derived from the Sundays this entry already lists, so nothing is added by hand.
+	 */
+	nightBeforeNoSunday?: MemberId[];
 }

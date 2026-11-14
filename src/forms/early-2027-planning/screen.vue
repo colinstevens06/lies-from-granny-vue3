@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 	import { computed } from 'vue';
-	import type { AvailabilityChange } from '@models/availability';
+	import type { MyAnswer } from '@models/availability';
 	import type { Form } from '@models/form';
 	import AvailabilitySection from '@components/da-band/forms/availability-section.vue';
 	import YesNoText from '@components/da-band/forms/yes-no-text.vue';
@@ -35,11 +35,7 @@
 		() => (band.pendingFormAnswer(props.form.id) as SongPitchInput | undefined) ?? (mine.value as SongPitch | undefined)
 	);
 
-	const onChange = (changes: AvailabilityChange[], immediate: boolean) =>
-		band.setMyAnswers(
-			changes.flatMap(({ date, answer: value }) => (value ? [{ date, answer: value }] : [])),
-			{ immediate }
-		);
+	const onChange = (changes: MyAnswer[], immediate: boolean) => band.setMyAnswers(changes, { immediate });
 
 	const onSong = ({ wants, text }: { wants: boolean; text: string }) => {
 		const body: SongPitchInput = wants ? { wantsNew: true, suggestion: text } : { wantsNew: false };

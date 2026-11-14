@@ -42,7 +42,9 @@ const seedAvailability = async (db: Db, entries: AvailabilityImport[]) => {
 	for (const entry of entries) {
 		const answers = expandImport(entry);
 		for (const member of new Set(answers.map(a => a.member))) {
-			const changes = answers.filter(a => a.member === member).map(({ date, answer }) => ({ date, answer }));
+			const changes = answers
+				.filter(a => a.member === member)
+				.map(({ date, answer, showAnswer }) => ({ date, answer, ...(showAnswer && { showAnswer }) }));
 			const { written, skipped } = await writeAvailability(
 				member,
 				changes,

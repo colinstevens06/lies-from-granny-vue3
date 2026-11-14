@@ -17,17 +17,27 @@ export const makeForm = (overrides: Partial<Form> = {}): Form => ({
 	...overrides
 });
 
+/** A day's answer, or `{ answer: 'yes', showAnswer: 'no' }` for "Yes, no show" on a Friday or Saturday. */
+export type DayInput = Answer | { answer: Answer; showAnswer?: Answer };
+
+/** A Yes that can't play a show: `{ '2026-11-14': NO_SHOW }`. */
+export const NO_SHOW: DayInput = { answer: 'yes', showAnswer: 'no' };
+
+const dayFields = (input: DayInput) => (typeof input === 'string' ? { answer: input } : input);
+
 /** A member's own answers keyed by day: `makeMyDays({ '2026-11-16': 'yes' })`. */
-export const makeMyDays = (answers: Record<string, Answer> = {}): Record<string, Pick<DayAnswer, 'answer'>> =>
-	Object.fromEntries(Object.entries(answers).map(([day, answer]) => [day, { answer }]));
+export const makeMyDays = (
+	answers: Record<string, DayInput> = {}
+): Record<string, Pick<DayAnswer, 'answer' | 'showAnswer'>> =>
+	Object.fromEntries(Object.entries(answers).map(([day, input]) => [day, dayFields(input)]));
 
 /** One member's row of the band's availability. */
-export const makeAvailability = (member: MemberId, answers: Record<string, Answer>): MemberAvailability => ({
+export const makeAvailability = (member: MemberId, answers: Record<string, DayInput>): MemberAvailability => ({
 	member,
 	days: Object.fromEntries(
-		Object.entries(answers).map(([day, answer]) => [
+		Object.entries(answers).map(([day, input]) => [
 			day,
-			{ answer, source: 'self', updatedBy: member, updatedAt: '2026-11-01T12:00:00Z' } as DayAnswer
+			{ ...dayFields(input), source: 'self', updatedBy: member, updatedAt: '2026-11-01T12:00:00Z' } as DayAnswer
 		])
 	)
 });
@@ -38,12 +48,12 @@ const ROSTER: MemberId[] = ['anna', 'kyle', 'nick', 'francesco', 'colin'];
 export const makeBandAvailability = (
 	days: string[],
 	answer: Answer = 'yes',
-	overrides: Partial<Record<MemberId, Partial<Record<string, Answer>>>> = {}
+	overrides: Partial<Record<MemberId, Partial<Record<string, DayInput>>>> = {}
 ): MemberAvailability[] =>
 	ROSTER.map(member =>
 		makeAvailability(
 			member,
-			Object.fromEntries(days.map(day => [day, overrides[member]?.[day] ?? answer])) as Record<string, Answer>
+			Object.fromEntries(days.map(day => [day, overrides[member]?.[day] ?? answer])) as Record<string, DayInput>
 		)
 	);
 

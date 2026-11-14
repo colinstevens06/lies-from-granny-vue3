@@ -15,8 +15,9 @@
 							<AnswerCell
 								:date="date"
 								:answer="band.myDays[date]?.answer"
+								:show-answer="band.myDays[date]?.showAnswer"
 								:disabled="past"
-								@change="(day, answer) => band.setMyAnswers([{ date: day, answer }])"
+								@change="change => band.setMyAnswers([change])"
 							/>
 						</template>
 					</MonthGrid>

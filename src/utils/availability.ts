@@ -6,7 +6,7 @@ import type {
 	Weekday
 } from '../models/availability';
 import type { MemberId } from '../models/band-member';
-import { addDays, isIsoDate, weekdayIndex } from './dates';
+import { addDays, isIsoDate, isShowNight, weekdayIndex } from './dates';
 import { isRecord, parsed, rejected, type Parsed } from './parsed';
 
 // Shared by the Netlify functions and the client: relative imports only, no I/O.
@@ -28,6 +28,14 @@ interface ParseOptions {
 	/** True for anyone but the admin: dates must fall in today → December 31 of next year, and answers can't be cleared. */
 	memberLimits: boolean;
 }
+
+/** A show answer is 'no' on a Friday or Saturday whose answer is 'yes', and nothing else. */
+const parseShowAnswer = (raw: Record<string, unknown>): 'no' | undefined | 'bad' => {
+	if (raw.showAnswer === undefined || raw.showAnswer === null) return undefined;
+
+	const showNight = isShowNight(raw.date as string);
+	return raw.showAnswer === 'no' && raw.answer === 'yes' && showNight ? 'no' : 'bad';
+};
 
 export const parseAvailabilityChanges = (
 	body: unknown,
@@ -53,7 +61,14 @@ export const parseAvailabilityChanges = (
 
 		if (memberLimits && (raw.date < today || raw.date > lastDay)) return rejected('date-out-of-range');
 
-		changes.push({ date: raw.date, answer: raw.answer as Answer | null });
+		const showAnswer = parseShowAnswer(raw);
+		if (showAnswer === 'bad') return rejected('bad-show-answer');
+
+		changes.push({
+			date: raw.date,
+			answer: raw.answer as Answer | null,
+			...(showAnswer && { showAnswer })
+		});
 	}
 
 	if (body.source === undefined) return parsed({ changes });
@@ -66,10 +81,14 @@ export interface ExpandedAnswer {
 	member: MemberId;
 	date: string;
 	answer: Answer;
+	showAnswer?: 'no';
 }
 
-/** Turns one import entry into unique (member, date) answers. An explicit yes beats a window no. */
-export const expandImport = ({ window, members }: AvailabilityImport): ExpandedAnswer[] => {
+/**
+ * Turns one import entry into unique (member, date) answers. An explicit yes beats a window no. For members in
+ * `nightBeforeNoSunday`, a yes Saturday followed by a no Sunday also gets `showAnswer: 'no'`.
+ */
+export const expandImport = ({ window, members, nightBeforeNoSunday = [] }: AvailabilityImport): ExpandedAnswer[] => {
 	const busy = window?.busyWeekdays?.map(day => WEEKDAYS.indexOf(day));
 	const answers: ExpandedAnswer[] = [];
 
@@ -84,7 +103,13 @@ export const expandImport = ({ window, members }: AvailabilityImport): ExpandedA
 		for (const date of yesDates) byDate.set(date, 'yes');
 
 		for (const [date, answer] of [...byDate].sort(([a], [b]) => a.localeCompare(b))) {
-			answers.push({ member, date, answer });
+			const noShow =
+				nightBeforeNoSunday.includes(member) &&
+				answer === 'yes' &&
+				weekdayIndex(date) === 6 &&
+				byDate.get(addDays(date, 1)) === 'no';
+
+			answers.push({ member, date, answer, ...(noShow && { showAnswer: 'no' as const }) });
 		}
 	}
 

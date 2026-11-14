@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useSaveLane } from '@/composables/use-save-lane';
-import type { Answer, MemberAvailability } from '@models/availability';
+import type { DayAnswer, MemberAvailability, MyAnswer } from '@models/availability';
 import type { CurrentMember } from '@models/band-member';
 import type { Form } from '@models/form';
 import type { Practice, PracticeInput } from '@models/practice';
@@ -38,28 +38,31 @@ export const useBandStore = defineStore('band', () => {
 	// ── Save lanes ──────────────────────────────────────────────────────────
 
 	/** Applies my queued (not yet confirmed) answers on top of the row the server just sent. */
+	const dayFor = ({ answer, showAnswer }: Omit<MyAnswer, 'date'>, member: CurrentMember['member']): DayAnswer => ({
+		answer,
+		...(showAnswer && { showAnswer }),
+		source: 'self',
+		updatedBy: member,
+		updatedAt: new Date().toISOString()
+	});
+
 	const reapplyPendingAnswers = () => {
 		const row = mineRow();
 		if (!row || !me.value) return;
 
 		for (const date of answerLane.pendingKeys()) {
-			row.days[date] = {
-				answer: answerLane.pendingValue(date)!,
-				source: 'self',
-				updatedBy: me.value.member,
-				updatedAt: new Date().toISOString()
-			};
+			row.days[date] = dayFor(answerLane.pendingValue(date)!, me.value.member);
 		}
 	};
 
-	const answerLane = useSaveLane<Answer, MemberAvailability>({
+	const answerLane = useSaveLane<Omit<MyAnswer, 'date'>, MemberAvailability>({
 		delayMs: 400,
 		async send(entries) {
 			let result!: { availability: MemberAvailability };
 			for (let i = 0; i < entries.length; i += CHUNK) {
 				result = await bandApi(`availability/${me.value!.member}`, {
 					method: 'PATCH',
-					body: { changes: entries.slice(i, i + CHUNK).map(([date, answer]) => ({ date, answer })) }
+					body: { changes: entries.slice(i, i + CHUNK).map(([date, change]) => ({ date, ...change })) }
 				});
 			}
 			return result.availability;
@@ -105,14 +108,14 @@ export const useBandStore = defineStore('band', () => {
 		}
 	});
 
-	/** Queues my answers (keyed by date). `immediate` is for a weekday fill. */
-	const setMyAnswers = (changes: { date: string; answer: Answer }[], { immediate = false } = {}) => {
+	/** Queues my answers (keyed by date). Each replaces its whole day. `immediate` is for a weekday fill. */
+	const setMyAnswers = (changes: MyAnswer[], { immediate = false } = {}) => {
 		const row = mineRow();
 		if (!row || !me.value) return;
 
-		for (const { date, answer } of changes) {
-			row.days[date] = { answer, source: 'self', updatedBy: me.value.member, updatedAt: new Date().toISOString() };
-			answerLane.enqueue(date, answer, { immediate });
+		for (const { date, ...change } of changes) {
+			row.days[date] = dayFor(change, me.value.member);
+			answerLane.enqueue(date, change, { immediate });
 		}
 	};
 

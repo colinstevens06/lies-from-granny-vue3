@@ -1,11 +1,6 @@
 <template>
 	<div class="flex flex-column gap-1">
-		<div class="flex flex-wrap align-items-center column-gap-3 row-gap-1 mb-2 text-xs text-black-alpha-70">
-			<span v-for="item in LEGEND" :key="item.label" class="inline-flex align-items-center gap-1">
-				<i class="block flex-none w-1rem h-1rem border-round" :class="item.swatch" />
-				{{ item.label }}
-			</span>
-		</div>
+		<LegendKeys :items="LEGEND" class="mb-2" />
 		<div :style="ROW_STYLE">
 			<span />
 			<div
@@ -23,8 +18,9 @@
 					v-if="day"
 					:date="day"
 					:answer="myDays[day]?.answer"
+					:show-answer="myDays[day]?.showAnswer"
 					:disabled="day < today"
-					@change="(date, answer) => emit('change', date, answer)"
+					@change="change => emit('change', change)"
 				/>
 				<span v-else />
 			</template>
@@ -34,16 +30,18 @@
 
 <script setup lang="ts">
 	import { computed } from 'vue';
-	import type { Answer, DayAnswer } from '@models/availability';
+	import type { DayAnswer, MyAnswer } from '@models/availability';
 	import { formatCalendarDate } from '@utils/dates';
 	import { weeksInRange } from '@utils/band-calendar';
+	import LegendKeys, { type LegendItem } from '@components/da-band/legend-keys.vue';
 	import AnswerCell from './answer-cell.vue';
 
 	const WEEKDAY_NAMES = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-	const LEGEND = [
+	const LEGEND: LegendItem[] = [
 		{ label: 'Blank', swatch: 'answer-cell--none' },
 		{ label: 'Yes', swatch: 'answer-cell--yes' },
+		{ label: 'Yes, no show (Fri, Sat)', swatch: 'answer-cell--yes', band: true },
 		{ label: 'No', swatch: 'answer-cell--no' },
 		{ label: 'Not sure', swatch: 'answer-cell--maybe' }
 	];
@@ -60,12 +58,12 @@
 	const props = defineProps<{
 		startDay: string;
 		endDay: string;
-		myDays: Record<string, Pick<DayAnswer, 'answer'>>;
+		myDays: Record<string, Pick<DayAnswer, 'answer' | 'showAnswer'>>;
 		/** Eastern 'YYYY-MM-DD'. Earlier days can't be tapped. */
 		today: string;
 	}>();
 
-	const emit = defineEmits<{ change: [date: string, answer: Answer] }>();
+	const emit = defineEmits<{ change: [change: MyAnswer] }>();
 
 	const weeks = computed(() => weeksInRange(props.startDay, props.endDay));
 
