@@ -1,0 +1,649 @@
+<title>Show vs Practice Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@500&display=swap">
+<style>
+	/* Layout: lab controls in a left rail, a fixed-size phone frame of the real site on the right, notes below. */
+	:root {
+		--bg: #f6f4f7;
+		--panel: #ffffff;
+		--ink: #1d1a20;
+		--muted: #645d6b;
+		--line: #dcd6e0;
+		--accent: #c51866;
+		--accent-ink: #ffffff;
+		--chip: #efe9f2;
+		--warn-bg: #fff3d6;
+		--warn-ink: #5c4300;
+		/* The site inside the frame is light-only, like the real one. */
+		--site-bg: #ffffff;
+		--site-ink: #212529;
+		--site-muted: rgba(33, 37, 41, 0.68);
+		--site-line: rgba(0, 0, 0, 0.12);
+		--site-panel: #f1f3f5;
+		--pink: #ed1d7a;
+		--pink-dark: #c51866;
+		--yellow: #ffec84;
+		--yellow-edge: #d4b400;
+		--yes: #2f9e44;
+		--no: #212529;
+		--maybe: #f59f00;
+		--blank-edge: #adb5bd;
+		--font-display: 'Permanent Marker', 'Marker Felt', cursive;
+		--font-body: 'Roboto', -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+		--font-data: 'Roboto Mono', ui-monospace, Menlo, monospace;
+	}
+	@media (prefers-color-scheme: dark) {
+		:root:not([data-theme='light']) {
+			--bg: #151218; --panel: #1f1b23; --ink: #efeaf2; --muted: #a59cad; --line: #3a3340;
+			--accent: #ff5fa2; --accent-ink: #1a0d14; --chip: #2c2631; --warn-bg: #3b3013; --warn-ink: #ffe9a8;
+			color-scheme: dark;
+		}
+	}
+	:root[data-theme='dark'] {
+		--bg: #151218; --panel: #1f1b23; --ink: #efeaf2; --muted: #a59cad; --line: #3a3340;
+		--accent: #ff5fa2; --accent-ink: #1a0d14; --chip: #2c2631; --warn-bg: #3b3013; --warn-ink: #ffe9a8;
+		color-scheme: dark;
+	}
+
+	body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.45; }
+	.lab {
+		max-width: 1120px; margin: 0 auto; padding-block: 20px 48px;
+		padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+		display: flex; flex-direction: column; gap: 20px;
+	}
+	.lab-head h1 { font-family: var(--font-display); font-weight: 400; font-size: 30px; line-height: 1.1; margin: 0 0 6px; text-wrap: balance; }
+	.lab-head p { margin: 0; color: var(--muted); max-width: 68ch; }
+	.lab-main { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 20px; align-items: start; }
+	@media (max-width: 900px) { .lab-main { grid-template-columns: minmax(0, 1fr); } }
+
+	.controls { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 14px; }
+	.ctl { display: flex; flex-direction: column; gap: 6px; }
+	.ctl-label { font-weight: 700; font-size: 13px; }
+	.ctl-help { font-size: 12px; color: var(--muted); }
+	.seg { display: flex; flex-wrap: wrap; gap: 4px; }
+	.seg button {
+		font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 6px; border: 1px solid var(--line);
+		background: var(--chip); color: var(--ink); cursor: pointer; text-align: left;
+	}
+	.seg button[aria-pressed='true'] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 700; }
+	.seg button:disabled { opacity: 0.45; cursor: default; }
+	.seg--stack { flex-direction: column; }
+	button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+	.divider { height: 1px; background: var(--line); }
+
+	.stage { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+	.look { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; }
+	.look h2 { margin: 0; font-size: 16px; }
+	.look p { margin: 0; }
+	.look .stored { font-family: var(--font-data); font-size: 12px; color: var(--muted); overflow-wrap: anywhere; }
+	.showme { display: flex; flex-wrap: wrap; gap: 6px; }
+	.showme button { font: inherit; font-size: 13px; padding: 6px 10px; border-radius: 999px; border: 1px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; font-weight: 700; }
+	.venue { background: var(--warn-bg); color: var(--warn-ink); border-radius: 8px; padding: 10px 12px; font-size: 14px; display: flex; flex-direction: column; gap: 4px; }
+	.venue b { font-weight: 700; }
+
+	.readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+	.metric { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+	.metric b { font-family: var(--font-data); font-size: 20px; font-variant-numeric: tabular-nums; }
+	.metric span { font-size: 12px; color: var(--muted); }
+	.metric button { align-self: flex-start; font: inherit; font-size: 11px; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); background: transparent; color: var(--muted); cursor: pointer; }
+
+	/* ---- The phone frame: the site, light only ---- */
+	.frame-wrap { overflow-x: auto; padding-bottom: 4px; }
+	.frame {
+		width: 390px; max-width: 100%; height: 720px; position: relative; display: flex; flex-direction: column;
+		background: var(--site-bg); color: var(--site-ink); border: 1px solid var(--line); border-radius: 18px; overflow: hidden;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14); font-size: 15px;
+	}
+	.site-nav { background: var(--no); color: #fff; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-display); font-size: 18px; }
+	.site-nav small { font-family: var(--font-body); font-size: 12px; opacity: 0.8; }
+	.scroller { flex: 1; overflow-y: auto; min-height: 0; }
+	.page { padding: 14px 16px 24px; display: flex; flex-direction: column; gap: 12px; }
+	.page h2 { margin: 0; font-family: var(--font-display); font-weight: 400; font-size: 22px; line-height: 1.15; }
+	.page h3 { margin: 0; font-size: 15px; }
+	.sub { color: var(--site-muted); font-size: 13px; margin: 0; }
+	.prefill { background: #fff9db; border: 1px solid #ffe066; border-radius: 6px; padding: 8px 10px; font-size: 13px; margin: 0; }
+	.legend { display: flex; flex-wrap: wrap; column-gap: 12px; row-gap: 4px; font-size: 12px; color: var(--site-muted); }
+	.legend span { display: inline-flex; align-items: center; gap: 4px; }
+	.sw { width: 16px; height: 16px; border-radius: 4px; flex: none; position: relative; overflow: hidden; }
+	.row7 { display: grid; grid-template-columns: 54px repeat(7, minmax(0, 1fr)); gap: 4px; align-items: center; }
+	.dow { font-size: 12px; font-weight: 700; text-align: center; color: var(--site-muted); }
+	.wk { font-size: 12px; font-weight: 700; color: var(--site-muted); }
+	.cellwrap { position: relative; min-width: 0; }
+	.cell {
+		font: inherit; font-size: 14px; font-weight: 700; line-height: 1; width: 100%; min-height: 46px; border: none; border-radius: 6px;
+		display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; padding: 4px 0; cursor: pointer;
+		position: relative; overflow: hidden;
+	}
+	.cell small { font-size: 10px; font-weight: 500; }
+	.a-yes { background: var(--yes); color: #fff; }
+	.a-no { background: var(--no); color: #fff; }
+	.a-maybe { background: var(--maybe); color: var(--site-ink); }
+	.a-none { background: var(--site-bg); box-shadow: inset 0 0 0 1.5px var(--blank-edge); color: var(--site-muted); }
+	.cell--off { opacity: 0.28; cursor: default; }
+	.cell.split { justify-content: flex-start; padding-top: 7px; }
+	.band { position: absolute; left: 0; right: 0; bottom: 0; background: var(--no); color: #fff; font-style: normal; font-size: 8.5px; font-weight: 700; line-height: 15px; text-align: center; letter-spacing: 0.01em; }
+	.band--maybe { background: var(--maybe); color: var(--site-ink); }
+	.band--yes { background: #fff; color: var(--yes); }
+	.cell.hl, .calday.hl { outline: 3px solid var(--pink); outline-offset: 1px; }
+	/* A tag pinned to its own cell (option: corner tag). */
+	.cell.has-corner { align-items: flex-start; padding-left: 3px; }
+	.corner { position: absolute; top: 0; right: 0; width: 18px; height: 22px; border: none; border-radius: 0 6px 0 8px; background: rgba(0, 0, 0, 0.28); color: #fff; cursor: pointer; padding: 0; display: grid; place-items: center; }
+	.corner.on { background: var(--no); }
+	.corner svg { width: 12px; height: 12px; display: block; }
+
+	.passbar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0; border: 1px solid var(--site-line); border-radius: 6px; overflow: hidden; }
+	.passbar button { font: inherit; font-size: 14px; font-weight: 700; padding: 9px 6px; border: none; background: var(--site-bg); color: var(--site-ink); cursor: pointer; }
+	.passbar button[aria-pressed='true'] { background: var(--no); color: #fff; }
+
+	.bar { border-top: 1px solid var(--site-line); background: var(--site-panel); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: 14px; }
+	.btn { font: inherit; font-weight: 700; padding: 9px 16px; border-radius: 6px; border: none; background: var(--pink); color: #fff; cursor: pointer; }
+	.btn--ghost { background: transparent; color: var(--pink-dark); border: 1px solid var(--site-line); }
+	.sheet { position: absolute; left: 0; right: 0; bottom: 0; max-height: 78%; overflow-y: auto; background: var(--site-bg); border-top: 3px solid var(--no); box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.25); padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+	.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+	.chip { font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 999px; background: var(--site-panel); white-space: nowrap; }
+	.chip--no { background: var(--no); color: #fff; }
+	.chip--yes { background: #d3f9d8; color: #2b8a3e; }
+	.row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+	.pager { display: grid; grid-template-columns: 44px minmax(0, 1fr) 44px; align-items: center; gap: 6px; text-align: center; font-weight: 700; }
+	.pager button { font: inherit; font-size: 20px; line-height: 1; height: 40px; border-radius: 6px; border: 1px solid var(--site-line); background: var(--site-bg); color: var(--site-ink); cursor: pointer; }
+	.pager button:disabled { opacity: 0.3; cursor: default; }
+	.grid7 { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+	.calday { font: inherit; min-height: 3.2rem; border-radius: 8px; border: 1px solid var(--site-line); background: var(--site-bg); color: var(--site-ink); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 4px 0; cursor: pointer; font-weight: 700; position: relative; }
+	.st-booked { background: var(--pink); border-color: var(--pink); color: #fff; }
+	.st-blocked { background: var(--no); border-color: var(--no); color: #fff; }
+	.st-possible { background: var(--yellow); border-color: var(--yellow-edge); }
+	.st-gig { background: #fde2ee; border-color: var(--pink); color: var(--pink-dark); }
+	.calday.cand { box-shadow: 0 0 0 2px var(--pink); }
+	.dots { display: flex; gap: 2px; }
+	.dot { width: 6px; height: 6px; border-radius: 50%; border: 1px solid var(--blank-edge); display: block; }
+	.d-yes { background: var(--yes); border-color: var(--yes); }
+	.d-no { background: var(--pink); border-color: var(--pink); }
+	.d-maybe { background: var(--maybe); border-color: var(--maybe); }
+	.d-noshow { background: var(--yes); border-color: var(--pink); box-shadow: 0 0 0 1px var(--pink); }
+	.card { border: 1px solid var(--site-line); border-radius: 8px; padding: 12px; display: flex; flex-direction: column; gap: 8px; background: var(--site-bg); }
+	.card--yellow { background: var(--yellow); border-color: var(--yellow-edge); }
+	.who-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; font-size: 14px; }
+	.who-list li { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 8px; }
+	.dates { display: flex; flex-wrap: wrap; gap: 6px; }
+	.date { font-size: 13px; font-weight: 700; padding: 5px 9px; border-radius: 6px; background: var(--yellow); border: 1px solid var(--yellow-edge); }
+	.date small { display: block; font-weight: 500; font-size: 11px; }
+	.date--short { background: var(--site-bg); border-color: var(--site-line); }
+	/* Show nights read pink so they never pass for practice dates. */
+	.date--show { background: #fde2ee; border-color: var(--pink); color: var(--pink-dark); }
+	.yn3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--site-line); border-radius: 6px; overflow: hidden; }
+	.yn3 button { font: inherit; font-size: 14px; font-weight: 700; padding: 10px 4px; border: none; border-left: 1px solid var(--site-line); background: var(--site-bg); color: var(--site-ink); cursor: pointer; }
+	.yn3 button:first-child { border-left: none; }
+	.yn3 button.on-yes { background: var(--yes); color: #fff; }
+	.yn3 button.on-no { background: var(--no); color: #fff; }
+	.yn3 button.on-maybe { background: var(--maybe); }
+
+	/* ---- Notes under the frame ---- */
+	.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+	.note { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px; min-width: 0; }
+	.note h3 { margin: 0 0 6px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
+	.note p, .note ul { margin: 0 0 8px; }
+	.note ul { padding-left: 18px; }
+	.note li { margin-bottom: 4px; }
+	.section-title { font-family: var(--font-display); font-weight: 400; font-size: 22px; margin: 8px 0 0; }
+	.tbl-wrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+	table { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13px; }
+	th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+	th { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+	tr:last-child td { border-bottom: none; }
+	td.num { font-family: var(--font-data); font-variant-numeric: tabular-nums; white-space: nowrap; }
+</style>
+
+<div class="lab">
+	<header class="lab-head">
+		<h1>Free for a show, or just for practice?</h1>
+		<p>Five ways the band site could handle a day like Anna's Saturday before a Sunday shift: fine for an 11am practice, not for an 8pm to 1am show. Flip the options and tap through the phone. The current build is the first option.</p>
+	</header>
+
+	<div class="lab-main">
+		<aside class="controls" id="controls"></aside>
+		<div class="stage">
+			<div class="look" id="look"></div>
+			<div class="readout" id="readout"></div>
+			<div class="frame-wrap"><div class="frame" id="frame"></div></div>
+		</div>
+	</div>
+
+	<h2 class="section-title">Side by side</h2>
+	<div class="tbl-wrap">
+		<table>
+			<thead>
+				<tr><th>Option</th><th>Stored as</th><th>Anna's Saturday</th><th>Plain "can't", Fri/Sat, from blank</th><th>Cost to the other four</th><th>Venue asks about a night</th></tr>
+			</thead>
+			<tbody>
+				<tr><td><b>A. One answer</b> (current)</td><td>One answer per day</td><td class="num">can't say it</td><td class="num">2 taps</td><td>None</td><td>Calendar says Yes when the truth is "practice only"</td></tr>
+				<tr><td><b>B. Extra tap state</b></td><td>Day answer + show answer that's empty unless different</td><td class="num">1 tap, or 0 seeded</td><td class="num">3 taps</td><td>One more tap for every Fri/Sat No; a state to tap past</td><td>Calendar marks the nights everyone can gig in pink</td></tr>
+				<tr><td><b>C. Corner tag</b></td><td>Same as B</td><td class="num">1 tap, or 0 seeded</td><td class="num">2 taps</td><td>A small tag on every Fri/Sat Yes; a 22px target</td><td>Same as B</td></tr>
+				<tr><td><b>D. Two passes</b> (your idea)</td><td>Same as B</td><td class="num">2 taps, or 0 seeded</td><td class="num">2 taps</td><td>A Practice / Show switch above the grid; nothing if ignored</td><td>Same as B</td></tr>
+				<tr><td><b>E. Show check</b></td><td>Practice answer per day; show answers only for nights a venue offers</td><td class="num">0 now, 1 per offered night</td><td class="num">2 taps</td><td>None on the grid; a short form a few times a year</td><td>Send a check and wait for five answers</td></tr>
+			</tbody>
+		</table>
+	</div>
+
+	<h2 class="section-title">What the four personas said</h2>
+	<div class="notes">
+		<div class="note">
+			<h3>Where they agreed</h3>
+			<ul>
+				<li><b>No second row per day.</b> All three who split the answer chose one extra "show" value on the same day, empty unless it differs. Nobody proposed asking 180 questions.</li>
+				<li><b>Show answers only matter on Friday and Saturday.</b></li>
+				<li><b>Seed Anna with a rule, not a list.</b> "The night before a No Sunday is no-show" derives her Saturdays from Sundays already listed.</li>
+				<li><b>Two possible-date lists,</b> one for practices and one for show nights.</li>
+			</ul>
+		</div>
+		<div class="note">
+			<h3>Where they split</h3>
+			<ul>
+				<li><b>Interaction designer:</b> corner tag on Fri/Sat Yes cells (option C). Admits the tag is a small target next to the main one.</li>
+				<li><b>Anna and Fives:</b> an extra tap state (option B), plus a "check your show nights" step before sign-off. Warns that Fives will stop on the new state by accident.</li>
+				<li><b>Scheduler and data:</b> same storage, with a Practice / Show switch on the calendar. Warns it is a whole mode built for one member.</li>
+				<li><b>Premise-challenger:</b> don't store show answers for every day. The grid already is a practice grid; ask about show nights only when a venue offers them (option E).</li>
+			</ul>
+		</div>
+		<div class="note">
+			<h3>Checked against the repo</h3>
+			<ul>
+				<li><b>True:</b> the app only ever locks in practices. Shows are hand-added to <code>shows.ts</code>, so today's yellow "possible" is a practice answer that reads like a show answer.</li>
+				<li><b>Corrected:</b> one report said Anna would audit 13 Saturdays in this round. The round has 13 Saturdays; 7 are before a working Sunday.</li>
+				<li><b>Unverified:</b> long-press was offered as an accelerator. It isn't prototyped here: on iOS it competes with text selection and nobody finds it.</li>
+				<li><b>The sharpest point:</b> when the show answer silently follows the day answer, every mistake lands on "yes, she can play". That is why the sign-off check is a toggle.</li>
+			</ul>
+		</div>
+	</div>
+
+	<h2 class="section-title">Reading this page</h2>
+	<div class="notes">
+		<div class="note">
+			<h3>Real</h3>
+			<p>The week grid's sizes (54px label, seven cells, 4px gaps, 46px tall), the tap cycle, the answer colors, the calendar's four day states and five dots, and Anna's seed rule (every Fri and Sat, long-weekend Sundays every 14 days from Jan 10, 2027). The readout numbers are counted from the page as you tap.</p>
+		</div>
+		<div class="note">
+			<h3>Invented</h3>
+			<p>Everyone else's answers, the booked practice on Jan 23, and the venue offer of Feb 13 and Feb 20. Fives starts blank for Jan 1 to 16 so you can feel entering from nothing. "Fill a weekday at once" and Copy list are left out. Sign off never blocks here.</p>
+		</div>
+		<div class="note">
+			<h3>Try</h3>
+			<ul>
+				<li>Option A, then press "Venue question". Then the same on B, C or D.</li>
+				<li>Switch Anna's seed to "today's seed" and fix Feb 13 by hand in B, C and D. Count your taps.</li>
+				<li>As Fives in option B, mark a Friday No from blank.</li>
+				<li>Option E: answer the show check as Anna, then look at the calendar.</li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<script>
+(() => {
+	'use strict';
+	const START = '2027-01-01', END = '2027-03-31';
+	const MEMBERS = [
+		{ id: 'anna', name: 'Anna' }, { id: 'kyle', name: 'Fives' }, { id: 'nick', name: 'Hermes' },
+		{ id: 'francesco', name: 'Franny' }, { id: 'colin', name: 'Colin' }
+	];
+	const WD = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+	const MO = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	const MONTHS = [['2027-01', 'January 2027'], ['2027-02', 'February 2027'], ['2027-03', 'March 2027']];
+	const LABEL = { yes: 'Yes', no: 'No', maybe: 'Not sure', none: 'Pending' };
+	const VENUE = ['2027-02-13', '2027-02-20'];
+	const BOOKED = ['2027-01-23'];
+	const MOON = '<svg viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M10.5 1.5a6.5 6.5 0 1 0 4 11.6A7 7 0 0 1 10.5 1.5z"/></svg>';
+
+	const D = s => new Date(s + 'T00:00:00Z');
+	const iso = d => d.toISOString().slice(0, 10);
+	const add = (s, n) => { const d = D(s); d.setUTCDate(d.getUTCDate() + n); return iso(d); };
+	const dow = s => D(s).getUTCDay();
+	const dnum = s => Number(s.slice(8));
+	const short = s => `${WD[dow(s)]} ${MO[Number(s.slice(5, 7)) - 1]} ${dnum(s)}`;
+	const range = (a, b) => { const out = []; for (let d = a; d <= b; d = add(d, 1)) out.push(d); return out; };
+	const DAYS = range(START, END);
+	const isShowNight = d => dow(d) === 5 || dow(d) === 6;
+
+	// Anna's real pattern.
+	const longSunday = d => dow(d) === 0 && Math.round((D(d) - D('2027-01-10')) / 864e5) % 14 === 0;
+	const annaPractice = d => (dow(d) === 5 || dow(d) === 6 ? 'yes' : dow(d) === 0 ? (longSunday(d) ? 'yes' : 'no') : undefined);
+	const annaCantPlay = d => dow(d) === 6 && dow(add(d, 1)) === 0 && !longSunday(add(d, 1));
+
+	const hash = str => { let h = 2166136261; for (const c of str) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return ((h >>> 0) % 1000) / 1000; };
+
+	const S = {
+		opt: 'one', seed: 'rule', who: 'anna', view: 'form', review: 'off', pass: 'practice',
+		month: '2027-02', sel: undefined, taps: 0, reviewOpen: false, signed: false, hl: undefined
+	};
+	let data = {}, check = {};
+	const splits = () => S.opt === 'cycle' || S.opt === 'corner' || S.opt === 'pass';
+
+	const build = () => {
+		data = {}; check = {};
+		for (const m of MEMBERS) { data[m.id] = {}; check[m.id] = {}; }
+		for (const d of DAYS) {
+			const a = annaPractice(d);
+			if (a) {
+				const row = { a };
+				if (S.seed === 'rule' && annaCantPlay(d)) { if (splits()) row.s = 'no'; else if (S.opt === 'one') row.a = 'no'; }
+				data.anna[d] = row;
+			}
+			for (const m of ['kyle', 'nick', 'francesco', 'colin']) {
+				if (m === 'kyle' && d <= '2027-01-16') continue;
+				const r = hash(m + d), weekend = [0, 5, 6].includes(dow(d));
+				let ans = weekend ? (r < 0.84 ? 'yes' : r < 0.95 ? 'no' : 'maybe') : (r < 0.55 ? 'yes' : r < 0.9 ? 'no' : 'maybe');
+				if (['2027-01-30', '2027-02-13', '2027-02-20', '2027-02-27', '2027-03-13'].includes(d)) ans = 'yes';
+				data[m][d] = { a: ans };
+			}
+		}
+		for (const m of ['nick', 'francesco', 'colin']) for (const d of VENUE) check[m][d] = 'yes';
+	};
+
+	const practiceAns = (m, d) => data[m][d]?.a;
+	const showAns = (m, d) => {
+		const row = data[m][d];
+		if (S.opt === 'check') return check[m][d] ?? (row?.a === 'no' ? 'no' : undefined);
+		if (splits()) return row?.s ?? row?.a;
+		return row?.a;
+	};
+	const ans = (m, d, kind) => (kind === 'show' ? showAns(m, d) : practiceAns(m, d));
+	const status = (d, kind) => {
+		if (BOOKED.includes(d)) return 'booked';
+		const all = MEMBERS.map(m => ans(m.id, d, kind));
+		if (all.includes('no')) return 'blocked';
+		return all.every(a => a === 'yes') ? 'possible' : 'open';
+	};
+	const notYes = (d, kind) => MEMBERS.filter(m => ans(m.id, d, kind) !== 'yes').map(m => ({ m, a: ans(m.id, d, kind) }));
+	const next = a => (a === 'yes' ? 'no' : a === 'no' ? 'maybe' : 'yes');
+
+	// ---------- Controls ----------
+	const OPTS = [
+		['one', 'A. One answer per day (current)'],
+		['cycle', 'B. Extra tap state on Fri/Sat'],
+		['corner', 'C. Corner tag on Fri/Sat'],
+		['pass', 'D. Two passes: Practice, then Show'],
+		['check', 'E. Show check when a venue asks']
+	];
+	const seg = (key, items, stack) => `<div class="seg${stack ? ' seg--stack' : ''}">${items.map(([v, l, dis]) =>
+		`<button type="button" data-set="${key}" data-val="${v}" aria-pressed="${S[key] === v}"${dis ? ' disabled' : ''}>${l}</button>`).join('')}</div>`;
+
+	const renderControls = () => {
+		const noSplit = !splits();
+		document.getElementById('controls').innerHTML = `
+			<div class="ctl"><span class="ctl-label">How a show answer gets in</span>${seg('opt', OPTS, true)}</div>
+			<div class="divider"></div>
+			<div class="ctl"><span class="ctl-label">Anna's seed</span>
+				${seg('seed', [['rule', 'Night-before rule'], ['today', "Today's seed"]])}
+				<span class="ctl-help">${S.opt === 'check' ? 'Option E leaves the seed alone: Saturday practice Yes is true.' : S.opt === 'one' && S.seed === 'rule' ? 'With one answer, the rule can only mark those Saturdays No.' : "Today's seed says Yes to every Saturday. The rule marks the Saturday before a No Sunday."}</span></div>
+			<div class="ctl"><span class="ctl-label">Screen</span>
+				${seg('view', [['form', 'Round form'], ['cal', 'Band calendar'], ['list', 'Possible dates'], ['check', 'Show check', S.opt !== 'check']])}</div>
+			<div class="ctl"><span class="ctl-label">Filling out as</span>
+				${seg('who', [['anna', 'Anna (seeded)'], ['kyle', 'Fives (blank start)']])}</div>
+			<div class="ctl"><span class="ctl-label">Before sign-off</span>
+				${seg('review', [['off', 'Nothing extra', noSplit], ['on', 'Confirm show nights', noSplit]])}
+				<span class="ctl-help">${noSplit ? 'Only applies to B, C and D.' : 'Lists the Friday and Saturday nights you are saying Yes to for a show.'}</span></div>`;
+	};
+
+	// ---------- Look box ----------
+	const LOOK = {
+		one: ['One answer per day', 'A day is Yes, No or Not sure. Anna\'s Saturday has to be one of them.', 'availability(member, day, answer)'],
+		cycle: ['Extra tap state on Friday and Saturday', 'On Fri and Sat the tap cycle gains a stop after Yes: Yes, then "no show", then No, then Not sure. Other days cycle as before.', 'availability(member, day, answer, show_answer?)  ·  show_answer empty = same as answer'],
+		corner: ['Corner tag on Friday and Saturday', 'The tap cycle is unchanged. A Fri or Sat cell that says Yes grows a moon tag in its corner; tapping the tag marks the night "no show".', 'availability(member, day, answer, show_answer?)  ·  show_answer empty = same as answer'],
+		pass: ['Two passes', 'A switch above the grid: Practice, then Show nights. The Show pass lights up only Fridays and Saturdays, starting from your day answer.', 'availability(member, day, answer, show_answer?)  ·  show_answer empty = same as answer'],
+		check: ['Show check', 'The grid means practice and nothing else. When a venue offers nights, the admin sends a short check: one Yes / No / Not sure row per offered night.', 'availability(member, day, kind: practice | show, answer)  ·  show rows only for offered nights']
+	};
+	const renderLook = () => {
+		const [title, body, stored] = LOOK[S.opt];
+		const app = VENUE.map(d => {
+			const short5 = notYes(d, 'show');
+			if (!short5.length) return `<b>${short(d)}</b>: everyone free`;
+			return `<b>${short(d)}</b>: ${short5.map(x => `${x.m.name} ${x.a ? LABEL[x.a] : 'no answer yet'}`).join(', ')}`;
+		}).join(' · ');
+		document.getElementById('look').innerHTML = `
+			<h2>${title}</h2><p>${body}</p><p class="stored">Stored as: ${stored}</p>
+			<div class="venue"><span><b>Venue texts:</b> "Sat Feb 13 or Sat Feb 20?" Anna works Sunday Feb 14, so in real life she can play the 20th only.</span>
+			<span>The app answers: ${app}</span></div>
+			<div class="showme">
+				<button type="button" data-show="sat">Show me: Anna's Sat Feb 13</button>
+				<button type="button" data-show="venue">Show me: the venue question</button>
+				${S.opt === 'check' ? '<button type="button" data-show="check">Show me: the show check</button>' : ''}
+			</div>`;
+	};
+
+	// ---------- Frame ----------
+	const weeksOf = (first, last) => {
+		const weeks = []; let wk = Array(dow(first)).fill(undefined);
+		for (const d of range(first, last)) { wk.push(d); if (wk.length === 7) { weeks.push(wk); wk = []; } }
+		if (wk.length) { while (wk.length < 7) wk.push(undefined); weeks.push(wk); }
+		return weeks;
+	};
+	const bandFor = s => (s === 'no' ? ['', 'no show'] : s === 'maybe' ? [' band--maybe', 'show ?'] : [' band--yes', 'show ok']);
+
+	const cell = d => {
+		const m = S.who, row = data[m][d] || {}, hl = S.hl === d ? ' hl' : '';
+		if (S.opt === 'pass' && S.pass === 'show') {
+			if (!isShowNight(d)) return `<span class="cell a-${row.a || 'none'} cell--off">${dnum(d)}</span>`;
+			const s = showAns(m, d);
+			return `<div class="cellwrap"><button type="button" class="cell a-${s || 'none'}${hl}" data-act="showtap" data-day="${d}" aria-label="${short(d)} show night: ${LABEL[s || 'none']}">${dnum(d)}<small>${s ? LABEL[s] : '—'}</small></button></div>`;
+		}
+		const split = splits() && row.s && row.s !== row.a;
+		const [bc, bt] = split ? bandFor(row.s) : [];
+		const corner = S.opt === 'corner' && isShowNight(d) && row.a === 'yes'
+			? `<button type="button" class="corner${row.s === 'no' ? ' on' : ''}" data-act="corner" data-day="${d}" aria-label="${short(d)}: ${row.s === 'no' ? 'marked no show, tap to undo' : 'tap if you can\'t play a show that night'}">${MOON}</button>` : '';
+		return `<div class="cellwrap"><button type="button" class="cell a-${row.a || 'none'}${split ? ' split' : ''}${corner ? ' has-corner' : ''}${hl}" data-act="tap" data-day="${d}" aria-label="${short(d)}: ${LABEL[row.a || 'none']}${split ? ', ' + bt : ''}">${dnum(d)}${split ? `<i class="band${bc}">${bt}</i>` : `<small>${row.a ? LABEL[row.a] : '—'}</small>`}</button>${corner}</div>`;
+	};
+
+	const renderForm = () => {
+		const prefilled = DAYS.filter(d => data[S.who][d]).length;
+		const legend = [['a-none', 'Blank'], ['a-yes', 'Yes'], ['a-no', 'No'], ['a-maybe', 'Not sure']]
+			.map(([c, l]) => `<span><i class="sw ${c}"></i>${l}</span>`).join('') +
+			(splits() ? `<span><i class="sw a-yes"><i class="band" style="line-height:6px;font-size:0">&nbsp;</i></i>Practice yes, show no</span>` : '');
+		const passbar = S.opt === 'pass' ? `<div class="passbar" role="group" aria-label="What you're answering">
+			<button type="button" data-act="pass" data-val="practice" aria-pressed="${S.pass === 'practice'}">Practice</button>
+			<button type="button" data-act="pass" data-val="show" aria-pressed="${S.pass === 'show'}">Show nights</button></div>
+			<p class="sub">${S.pass === 'show' ? 'Fridays and Saturdays only. Each starts from your day answer; tap any night you can\'t play.' : 'Could you make a practice that day?'}</p>` : '';
+		const sub = S.opt === 'check' ? 'Tap every day you could make a <b>practice</b>.' :
+			S.opt === 'one' ? 'Tap every day you could make it.' :
+			S.opt === 'cycle' ? 'Tap every day you could make it. On Fri and Sat, a second tap means practice yes, show no.' :
+			S.opt === 'corner' ? 'Tap every day you could make it. Can\'t play a show that night? Tap the moon.' : '';
+		return `<div class="page">
+			<h2>Early 2027 planning</h2>
+			${sub ? `<p class="sub">${sub}</p>` : ''}
+			${prefilled && S.who === 'anna' ? `<p class="prefill">${prefilled} dates came in from your calendar. Check them, change anything that's off, then sign off.</p>` : ''}
+			${passbar}
+			<div class="legend">${legend}</div>
+			<div class="row7"><span></span>${['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(n => `<div class="dow">${n}</div>`).join('')}</div>
+			${weeksOf(START, END).map(wk => `<div class="row7"><span class="wk">${(f => `${MO[Number(f.slice(5, 7)) - 1]} ${dnum(f)}`)(wk.find(Boolean))}</span>${wk.map(d => (d ? cell(d) : '<span></span>')).join('')}</div>`).join('')}
+		</div>`;
+	};
+
+	const whoLine = (m, d) => {
+		const p = practiceAns(m.id, d), s = showAns(m.id, d);
+		if (S.opt === 'check') return `${LABEL[p || 'none']}${VENUE.includes(d) ? ` · show night: ${s ? LABEL[s] : 'not answered'}` : ''}`;
+		if (splits() && isShowNight(d) && s !== p) return `practice ${LABEL[p || 'none']} · show ${LABEL[s || 'none']}`;
+		return LABEL[p || 'none'];
+	};
+
+	const renderCal = () => {
+		const idx = MONTHS.findIndex(([k]) => k === S.month);
+		const first = `${S.month}-01`, last = add(idx < 2 ? `${MONTHS[idx + 1][0]}-01` : '2027-04-01', -1);
+		// B, C and D: one calendar, four states. A Fri/Sat night everyone can play is "can gig"; a day everyone can
+		// practice is "can practice", including a Fri/Sat where someone can practice but not play.
+		const calStatus = d => {
+			const st = status(d, 'practice');
+			return splits() && st === 'possible' && isShowNight(d) && status(d, 'show') === 'possible' ? 'gig' : st;
+		};
+		const dotFor = (m, d) => {
+			const p = practiceAns(m.id, d);
+			return splits() && isShowNight(d) && p === 'yes' && showAns(m.id, d) !== 'yes' ? 'noshow' : p || 'none';
+		};
+		const dayBtn = d => {
+			const st = calStatus(d), cand = S.opt === 'check' && VENUE.includes(d);
+			return `<button type="button" class="calday st-${st}${cand ? ' cand' : ''}${S.sel === d ? ' hl' : ''}" data-act="day" data-day="${d}" aria-label="${short(d)}">
+				<span>${dnum(d)}</span><span class="dots">${MEMBERS.map(m => `<i class="dot d-${dotFor(m, d)}"></i>`).join('')}</span></button>`;
+		};
+		let sheet = '';
+		if (S.sel) {
+			const d = S.sel, short5 = notYes(d, 'practice'), st = calStatus(d);
+			const noGig = splits() && isShowNight(d) ? notYes(d, 'show') : [];
+			const head = BOOKED.includes(d) ? 'Practice booked'
+				: st === 'gig' ? 'Everyone can gig'
+				: !short5.length ? (noGig.length ? `Everyone can practice · no gig: ${noGig.map(x => x.m.name).join(', ')}` : splits() ? 'Everyone can practice' : 'Everyone free')
+				: short5.length === 1 ? `Everyone but ${short5[0].m.name} (${LABEL[short5[0].a || 'none']})` : `${5 - short5.length} of 5 Yes`;
+			sheet = `<div class="card"><h3>${short(d)} · ${head}</h3><ul class="who-list">${MEMBERS.map(m => `<li><b>${m.name}</b><span>${whoLine(m, d)}</span></li>`).join('')}</ul></div>`;
+		}
+		const legend = splits()
+			? `<span><i class="sw st-possible" style="border:1px solid var(--yellow-edge)"></i>Can practice</span><span><i class="sw st-gig" style="border:1px solid var(--pink)"></i>Can gig</span><span><i class="sw a-no"></i>Someone can't</span><span><i class="sw" style="background:var(--pink)"></i>Booked</span>`
+			: `<span><i class="sw st-possible" style="border:1px solid var(--yellow-edge)"></i>Everyone free</span><span><i class="sw a-no"></i>Someone can't</span><span><i class="sw" style="background:var(--pink)"></i>Booked</span>`;
+		return `<div class="page">
+			<h2>Band calendar</h2>
+			${S.opt === 'check' ? '<p class="sub">Yellow means everyone can <b>practice</b>. Ringed nights have a show check out.</p>' : ''}
+			<div class="pager"><button type="button" data-act="month" data-val="-1" aria-label="Previous month"${idx === 0 ? ' disabled' : ''}>‹</button><span>${MONTHS[idx][1]}</span><button type="button" data-act="month" data-val="1" aria-label="Next month"${idx === 2 ? ' disabled' : ''}>›</button></div>
+			<div class="legend">${legend}</div>
+			${splits() ? '<p class="sub">A green dot ringed in pink: can practice, can\'t gig.</p>' : ''}
+			<div class="grid7">${['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(n => `<div class="dow">${n}</div>`).join('')}</div>
+			${weeksOf(first, last).map(wk => `<div class="grid7">${wk.map(d => (d ? dayBtn(d) : '<span></span>')).join('')}</div>`).join('')}
+			${sheet || '<p class="sub">Tap a day to see who said what.</p>'}
+		</div>`;
+	};
+
+	const dateChips = (kind, onlyNights) => {
+		const days = DAYS.filter(d => (!onlyNights || isShowNight(d)) && status(d, kind) === 'possible');
+		return days.length ? `<div class="dates">${days.map(d => `<span class="date${kind === 'show' ? ' date--show' : ''}">${short(d)}</span>`).join('')}</div>` : '<p class="sub">Nothing yet.</p>';
+	};
+	const renderList = () => {
+		if (splits()) return `<div class="page"><h2>Possible dates</h2>
+			<div class="card"><h3>Practice dates</h3><p class="sub">All five can practice, nothing booked.</p>${dateChips('practice')}</div>
+			<div class="card"><h3>Show nights</h3><p class="sub">Fridays and Saturdays all five can play.</p>${dateChips('show', true)}</div></div>`;
+		if (S.opt === 'check') return `<div class="page"><h2>Possible dates</h2>
+			<div class="card"><h3>Works for practice</h3><p class="sub">All five can practice, nothing booked.</p>${dateChips('practice')}</div>
+			<div class="card"><h3>Show check: Molloy's</h3>${checkSummary()}</div></div>`;
+		return `<div class="page"><h2>Possible dates</h2>
+			<div class="card"><h3>Dates that work for everyone</h3><p class="sub">All five said Yes, nothing booked.</p>${dateChips('practice')}</div></div>`;
+	};
+
+	const checkSummary = () => `<ul class="who-list" style="gap:6px">${VENUE.map(d => {
+		const short5 = notYes(d, 'show');
+		return `<li style="grid-template-columns:86px minmax(0,1fr)"><b>${short(d)}</b><span>${5 - short5.length}/5 Yes${short5.length ? ` · ${short5.map(x => `${x.m.name} ${x.a ? LABEL[x.a] : 'waiting'}`).join(', ')}` : ' · everyone can play'}</span></li>`;
+	}).join('')}</ul>`;
+	const renderCheck = () => {
+		const m = S.who, name = MEMBERS.find(x => x.id === m).name;
+		return `<div class="page"><h2>Show check</h2>
+			<p class="sub">Molloy's offered two nights. ${name}, can you play? Shows run about 8pm to 1am.</p>
+			${VENUE.map(d => {
+				const s = showAns(m, d), assumed = check[m][d] === undefined && s === 'no';
+				return `<div class="card"><h3>${short(d)}</h3>
+					<div class="yn3">${['yes', 'no', 'maybe'].map(v => `<button type="button" class="${s === v ? 'on-' + v : ''}" data-act="check" data-day="${d}" data-val="${v}" aria-pressed="${s === v}">${LABEL[v]}</button>`).join('')}</div>
+					${assumed ? '<p class="sub">Filled in from your No for that day.</p>' : ''}</div>`;
+			}).join('')}
+			<div class="card card--yellow"><h3>So far</h3>${checkSummary()}</div></div>`;
+	};
+
+	const reviewSheet = () => {
+		const m = S.who, nights = DAYS.filter(isShowNight);
+		const yes = nights.filter(d => showAns(m, d) === 'yes');
+		const pracOnly = nights.filter(d => practiceAns(m, d) === 'yes' && showAns(m, d) === 'no');
+		return `<div class="sheet" role="dialog" aria-label="Confirm show nights">
+			<h3>You can play a show on ${yes.length} of ${nights.length} Friday and Saturday nights</h3>
+			<div class="chips">${yes.map(d => `<span class="chip chip--yes">${short(d)}</span>`).join('') || '<span class="sub">None.</span>'}</div>
+			<h3>Practice only, no show (${pracOnly.length})</h3>
+			<div class="chips">${pracOnly.map(d => `<span class="chip chip--no">${short(d)}</span>`).join('') || '<span class="sub">None.</span>'}</div>
+			<div class="row-actions"><button type="button" class="btn" data-act="confirm">Looks right, sign off</button><button type="button" class="btn btn--ghost" data-act="back">Go back</button></div>
+		</div>`;
+	};
+
+	const renderFrame = () => {
+		const frame = document.getElementById('frame');
+		const old = frame.querySelector('.scroller'), top = old ? old.scrollTop : 0, sameView = frame.dataset.view === S.view;
+		const body = S.view === 'form' ? renderForm() : S.view === 'cal' ? renderCal() : S.view === 'list' ? renderList() : renderCheck();
+		const blank = DAYS.filter(d => !data[S.who][d]).length;
+		const bar = S.view === 'form' ? `<div class="bar"><span>${S.signed ? 'Signed off. You can still change any day.' : `${blank} blank`}</span>${S.signed ? '' : '<button type="button" class="btn" data-act="signoff">Sign off</button>'}</div>` : '';
+		frame.innerHTML = `<div class="site-nav"><span>Da Band</span><small>${MEMBERS.find(x => x.id === S.who).name}</small></div>
+			<div class="scroller">${body}</div>${bar}${S.reviewOpen && S.view === 'form' ? reviewSheet() : ''}`;
+		frame.dataset.view = S.view;
+		const sc = frame.querySelector('.scroller');
+		sc.scrollTop = sameView ? top : 0;
+		if (S.hl && S.view === 'form') {
+			const el = sc.querySelector('.hl');
+			if (el) sc.scrollTop = Math.max(0, el.getBoundingClientRect().top - sc.getBoundingClientRect().top + sc.scrollTop - sc.clientHeight / 2);
+		}
+	};
+
+	// ---------- Readout (measured from the data and the DOM) ----------
+	const renderReadout = () => {
+		const sc = document.querySelector('#frame .scroller');
+		const screens = (sc.scrollHeight / sc.clientHeight).toFixed(1);
+		const nights = DAYS.filter(isShowNight);
+		const wrong = nights.filter(d => annaCantPlay(d) && showAns('anna', d) === 'yes').length;
+		const hidden = DAYS.filter(d => annaPractice(d) === 'yes' && practiceAns('anna', d) === 'no').length;
+		const unknown = nights.filter(d => MEMBERS.some(m => showAns(m.id, d) === undefined)).length;
+		document.getElementById('readout').innerHTML = `
+			<div class="metric"><b>${wrong}</b><span>nights the app clears Anna for a show she can't play (of 7)</span></div>
+			<div class="metric"><b>${hidden}</b><span>days Anna could practice that read as No</span></div>
+			<div class="metric"><b>${unknown}</b><span>of ${nights.length} Fri/Sat nights missing someone's show answer</span></div>
+			<div class="metric"><b>${S.taps}</b><span>your taps in the phone</span><button type="button" data-act="resettaps">reset</button></div>
+			<div class="metric"><b>${screens}</b><span>screens tall, this screen</span></div>`;
+	};
+
+	const render = () => { renderControls(); renderFrame(); renderLook(); renderReadout(); };
+
+	// ---------- Events ----------
+	document.getElementById('controls').addEventListener('click', e => {
+		const b = e.target.closest('button[data-set]'); if (!b || b.disabled) return;
+		const key = b.dataset.set, val = b.dataset.val;
+		S[key] = val; S.hl = undefined; S.reviewOpen = false;
+		if (key === 'opt' || key === 'seed') {
+			S.taps = 0; S.signed = false; S.pass = 'practice'; S.sel = undefined;
+			if (S.opt !== 'check' && S.view === 'check') S.view = 'form';
+			build();
+		}
+		if (key === 'who') S.signed = false;
+		render();
+	});
+
+	document.getElementById('look').addEventListener('click', e => {
+		const b = e.target.closest('button[data-show]'); if (!b) return;
+		S.reviewOpen = false;
+		if (b.dataset.show === 'sat') { S.who = 'anna'; S.view = 'form'; S.pass = 'practice'; S.hl = '2027-02-13'; }
+		if (b.dataset.show === 'venue') { S.view = 'cal'; S.month = '2027-02'; S.sel = '2027-02-13'; S.hl = undefined; }
+		if (b.dataset.show === 'check') { S.who = 'anna'; S.view = 'check'; S.hl = undefined; }
+		render();
+	});
+
+	document.getElementById('readout').addEventListener('click', e => {
+		if (e.target.closest('[data-act="resettaps"]')) { S.taps = 0; renderReadout(); }
+	});
+
+	document.getElementById('frame').addEventListener('click', e => {
+		const b = e.target.closest('button[data-act]'); if (!b || b.disabled) return;
+		const act = b.dataset.act, d = b.dataset.day, m = S.who;
+		S.taps++; S.hl = undefined;
+		if (act === 'tap') {
+			const row = data[m][d] || (data[m][d] = {});
+			if (S.opt === 'cycle' && isShowNight(d)) {
+				// blank → Yes → Yes/no show → No → Not sure → Yes
+				if (row.a === 'yes' && row.s !== 'no') row.s = 'no';
+				else if (row.a === 'yes') { row.a = 'no'; row.s = undefined; }
+				else { row.a = next(row.a); row.s = undefined; }
+			} else { row.a = next(row.a); row.s = undefined; }
+		} else if (act === 'corner') {
+			const row = data[m][d]; row.s = row.s === 'no' ? undefined : 'no';
+		} else if (act === 'showtap') {
+			const row = data[m][d] || (data[m][d] = {});
+			const s = next(showAns(m, d)); row.s = s === row.a ? undefined : s;
+		} else if (act === 'pass') S.pass = b.dataset.val;
+		else if (act === 'month') { const i = MONTHS.findIndex(([k]) => k === S.month) + Number(b.dataset.val); S.month = MONTHS[i][0]; S.sel = undefined; }
+		else if (act === 'day') S.sel = S.sel === d ? undefined : d;
+		else if (act === 'check') check[m][d] = b.dataset.val;
+		else if (act === 'signoff') { if (S.review === 'on' && splits()) S.reviewOpen = true; else S.signed = true; }
+		else if (act === 'confirm') { S.reviewOpen = false; S.signed = true; }
+		else if (act === 'back') S.reviewOpen = false;
+		renderFrame(); renderLook(); renderReadout();
+	});
+
+	build();
+	render();
+})();
+</script>

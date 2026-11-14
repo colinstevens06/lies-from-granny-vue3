@@ -367,3 +367,69 @@ invite and a Google sign-in), then the form and calendar. It won't be ready by S
 and its due date gets set when the round opens. Speed now depends on reaching the round form quickly. The
 shortest path is: settle the decisions above, update the frozen plan, build sign-in and the database,
 then the round form, then the calendar.
+
+## Show nights vs practice days (Colin, November 13, 2026)
+
+**The problem.** One answer per day can't say "I can practice Saturday but not play an 8pm–1am show".
+Anna is Yes every Friday and Saturday, but she works the Sunday after 7 of the 13 Saturdays in Jan–Mar
+(about 26 a year), so those Saturdays are practice-yes, show-no. Shows are only ever Friday or Saturday
+nights, and the band never plays day shows, so the show question exists only on those two days. No
+time-of-day ranges.
+
+**Visual reference:** `prototypes/2026-11-13-show-vs-practice-lab.html` (published lab:
+https://claude.ai/artifact/AuPnmXqHxvNezvqYD6RJvT), persona brief beside it. Five options were compared:
+one answer (current), extra tap state, corner tag, two passes, and a show check sent per venue offer.
+
+### Decided
+
+- **Option B: an extra tap state on Friday and Saturday.** Colin chose it so everything is on one screen;
+  a separate Practice / Show pass risks answers getting lost between two tabs. On Fri/Sat the cycle is
+  blank → Yes → **Yes, no show** → No → Not sure → Yes. Every other day cycles as before. A "no show" cell
+  stays green with a black "no show" band along its bottom. The tap order stays as is even though a plain
+  Fri/Sat No now takes three taps from blank; the confirm step below catches a stray stop.
+- **Confirm show nights before sign-off.** Sign off opens a sheet: "You can play a show on N of M Friday
+  and Saturday nights", the Yes nights as chips, then "Practice only, no show (N)" as chips, with "Looks
+  right, sign off" and "Go back". This is the guard against the main risk: when the show answer silently
+  follows the day answer, every missed cell reads as "yes, she can play".
+- **Seed Anna with the night-before rule.** The Saturday before a No Sunday is seeded practice-yes,
+  show-no, derived from the Sundays already in her seed. Nothing new is listed by hand.
+- **Band calendar: one calendar, no switch, four keys** (Colin replaced the prototype's Practice / Show
+  switch). **Can practice** is yellow (all five can practice). **Can gig** is a pink tint (a Fri/Sat where
+  all five can practice and play). **Someone can't** is black (anyone said No for the day). **Booked** is
+  solid pink. A member who can practice but not play shows a green dot ringed in pink, and the day sheet
+  reads "practice Yes · show No". So Anna's Feb 13 is yellow, not pink.
+- **Possible dates: two lists.** Practice dates stay yellow chips as today. Show nights (Fridays and
+  Saturdays all five can play) are pink-tint chips, so the two never read alike.
+- **Ships in PR #21 on `feature/da-band`.** The band hasn't used `/da-band` yet, so this is part of the
+  first release, not a follow-up branch.
+
+### Storage
+
+One optional column on the existing row, not a second row per day: `availability.show_answer`, empty
+unless it differs from `answer`. The effective show answer is `show_answer ?? answer`, and it only means
+anything on Friday and Saturday. The grid only ever writes `no` there, on a Fri/Sat whose day answer is
+`yes`; any other tap on the cell clears it. Typing it like `answer` (`yes | no | maybe`) leaves room for a
+later "show: not sure" without another migration; the build plan may narrow it.
+
+### Scenarios from the prototype
+
+- Given a blank Friday, when a member taps it four times, then it shows Yes, then Yes with "no show", then
+  No, then Not sure.
+- Given a blank Tuesday, when a member taps it three times, then it shows Yes, then No, then Not sure (no
+  "no show" stop).
+- Given a Saturday marked Yes with "no show", when the member taps it, then it shows No and the "no show"
+  band is gone.
+- Given Anna's seed, when her Jan–Mar round opens, then the 7 Saturdays before a working Sunday show Yes
+  with "no show", and every other Fri/Sat shows plain Yes.
+- Given a member taps Sign off, then the confirm sheet lists their show-Yes nights and their practice-only
+  nights; "Go back" returns to the grid unsigned, and "Looks right, sign off" signs them off.
+- Given all five said Yes on a Saturday and one marked "no show", then the calendar shows it yellow, that
+  member's dot is ringed in pink, and the day sheet heads "Everyone can practice · no gig: {name}".
+- Given all five said Yes on a Friday with no "no show", then the calendar shows it pink-tinted (Can gig),
+  and it appears under both Practice dates and Show nights.
+- Given a Sunday through Thursday where all five said Yes, then it's yellow and never appears under Show
+  nights.
+
+**What the design needs from the data:** per day and member, `answer` and optional `show_answer`; the
+calendar and Possible dates derive practice and show status from those, with no new tables. The seed
+script needs the night-before rule.
