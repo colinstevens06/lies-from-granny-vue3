@@ -35,6 +35,11 @@ describe('date helpers', () => {
 		expect(isIsoDate(20270101)).toBe(false);
 	});
 
+	// Copilot review on PR 21: these passed the regex and made toISOString() throw, a 500 instead of a 400.
+	it.each(['2027-13-01', '2027-00-01', '2027-01-32', '2027-01-00'])('isIsoDate returns false for %s', value => {
+		expect(isIsoDate(value)).toBe(false);
+	});
+
 	it('formatClockTime handles midnight and noon', () => {
 		expect(formatClockTime('00:05')).toBe('12:05 AM');
 		expect(formatClockTime('12:00')).toBe('12:00 PM');

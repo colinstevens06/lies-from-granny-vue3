@@ -1,5 +1,5 @@
 import type { Gig } from '@models/gig';
-import { toIsoDate } from '@utils/dates';
+import { isIsoDate, toIsoDate } from '@utils/dates';
 
 const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 
@@ -32,3 +32,14 @@ export const pastShows = (shows: Gig[], now = Date.now()) => shows.filter(show =
 
 /** 'September 26, 2026' → '2026-09-26'. */
 export const showIsoDate = (show: Gig) => toIsoDate(parseShowDate(show.date));
+
+/**
+ * The first show on or after an Eastern 'YYYY-MM-DD' day. The band pages use this rather than `upcomingShows`, which
+ * reads the viewer's own clock, so the pick agrees with the Eastern countdown wherever the phone is. A show whose date
+ * doesn't parse is skipped.
+ */
+export const nextShowFrom = (shows: Gig[], today: string): Gig | undefined =>
+	shows
+		.map(show => ({ show, day: showIsoDate(show) }))
+		.filter(({ day }) => isIsoDate(day) && day >= today)
+		.sort((a, b) => a.day.localeCompare(b.day))[0]?.show;

@@ -51,6 +51,7 @@
 	import PracticeStatusBadge from '@components/da-band/practices/practice-status-badge.vue';
 	import type { Practice } from '@models/practice';
 	import { formatPracticeDay, formatPracticeTime, practiceLocation, upcomingPractices } from '@utils/practices';
+	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandStore } from '@/stores/band';
 
 	const band = useBandStore();
@@ -59,5 +60,6 @@
 	/** The practice being edited, 'new' for an empty editor, or nothing for the list. */
 	const editing = ref<Practice | 'new'>();
 
-	const upcoming = computed(() => upcomingPractices(band.practices));
+	const { now } = useEasternNow();
+	const upcoming = computed(() => upcomingPractices(band.practices, now.value));
 </script>

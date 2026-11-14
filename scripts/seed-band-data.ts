@@ -57,14 +57,18 @@ const seedAvailability = async (db: Db, entries: AvailabilityImport[]) => {
 	}
 };
 
-/** Imports practices through `importPractices` (updated in place by day), after the same checks the editor uses. */
+/**
+ * Imports practices through `importPractices` (updated in place by day), after the same checks the editor uses. It
+ * writes the parser's normalized values (trimmed, blank location omitted), not the raw entries.
+ */
 const seedPractices = async (db: Db, entries: PracticeImport[]) => {
-	for (const entry of entries) {
-		const checked = parsePracticeImport(entry);
-		if (!checked.ok) throw new Error(`Practice ${entry.date}: ${checked.error}`);
-	}
+	const checked = entries.map(entry => {
+		const result = parsePracticeImport(entry);
+		if (!result.ok) throw new Error(`Practice ${entry.date}: ${result.error}`);
+		return result.value;
+	});
 
-	const { created, updated } = await importPractices(entries, 'colin', !write, db);
+	const { created, updated } = await importPractices(checked, 'colin', !write, db);
 	console.log(`  ${created} ${write ? 'created' : 'would create'}, ${updated} ${write ? 'updated' : 'would update'}`);
 };
 

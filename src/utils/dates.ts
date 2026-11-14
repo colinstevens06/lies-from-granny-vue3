@@ -60,8 +60,10 @@ export const weekdayIndex = (date: string) => calendarDay(date).getUTCDay();
 /** Shows are only ever Friday or Saturday nights. */
 export const isShowNight = (date: string) => [5, 6].includes(weekdayIndex(date));
 
-/** True for a real calendar date written exactly as 'YYYY-MM-DD'. */
-export const isIsoDate = (value: unknown): value is string =>
-	typeof value === 'string' &&
-	/^\d{4}-\d{2}-\d{2}$/.test(value) &&
-	calendarDay(value).toISOString().slice(0, 10) === value;
+/** True for a real calendar date written exactly as 'YYYY-MM-DD'. Month 13 or day 32 is false, never a throw. */
+export const isIsoDate = (value: unknown): value is string => {
+	if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+
+	const day = calendarDay(value);
+	return !Number.isNaN(day.getTime()) && day.toISOString().slice(0, 10) === value;
+};

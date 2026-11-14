@@ -41,9 +41,16 @@ export const respond = (
 	success: (value: any) => Response // eslint-disable-line @typescript-eslint/no-explicit-any
 ) => (isFailure(result) ? fail(result.status, result.error, result.details) : success(result));
 
-/** The numeric id in a path segment, or undefined when it isn't a positive integer. */
-export const idFrom = (segment: string | undefined) =>
-	/^[1-9]\d{0,9}$/.test(segment ?? '') ? Number(segment) : undefined;
+/** The largest value of a Postgres `integer` column; a bigger id can't exist and would make the query throw. */
+const MAX_DB_ID = 2147483647;
+
+/** The numeric id in a path segment, or undefined (a 404) when it isn't a positive integer in the id columns' range. */
+export const idFrom = (segment: string | undefined) => {
+	if (!/^[1-9]\d{0,9}$/.test(segment ?? '')) return undefined;
+
+	const id = Number(segment);
+	return id <= MAX_DB_ID ? id : undefined;
+};
 
 /** Path segments after /api/band/<resource>. */
 export const subPath = (req: Request) => new URL(req.url).pathname.replace(/\/+$/, '').split('/').slice(4);

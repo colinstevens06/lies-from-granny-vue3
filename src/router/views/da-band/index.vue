@@ -80,7 +80,7 @@
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { upcomingPractices } from '@utils/practices';
 	import { possibleDates } from '@utils/band-calendar';
-	import { upcomingShows } from '@utils/shows';
+	import { nextShowFrom } from '@utils/shows';
 	import { clientFormFor } from '@/forms';
 	import { useBandStore } from '@/stores/band';
 
@@ -92,7 +92,7 @@
 	const upcoming = computed(() => upcomingPractices(band.practices, now.value));
 	const nextPractice = computed(() => upcoming.value.find(practice => practice.status !== 'cancelled'));
 	const laterPractices = computed(() => upcoming.value.filter(practice => practice !== nextPractice.value));
-	const nextGig = upcomingShows(shows)[0];
+	const nextGig = computed(() => nextShowFrom(shows, today.value));
 
 	const possibleCount = computed(
 		() => possibleDates(band.availabilityForm, band.availability, band.practices, shows, today.value).length

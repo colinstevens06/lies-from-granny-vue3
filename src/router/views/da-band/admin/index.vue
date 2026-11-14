@@ -44,12 +44,14 @@
 	import BandLink from '@components/da-band/band-link.vue';
 	import BandSection from '@components/da-band/band-section.vue';
 	import { formatPracticeDay, formatPracticeTime, needsTime, upcomingPractices } from '@utils/practices';
+	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandStore } from '@/stores/band';
 
 	const band = useBandStore();
 	onMounted(band.load);
 
-	const upcoming = computed(() => upcomingPractices(band.practices));
+	const { now } = useEasternNow();
+	const upcoming = computed(() => upcomingPractices(band.practices, now.value));
 	const needTime = computed(() => upcoming.value.filter(needsTime).length);
 	const nextPracticeLine = computed(() => {
 		const next = upcoming.value.find(practice => practice.status !== 'cancelled');

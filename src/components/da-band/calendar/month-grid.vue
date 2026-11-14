@@ -47,9 +47,19 @@
 	// Seven equal columns, Sunday first. PrimeFlex 3 has no grid-template utilities.
 	const ROW_STYLE = { display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: '4px' };
 
-	const months = monthsFrom(props.today);
-	const index = ref(0);
-	const month = computed(() => months[index.value]);
+	// The range follows `today`, so a tab open across New Year gains next year's months. The shown month is kept by its
+	// first day, not its position, and falls back to the current month once it drops out of the range.
+	const months = computed(() => monthsFrom(props.today));
+	const shownDay = ref<string>();
+	const index = computed({
+		get: () =>
+			Math.max(
+				0,
+				months.value.findIndex(m => m.firstDay === shownDay.value)
+			),
+		set: value => (shownDay.value = months.value[value]?.firstDay)
+	});
+	const month = computed(() => months.value[index.value]);
 	const weeks = computed(() => weeksInRange(month.value.firstDay, month.value.lastDay));
 
 	const inForm = computed(() => {

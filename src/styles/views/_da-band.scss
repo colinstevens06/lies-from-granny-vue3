@@ -3,7 +3,8 @@
 // templates (see CLAUDE.md, Styling), so nothing here is per-component layout.
 
 // Answer colors (Yes / No / Not sure), shared by the answer cells, the calendar dots and the SelectButton highlights.
-$bf-yes: #2f9e44;
+// Yes is dark enough for white 10px labels: #237934 on white text is about 5.4:1 (WCAG AA wants 4.5:1).
+$bf-yes: #237934;
 $bf-no: $lfg-dark-gray;
 $bf-maybe: #f59f00;
 $bf-muted: rgba(33, 37, 41, 0.68);
