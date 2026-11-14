@@ -45,3 +45,6 @@ coverage
 # Playwright
 test-results/
 playwright-report/
+
+# Written by Netlify CLI's bundled Deno (Edge Functions runtime) during `netlify dev`; this project runs on Node
+deno.lock
