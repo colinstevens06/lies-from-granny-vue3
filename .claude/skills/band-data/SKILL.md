@@ -1,0 +1,107 @@
+---
+name: band-data
+description: 'Use when working on the /da-band database, Netlify Functions, migrations, the seed script, Identity members and roles, or adding a band form.'
+user-invocable: false
+---
+
+# Band data runbook (/da-band)
+
+The plan is `planning/2026-11-da-band-auth-plan.md`. This file records how to operate what it built, phase by phase.
+
+## Commands
+
+Run the Netlify CLI as `yarn exec netlify <cmd>`. `yarn netlify <cmd>` runs the package script (`netlify dev`) and ignores the command.
+
+- `yarn netlify`: local dev (site, functions and a local Postgres). Use it for any band work.
+- `yarn exec netlify database migrations apply`: apply new migrations to the local database. Production applies them on deploy.
+- `yarn exec netlify database connect --query "select …"`: query the local database.
+- `yarn seed:band`: dry run into the local database. `--write` commits. See Seeding.
+- Gate: `yarn type-check`, `yarn lint`, `yarn build`. There is no test runner.
+
+## Migrations (P1)
+
+`netlify/database/migrations/<number>_<slug>.sql`, forward-only. Never edit a migration a deploy has applied; fix it with a new one. That includes a form's due date or title: add a migration with `update forms set due_day = …`.
+
+`members` (migration 0001) must match `MemberId` in `src/models/band-member.ts` and `src/components/da-band/members.ts`. To add or rename a member: a new migration for the `members` row (`on update cascade` renames the references), the three code spots, and the member's Identity role.
+
+## Seeding (P1)
+
+`scripts/seed-band-data.ts` reads the gitignored `band-data/import.ts` through a variable `import()` path. Never import it with a literal path from anything `tsconfig.json` includes: the file doesn't exist on Netlify's build machine, so `vue-tsc` fails and every deploy fails with exit code 2 (PR #21, 2026-11-13). To check, move `band-data/` aside and run `yarn type-check`. The file exports `availability: AvailabilityImport[]` and `practices: PracticeImport[]`. The script is a dry run unless you pass `--write`, prints the target host first, and never overwrites an answer from a higher-ranked source (`self` > `manual` > `poll` > `assumed`).
+
+- Local: `yarn seed:band` (needs `yarn netlify` running; the connection string comes from `.netlify/state.json`).
+- A deployed branch: `yarn seed:band --branch main`, which gets the connection string from your Netlify CLI login. Production's Access control page gives the CLI read-only access by default, so a write needs "full write access" turned on first. Turn it on only for the run and off again afterward. Dry run first.
+- Any other database: set `DATABASE_URL` in the shell.
+
+## Forms and practices server (P3)
+
+- Tables: `forms`, `form_members`, `practices`, `practice_songs`, `practice_recap_lines` (migration 0002). A form is created by its own migration; there is no create endpoint. Practices are never deleted; cancel them.
+- Only one open form may have availability (`forms_one_open_availability`). Close the current one before a new availability form's migration runs on production, or the migration fails.
+- Registries are keyed by form slug: `src/forms/rules.ts` (sign-off rule), `netlify/forms/index.ts` (server handler), and from P5 `src/forms/index.ts` (screens). A form row whose slug the running build doesn't know is logged and left out, never an error.
+- Shared writers: `writePracticeRow` and `replacePracticeChildren` in `netlify/lib/band-db.ts` are the only code that writes practice columns, songs and recap lines. Extend them, don't add a second path.
+
+### Importing practices
+
+List them in the gitignored `band-data/import.ts` as `practices: PracticeImport[]` (same fields as `Practice`, minus `id` and `formId`), then `yarn seed:band` (dry run) and `yarn seed:band --write`. The target is that day's row (a live one first), so re-running updates in place, and marking a day `cancelled` updates the same row. `gigId` must be a `Gig.id` in `shows.ts`. `complete` is only accepted here; the editor offers tentative, scheduled and cancelled.
+
+## Client state (P4a)
+
+- `src/stores/band.ts` is the only client holder of server data; `src/utils/band-api.ts` is the only `fetch` for `/api/band/*`. The store imports `band-api` inside actions because `nav.vue` imports the store.
+- Every `/da-band*` view calls `band.load()` on mount. Practices come from the store; `src/components/da-band/practices.ts` is gone. To add practices, use the admin editor (P8) or the seed.
+- Answers save through two lanes built on `src/composables/use-save-lane.ts` (availability keyed by date, form answers keyed by form). Both follow the same rules: one request in flight, retries at 2/4/8 s then every 30 s on a network error or 5xx, a dropped batch plus a reload on any other 4xx.
+
+## Add a new band form (P3b)
+
+Worked example: `early-2027-planning` (migration `0003`, `src/forms/early-2027-planning/`, `netlify/forms/early-2027-planning.ts`).
+
+1. Pick a slug (`^[a-z0-9-]{1,60}$`).
+2. Write a migration that inserts the form row (title, due date, and any availability columns) and its `form_members` rows, plus any new tables. Quote apostrophes in text as `''`. Never edit it once a deploy has applied it.
+3. Add `src/forms/<slug>/` with `model.ts` and `rules.ts` (`missing`). Add `screen.vue` and `responses.vue` there too (props: `form`), built from the shared pieces in `src/components/da-band/forms/` (`availability-section`, `yes-no-text`). Save answers through `band.setMyFormAnswer(form.id, body)` and, for availability, `band.setMyAnswers`.
+4. Add `netlify/forms/<slug>.ts` (`loadDetails`, and `saveAnswer` if members answer), plus `mineOf` and `missing` in `rules.ts`. A form with availability should call `availabilityMissing` from `src/utils/availability.ts` in its `missing`.
+5. Wire all three registries: `src/forms/rules.ts`, `netlify/forms/index.ts`, and `src/forms/index.ts` (the client registry: `summary`, `asks`, lazy `screen` and `responses`, and `todoLines` for the to-do card and progress bar). They are typed `Record<FormSlug, …>`, so a missing one fails `yarn type-check`.
+6. Extend `FormDetails` in `src/models/form.ts` (`FormSlug` follows from it).
+7. Only one open form may have availability. Close the old one before a new availability form's migration runs.
+
+## Locking in dates and closing forms (P7)
+
+- Lock in is admin-only: open `/da-band/admin/forms/:id` once everyone has signed off (the home page's admin card has a **Pick practice dates** button). Pick dates, then **Lock in N**. The server creates a scheduled practice per day (time TBD, usual spot, the form's `gigId`) and closes the form in one transaction. If a day was booked meanwhile, nothing is written (`409 already-booked`) and the page says which days.
+- **Close form** closes without booking anything. Both close the form for good; there is no reopen. To ask again, ship a new form (see Add a new band form).
+- Locked-in practices carry `form_id`. Edit their time and place in the practice editor (P8).
+
+## Editing practices (P8)
+
+- Admin only: `/da-band/admin/practices` (the Practices tile on the dashboard). It lists upcoming practices soonest first. Tap one to edit, or **+ Add a practice**. The editor sends the whole record: date, optional start and end time (both or neither), location (empty means Burtonsville), status, songs to prepare and recap lines (one per line).
+- Status offers Tentative, Scheduled and Cancelled. Cancel a practice instead of deleting it (there is no delete). `complete` only comes from the seed, and an edit keeps a stored `complete`.
+- Saving never changes a practice's `gigId` or `formId`. A save onto a day that already has a live practice is refused (`409 date-taken`), but a cancelled one doesn't block the day.
+- The editor runs the same `parsePracticeInput` checks as the server, so it explains a problem before sending. The seed and the editor share `writePracticeRow` and `replacePracticeChildren`.
+
+## Local testing
+
+Google sign-in can't work under `yarn netlify`: Identity isn't proxied locally (`/.netlify/identity/*` falls through to the Vue app), and Identity's OAuth state returns to production anyway. Real sign-in is checked on production at release, before Anna is invited.
+
+Instead, the login page shows **Sign in as {member}** buttons in dev (Colin is marked admin). The choice lives in `sessionStorage`, `band-api` sends it as an `x-dev-member` header, and **Sign out** clears it. Everything else works as in production: `/api/band/me` returns the member, and pages and API calls follow the real role rules.
+
+- **Server gate:** `devMemberFrom` in `netlify/lib/current-member.ts`, the single auth seam. It accepts the header only when `NETLIFY_DEV=true`, `NETLIFY_LOCAL=true` and `CONTEXT=dev` (what `netlify dev` sets, and a deployed function has none of them), the request's host is localhost or 127.0.0.1, and the header names a known member. Anything else runs the real Identity path. It also requires `DEPLOY_ID` and `NETLIFY` to be unset (`netlify dev` sets neither; every deployed function has `DEPLOY_ID`). **Never set `NETLIFY_DEV`, `NETLIFY_LOCAL`, `CONTEXT`, `DEPLOY_ID` or `NETLIFY` as environment variables in the Netlify UI**: they gate a sign-in bypass. The bypass code still ships in the function bundle behind these checks.
+- **Client gate:** the switcher and `src/utils/dev-auth.ts` sit behind `import.meta.env.DEV`, so a production build has none of it. After changing this code, run `yarn build-only` and confirm `grep -r "x-dev-member" dist` finds nothing.
+- Seed the local database first (`yarn seed:band --write` with `yarn netlify` running) to see Anna's prefill and the existing practice.
+
+## Release order
+
+Colin releases to Anna alone first, testing on production, not a preview. Previews copy production, so they start empty.
+
+1. Deploy. Migrations `0001`–`0003` run and the Early 2027 planning form row appears.
+2. Seed production: `yarn seed:band --branch main` (dry run), then `--write`, with the database's full-write access toggle on only for that run. The `main` database branch exists only after the first production deploy publishes (before that the CLI says "No database branch found"). The status JSON's `database.connectionString` path was checked against the local database on 2026-11-13, not yet against `main`. Fallback if it won't connect: skip the seed, add the practice in `/da-band/admin/practices`, and have Anna enter her own availability.
+3. Colin checks `/da-band`.
+4. Colin invites Anna (see Identity members).
+
+## Identity members and sign-in (P2)
+
+- Identity is invite-only with Google as the provider. Invite a member: Netlify dashboard → Identity → invite their Google address, then give them **exactly one** slug role (`anna`, `kyle`, `nick`, `francesco` or `colin`). Colin also gets `admin`. The dashboard sets roles only, and `getCurrentMember` reads only roles. No emails go in the repo.
+- A role change reaches the token within an hour, or immediately after signing out and back in. A user with no slug role, or two, gets "This account isn't on the band list."
+- Renaming a member means renaming their Identity role too (see Migrations).
+- Client: `src/utils/auth.ts` is the only client importer of `@netlify/identity`, and it loads lazily. `main.ts` finishes a Google callback (a URL hash with a token) before the router starts. The router guard on `meta.requiresMember` calls `loadMe()`, and a 401 goes to `/da-band/login`. The header shows "Signed in as {name} · Sign out".
+- Still to verify with real sign-in: where Google's redirect lands (the code assumes the site root with a hash, then moves to the saved `/da-band…` path) and that the `nf_jwt` cookie reaches `/api/band/*`.
+- **Removing a member** (security review #2): a removed Identity role doesn't revoke a token already issued, so they keep access for up to an hour. If that matters, also delete the user in Identity (or have them sign out) and accept the remaining window.
+- **Before release, in the Netlify UI** (security review #7): confirm Identity is invite-only with Google as the external provider. With Google OAuth, anyone with a Google account can create an Identity user otherwise. The role gate (`not-a-member`, 403 on every endpoint) is the real defense, but the setting should match.
+- **Origin check** (security review #5): `checkWrite` in `netlify/lib/http.ts` is hand-rolled. If Netlify ever presents a `req.url` origin that differs from the browser's (a custom-domain alias), every write answers 403 `bad-origin`. Test one write on a deploy preview or production before inviting Anna. Swapping to `verifyRequestOrigin` is optional.
+- **Practice text lengths** (security review #6): `practices.location`, `practice_songs.title` and `practice_recap_lines.line` are length-limited only in `parsePracticeInput` (80, 120, 300). Every writer goes through `band-db`, and the seed runs the same parser. If another writer ever appears, add `check` constraints in a new migration.
+

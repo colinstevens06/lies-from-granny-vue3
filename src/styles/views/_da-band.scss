@@ -1,0 +1,163 @@
+/* ==================== DA BAND (/da-band) ===================== */
+// The shared containers and what PrimeFlex can't say. Spacing, flex, type and most colors are utility classes in the
+// templates (see CLAUDE.md, Styling), so nothing here is per-component layout.
+
+// Answer colors (Yes / No / Not sure), shared by the answer cells, the calendar dots and the SelectButton highlights.
+$bf-yes: #2f9e44;
+$bf-no: $lfg-dark-gray;
+$bf-maybe: #f59f00;
+$bf-muted: rgba(33, 37, 41, 0.68);
+
+// Brand colors as utilities, !important like PrimeFlex's own so they beat a component's base color. PrimeFlex's
+// `*-primary` classes can't be used: _primeflex-variables.scss resets --primary-color to PrimeFlex's blue.
+.bg-lfg-pink {
+	background-color: $lfg-pink !important;
+}
+
+.text-lfg-pink {
+	color: $lfg-pink !important;
+}
+
+.border-lfg-pink {
+	border-color: $lfg-pink !important;
+}
+
+.hover\:border-lfg-pink:hover {
+	border-color: $lfg-pink !important;
+}
+
+.bg-poster-yellow {
+	background-color: $lfg-poster-yellow !important;
+}
+
+.border-poster-yellow {
+	border-color: $lfg-poster-yellow !important;
+}
+
+// Raised panel on the white page; the white .band-cards sit on top of it.
+.da-band {
+	max-width: 720px;
+	margin: 0 auto;
+	padding: 1rem 1rem 1.5rem;
+	border-radius: 12px;
+	background-color: $lfg-surface-gray;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 4px 12px rgba(0, 0, 0, 0.06);
+
+	@media screen and (min-width: $breakpoint-md) {
+		margin: 1.5rem auto 2rem;
+		padding: 1.5rem 2rem 2rem;
+	}
+}
+
+// The white card every /da-band block sits in.
+.band-card {
+	display: flex;
+	flex-direction: column;
+	gap: 0.35rem;
+	min-width: 0;
+	margin: 0;
+	padding: 1rem;
+	border: 1px solid rgba(0, 0, 0, 0.12);
+	border-radius: 8px;
+	background-color: #fff;
+
+	&--featured {
+		padding: 1.5rem;
+		border: none;
+		background-color: $lfg-poster-yellow;
+		background-image: linear-gradient(to bottom right, $lfg-poster-yellow-top-left, $lfg-poster-yellow-bottom-right);
+	}
+}
+
+// The to-do card's pink tint. An overdue card swaps this class for `bg-lfg-pink`.
+.form-todo {
+	background-image: linear-gradient(to bottom right, $lfg-pink-tint-top-left, $lfg-pink-tint-bottom-right);
+}
+
+// ---- Answer colors: the cell, its legend swatch and the calendar dot for each answer.
+.answer-cell {
+	font: inherit;
+
+	&--yes {
+		background: $bf-yes;
+		color: #fff;
+	}
+
+	&--no {
+		background: $bf-no;
+		color: #fff;
+	}
+
+	&--maybe {
+		background: $bf-maybe;
+		color: $lfg-dark-gray;
+	}
+
+	&--none {
+		background: #fff;
+		box-shadow: inset 0 0 0 1.5px #adb5bd;
+		color: $bf-muted;
+	}
+}
+
+.answer-dot {
+	border-color: #adb5bd;
+
+	&--yes {
+		border-color: $bf-yes;
+		background: $bf-yes;
+	}
+
+	&--no {
+		border-color: $lfg-pink;
+		background: $lfg-pink;
+	}
+
+	&--maybe {
+		border-color: $bf-maybe;
+		background: $bf-maybe;
+	}
+}
+
+// ---- PrimeVue overrides
+// The chosen Yes / No answer turns green / dark, so a tap shows it landed.
+.yes-no--yes .p-button.p-highlight,
+.yes-no--yes .p-button.p-highlight:hover {
+	border-color: $bf-yes;
+	background: $bf-yes;
+}
+
+.yes-no--no .p-button.p-highlight,
+.yes-no--no .p-button.p-highlight:hover {
+	border-color: $bf-no;
+	background: $bf-no;
+}
+
+.weekday-fill {
+	// The theme's sidebar header is display: block, which drops the close button under the title.
+	.p-sidebar-header {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+	}
+
+	.p-sidebar-header-content {
+		flex: 1 1 auto;
+		min-width: 0;
+		overflow-wrap: anywhere;
+		font-weight: 700;
+	}
+
+	.p-sidebar-close {
+		flex: none;
+	}
+
+	// The chosen answer turns green, so a tap shows it landed.
+	.p-selectbutton .p-button.p-highlight,
+	.p-selectbutton .p-button.p-highlight:hover {
+		border-color: $bf-yes;
+		background: $bf-yes;
+		color: #fff;
+	}
+}

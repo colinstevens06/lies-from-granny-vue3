@@ -1,6 +1,6 @@
 import type { BandListing } from '@models/song';
 
-export const songs = [
+export const songs: BandListing[] = [
 	{
 		id: 73,
 		bandName: 'Spice Girls',
@@ -27,7 +27,7 @@ export const songs = [
 		songs: ['Hands Down']
 	},
 	{
-		id: 69,
+		id: 84,
 		bandName: 'Nirvana',
 		songs: ['Smells Like Teen Spirit']
 	},
@@ -426,4 +426,4 @@ export const songs = [
 		bandName: 'Fuel',
 		songs: ['Shimmer']
 	}
-] as BandListing[];
+];
