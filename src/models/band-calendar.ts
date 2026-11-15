@@ -20,8 +20,8 @@ export interface FormTarget {
 export interface PickGroups {
 	/** Everyone said Yes. */
 	everyoneYes: string[];
-	/** Exactly one member isn't a Yes (and so can't be counted in); `short` labels who ("no Franny"). */
-	oneShort: { day: string; member: MemberId; short: string }[];
+	/** Exactly one member isn't a Yes (and so can't be counted in); `name` labels who ("no Fran"). */
+	oneShort: { day: string; member: MemberId; name: string }[];
 }
 
 export interface ShowNightSummary {

@@ -23,6 +23,6 @@
 	const band = useBandStore();
 	const total = rangeDayCount(props.form);
 
-	const nameOf = (id: string) => members.find(m => m.id === id)?.short ?? id;
+	const nameOf = (id: string) => members.find(m => m.id === id)?.name ?? id;
 	const rowOf = (id: string) => band.availability.find(row => row.member === id);
 </script>

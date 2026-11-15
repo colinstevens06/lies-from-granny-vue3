@@ -144,7 +144,7 @@ export const noGigText = (date: string, availability: MemberAvailability[]): str
 	const entries = dayAnswers(date, availability);
 	if (!entries.every(entry => entry.answer === 'yes')) return undefined;
 
-	const names = entries.filter(entry => entry.noShow).map(entry => entry.member.short);
+	const names = entries.filter(entry => entry.noShow).map(entry => entry.member.name);
 	return names.length === 0 ? undefined : `Everyone can practice · no gig: ${names.join(', ')}`;
 };
 
@@ -154,7 +154,7 @@ export const nearMissText = (date: string, availability: MemberAvailability[]): 
 	if (notYes.length !== 1) return undefined;
 
 	const [{ member, answer }] = notYes;
-	return `Everyone but ${member.short} (${ANSWER_LABEL[answer ?? 'none']})`;
+	return `Everyone but ${member.name} (${ANSWER_LABEL[answer ?? 'none']})`;
 };
 
 // ---- Targets and possible dates --------------------------------------------------------------------------
@@ -270,7 +270,7 @@ export const pickGroups = (
 		const notYes = dayAnswers(day, availability).filter(entry => entry.answer !== 'yes');
 		if (notYes.length === 0) groups.everyoneYes.push(day);
 		else if (notYes.length === 1) {
-			groups.oneShort.push({ day, member: notYes[0].member.id, short: notYes[0].member.short });
+			groups.oneShort.push({ day, member: notYes[0].member.id, name: notYes[0].member.name });
 		}
 	}
 
@@ -319,7 +319,7 @@ export const inviteText = (form: Form): string =>
 
 /** A one-line reminder naming who hasn't signed off yet. */
 export const nudgeText = (form: Form, waiting: MemberId[]): string => {
-	const names = members.filter(member => waiting.includes(member.id)).map(member => member.short);
+	const names = members.filter(member => waiting.includes(member.id)).map(member => member.name);
 
 	return `Still waiting on ${names.join(', ')} for ${form.title} (due ${shortDay(form.dueDay)}): ${formLink(form)}`;
 };

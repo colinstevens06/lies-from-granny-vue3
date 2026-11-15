@@ -17,5 +17,5 @@
 
 	defineProps<{ form: Form }>();
 
-	const nameOf = (id: string) => members.find(m => m.id === id)?.short ?? id;
+	const nameOf = (id: string) => members.find(m => m.id === id)?.name ?? id;
 </script>

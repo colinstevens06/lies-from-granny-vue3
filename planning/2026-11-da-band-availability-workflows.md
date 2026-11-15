@@ -168,7 +168,7 @@ replace any conflicting detail in the workflows above:
    They'll show up here."
 2. On `/da-band/admin`, the admin sees two groups of future, unbooked dates in the round:
    - **Everyone said Yes**
-   - **One short**, where exactly one person isn't a Yes, labeled with who ("no Franny"), for when four of
+   - **One short**, where exactly one person isn't a Yes, labeled with who ("no Fran"), for when four of
      five will do
 3. Tapping dates picks them, and a counter reads "2 of 3 picked" against the round's target. Going over the
    target is allowed. A bottom bar lists the picks with **Lock in N**.

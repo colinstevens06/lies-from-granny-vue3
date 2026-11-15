@@ -33,7 +33,7 @@
 	const waitingNames = computed(() =>
 		members
 			.filter(m => waiting.value.includes(m.id))
-			.map(m => m.short)
+			.map(m => m.name)
 			.join(', ')
 	);
 </script>

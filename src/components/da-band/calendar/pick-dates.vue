@@ -21,7 +21,7 @@
 				<h3 class="mt-0 mb-2 text-base">One short</h3>
 				<SelectButton
 					:model-value="pickedIn(oneShortDays)"
-					:options="groups.oneShort.map(entry => ({ day: entry.day, label: dayLabel(entry.day), short: entry.short }))"
+					:options="groups.oneShort.map(entry => ({ day: entry.day, label: dayLabel(entry.day), name: entry.name }))"
 					option-label="label"
 					option-value="day"
 					multiple
@@ -32,7 +32,7 @@
 					<template #option="{ option }">
 						<span>
 							{{ option.label }}
-							<small class="block text-xs font-normal">no {{ option.short }}</small>
+							<small class="block text-xs font-normal">no {{ option.name }}</small>
 						</span>
 					</template>
 				</SelectButton>

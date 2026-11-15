@@ -2,7 +2,7 @@
 	<section>
 		<h3>Song suggestions</h3>
 		<ul v-if="suggestions.length" class="m-0 pl-4">
-			<li v-for="item in suggestions" :key="item.short">{{ item.suggestion }} ({{ item.short }})</li>
+			<li v-for="item in suggestions" :key="item.name">{{ item.suggestion }} ({{ item.name }})</li>
 		</ul>
 		<p v-else class="text-black-alpha-70">No suggestions yet.</p>
 	</section>
@@ -18,8 +18,8 @@
 	/** Every suggestion, in roster order, tagged with who made it. */
 	const suggestions = computed(() =>
 		props.form.details.songPitches.flatMap(pitch => {
-			const short = members.find(m => m.id === pitch.member)?.short ?? pitch.member;
-			return pitch.suggestion ? [{ suggestion: pitch.suggestion, short }] : [];
+			const name = members.find(m => m.id === pitch.member)?.name ?? pitch.member;
+			return pitch.suggestion ? [{ suggestion: pitch.suggestion, name }] : [];
 		})
 	);
 </script>

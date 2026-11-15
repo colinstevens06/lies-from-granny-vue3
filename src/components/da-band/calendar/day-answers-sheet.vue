@@ -2,7 +2,7 @@
 	<Sidebar :visible="!!date" position="bottom" :header="title" @update:visible="close">
 		<ul v-if="date" class="flex flex-column gap-2 m-0 p-0 list-none">
 			<li v-for="entry in dayAnswers(date, availability)" :key="entry.member.id" class="flex justify-content-between">
-				<strong>{{ entry.member.short }}</strong>
+				<strong>{{ entry.member.name }}</strong>
 				<span>{{ entry.noShow ? 'practice Yes · show No' : ANSWER_LABEL[entry.answer ?? 'none'] }}</span>
 			</li>
 		</ul>

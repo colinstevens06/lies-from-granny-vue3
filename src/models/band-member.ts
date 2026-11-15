@@ -6,9 +6,8 @@ export type BandRole = 'admin' | 'member';
 
 export interface BandMember {
 	id: MemberId;
+	/** What the band calls them, used everywhere a member is named. */
 	name: string;
-	/** The short name used under calendar dots and in sheets. */
-	short: string;
 }
 
 export interface CurrentMember {

@@ -510,7 +510,7 @@
 			<h3>What's real and what's invented</h3>
 			<ul>
 				<li><b>Real:</b> the roster, the 720px page width, the site colors and fonts, Dec 6 (tentative, Burtonsville), the Jan 1–Mar 31 range, and Anna's seed (every Fri and Sat, her long-weekend Sundays).</li>
-				<li><b>Invented:</b> everyone else's answers, and Anna's weekday answers. Franny has answered only through Feb 14, so March shows what an unfinished round looks like.</li>
+				<li><b>Invented:</b> everyone else's answers, and Anna's weekday answers. Fran has answered only through Feb 14, so March shows what an unfinished round looks like.</li>
 				<li><b>Measured live:</b> every number in the readout comes from the rendered frame.</li>
 			</ul>
 		</div>
@@ -561,7 +561,7 @@
 			{ id: 'anna', name: 'Anna', short: 'Anna' },
 			{ id: 'kyle', name: 'Kyle', short: 'Fives' },
 			{ id: 'nick', name: 'Nick', short: 'Hermes' },
-			{ id: 'francesco', name: 'Francesco', short: 'Franny' },
+			{ id: 'francesco', name: 'Francesco', short: 'Fran' },
 			{ id: 'colin', name: 'Colin', short: 'Colin' }
 		];
 		const nameOf = (id) => MEMBERS.find((m) => m.id === id).short;
@@ -730,7 +730,7 @@
 			{ key: 'roundState', label: 'Your form', opts: [['fresh', 'Fresh'], ['halfway', 'Halfway'], ['ahead', 'Already ahead'], ['submitted', 'Signed off'], ['overdue', 'Overdue'], ['allin', 'Everyone’s in'], ['closed', 'Dates locked']], reset: true },
 			{ key: 'w', label: 'Viewport', opts: [[390, 'Phone 390'], [720, 'Desktop 720']] }
 		];
-		let hintText = 'Start on <strong>Home</strong>. You’re Colin (admin), halfway through March show planning. Franny hasn’t answered March yet, so March has no possible dates.';
+		let hintText = 'Start on <strong>Home</strong>. You’re Colin (admin), halfway through March show planning. Fran hasn’t answered March yet, so March has no possible dates.';
 
 		function segRow(def, isDecision) {
 			const wrap = document.createElement('div');

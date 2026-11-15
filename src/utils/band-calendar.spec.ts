@@ -51,7 +51,7 @@ describe('calendarDayStatus', () => {
 describe('nearMissText', () => {
 	it('names the one member who is not a yes', () => {
 		const rows = makeBandAvailability([D1], 'yes', { francesco: { [D1]: 'maybe' } });
-		expect(nearMissText(D1, rows)).toBe('Everyone but Franny (Not sure)');
+		expect(nearMissText(D1, rows)).toBe('Everyone but Fran (Not sure)');
 		expect(nearMissText(D1, makeBandAvailability([D1]))).toBeUndefined();
 	});
 });
@@ -79,7 +79,7 @@ describe('pickGroups', () => {
 		});
 		const groups = pickGroups(makeForm(), rows, [makePractice({ date: '2026-11-18' })], TODAY);
 		expect(groups.everyoneYes).toEqual([D1]);
-		expect(groups.oneShort).toEqual([{ day: D2, member: 'nick', short: 'Hermes' }]);
+		expect(groups.oneShort).toEqual([{ day: D2, member: 'nick', name: 'Nick' }]);
 	});
 });
 

@@ -271,7 +271,7 @@ export const members: BandMember[] = [
 	{ id: 1, name: 'Anna', shortName: 'Anna', roles: ['lead-vocals'] },
 	{ id: 2, name: 'Kyle', shortName: 'Fives', roles: ['lead-guitar', 'backup-vocals'] },
 	{ id: 3, name: 'Nick', shortName: 'Hermes', roles: ['rhythm-guitar', 'lead-vocals', 'backup-vocals'] },
-	{ id: 4, name: 'Francesco', shortName: 'Franny', roles: ['bass'] },
+	{ id: 4, name: 'Francesco', shortName: 'Fran', roles: ['bass'] },
 	{ id: 5, name: 'Colin', shortName: 'Colin', roles: ['drums'] }
 ];
 ```
@@ -446,7 +446,7 @@ any of these — I'm going from memory and they change.**
 
 ### You have already built this once, on paper
 
-`LFG Songs.xlsx` contains a `Practice Scheduling` tab: one column per member (Anna, Franny, Fives,
+`LFG Songs.xlsx` contains a `Practice Scheduling` tab: one column per member (Anna, Fran, Fives,
 Hermes, Colin), rows alternating a weekend block (`10/27-10/29`, `11/3-11/5`, …) with a
 `Weeknights` row for the same week, and free-text cells like `Kyle Busy 10/27`, `Anna Busy Sun`,
 `Out of town 11-6/11-10`, `Available 11/18`.
@@ -1103,7 +1103,7 @@ The workbook uses nicknames and initials that don't match display names:
 | `A` | Anna |
 | `H`, `Hermes` | **Nick** |
 | `K`, `Fives` | **Kyle** |
-| `Franny` | Francesco |
+| `Fran` | Francesco |
 | `BOTH` / `Both` / `both` / `A/B` / `Combo` | Shared lead vocal |
 
 Confirmed by Colin: the codes come from surnames — **Nick Herms** and **Kyle Fives** — so `H` is

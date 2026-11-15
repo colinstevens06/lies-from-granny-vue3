@@ -28,7 +28,7 @@ Fix: in `onRejected`, delete the rejected `entries` from `row.days` (or remember
 
 `picked` is local state; the two lists are computed from the store and `pickedIn()` filters what each SelectButton shows. If a day drops out of both lists after a refresh (a member flips to No, a practice gets booked, midnight passes), it disappears from the chips but stays in `picked`. The sticky bar still names it ("Lock in 3") and `lockIn` posts it.
 
-Scenario: admin picks 4 days, sits on the page while Franny changes one to No; `band.load()` runs from the page's own mount/other events. The day vanishes from the chips; admin presses "Lock in 4" and a practice is created on a day that is now blocked. Whether the server refuses it is the other session's call; the client should not offer it.
+Scenario: admin picks 4 days, sits on the page while Fran changes one to No; `band.load()` runs from the page's own mount/other events. The day vanishes from the chips; admin presses "Lock in 4" and a practice is created on a day that is now blocked. Whether the server refuses it is the other session's call; the client should not offer it.
 
 Fix: `watch(groups, ...)` and drop picks not in `everyoneYesDays` or `oneShortDays`, or compute the sent list as `picked.filter(inEither)`.
 

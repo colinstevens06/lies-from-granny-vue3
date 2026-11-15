@@ -5,7 +5,7 @@ You are one of four independent reviewers. Each has a different mandate (given i
 
 ## The product
 
-`/da-band` is a members-only corner of a five-piece cover band's website (Vue 3, PrimeVue 3, PrimeFlex, Netlify Functions + Postgres). Five members: Anna, Kyle ("Fives"), Nick ("Hermes"), Francesco ("Franny"), Colin (the admin, who also builds it). It is used almost entirely on phones. The band moves slowly, members are not motivated form-fillers, and the last poll that worked was "one tap per date, two minutes tops".
+`/da-band` is a members-only corner of a five-piece cover band's website (Vue 3, PrimeVue 3, PrimeFlex, Netlify Functions + Postgres). Five members: Anna, Kyle ("Fives"), Nick ("Hermes"), Francesco ("Fran"), Colin (the admin, who also builds it). It is used almost entirely on phones. The band moves slowly, members are not motivated form-fillers, and the last poll that worked was "one tap per date, two minutes tops".
 
 ## What exists now (built, on a feature branch, not yet used by the band)
 
@@ -15,7 +15,7 @@ You are one of four independent reviewers. Each has a different mandate (given i
 - **Edit mine**: the same tap-to-cycle cells on a month grid, any future date, any time.
 - **Shared band calendar**: month grid. Each day is one of: **booked** (pink; a practice or a show is on it), **blocked** (black; anyone said No), **possible** (yellow; all five said Yes), **open** (white). Under the day number are five 6px dots, one per member (green Yes, pink No, orange Not sure, hollow Pending). Tapping a day opens a sheet listing each member's answer.
 - **Possible dates list** on the home page: upcoming days where all five said Yes and nothing is booked, with a "Copy list" button for the group text thread.
-- **Admin lock-in** ("pick dates"): chips in two groups, **Everyone said Yes** and **One short** ("Sat Jan 16 / no Franny"). Admin picks N, taps Lock in, which creates those **practices** (time TBD) and closes the form. A form can carry "practices needed: N before <target show>".
+- **Admin lock-in** ("pick dates"): chips in two groups, **Everyone said Yes** and **One short** ("Sat Jan 16 / no Fran"). Admin picks N, taps Lock in, which creates those **practices** (time TBD) and closes the form. A form can carry "practices needed: N before <target show>".
 - **Shows are not booked in the app.** They are static entries in a repo file, added by Colin by hand after a venue confirms. So today the app only ever helps choose **practice** dates; show dates get worked out over text.
 - **Seeding**: an import file can pre-fill a member's days (`source: 'manual'`). Its shape: a window, a list of that member's Yes dates, and `busyWeekdays` (in-window dates on those weekdays that are not listed become No).
 
