@@ -2,6 +2,7 @@ import type { Gig } from '@models/gig';
 import type { Answer, DayAnswer, MemberAvailability, MyAnswer } from '@models/availability';
 import type { MemberId } from '@models/band-member';
 import type { Form } from '@models/form';
+import type { CalendarMonth, DayStatus, FormTarget, PickGroups, ShowNightSummary } from '@models/band-calendar';
 import type { Practice } from '@models/practice';
 import { members } from '@components/da-band/members';
 import { addDays, easternNow, formatCalendarDate, isShowNight, toIsoDate, weekdayIndex } from '@utils/dates';
@@ -70,15 +71,6 @@ export const weeksInRange = (startDay: string, endDay: string): (string | undefi
 	return weeks;
 };
 
-export interface CalendarMonth {
-	/** 'YYYY-MM' */
-	key: string;
-	/** 'November 2026' */
-	label: string;
-	firstDay: string;
-	lastDay: string;
-}
-
 /** Every month from today's through December of next year. */
 export const monthsFrom = (today: string): CalendarMonth[] => {
 	const lastYear = Number(today.slice(0, 4)) + 1;
@@ -112,9 +104,6 @@ const lastDayOfNextYear = (today: string) => `${Number(today.slice(0, 4)) + 1}-1
 const todayEastern = () => easternNow().slice(0, 10);
 
 // ---- Status ----------------------------------------------------------------------------------------------
-
-/** `possible` is "can practice"; `gig` is a possible Friday or Saturday that all five can also play. */
-export type DayStatus = 'booked' | 'blocked' | 'gig' | 'possible' | 'open';
 
 /** The five members' answers for a day, in roster order. `noShow` is Yes to practice but not to a show. */
 export const dayAnswers = (date: string, availability: MemberAvailability[]) =>
@@ -169,13 +158,6 @@ export const nearMissText = (date: string, availability: MemberAvailability[]): 
 };
 
 // ---- Targets and possible dates --------------------------------------------------------------------------
-
-export interface FormTarget {
-	label: string;
-	/** Eastern 'YYYY-MM-DD'; omitted for a label-only target. */
-	day?: string;
-	gig?: Gig;
-}
 
 /**
  * The booked gig if it's still in `shows` and hasn't passed, else the free-text label (and optional day),
@@ -270,13 +252,6 @@ export const practicesStillNeeded = (form: Form, practices: Practice[], shows: G
 
 // ---- Picking dates (admin) -------------------------------------------------------------------------------
 
-export interface PickGroups {
-	/** Everyone said Yes. */
-	everyoneYes: string[];
-	/** Exactly one member isn't a Yes (and so can't be counted in); `short` labels who ("no Franny"). */
-	oneShort: { day: string; member: MemberId; short: string }[];
-}
-
 /** Future, unbooked days in the form's range, grouped for the admin's lock-in. */
 export const pickGroups = (
 	form: Form,
@@ -310,15 +285,6 @@ export const prefilledCount = (form: Form, myDays: Record<string, unknown>, toda
 	return daysBetweenInclusive(startDay > today ? startDay : today, endDay).filter(day => myDays[day] !== undefined)
 		.length;
 };
-
-export interface ShowNightSummary {
-	/** Fridays and Saturdays from today through the form's end. */
-	total: number;
-	/** The member can play a show. */
-	playable: string[];
-	/** Yes to practice, no to a show. */
-	practiceOnly: string[];
-}
 
 /** What the member's answers say about show nights, for the sheet that confirms them before sign-off. */
 export const showNightSummary = (

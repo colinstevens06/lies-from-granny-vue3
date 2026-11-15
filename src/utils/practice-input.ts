@@ -1,6 +1,7 @@
 import type { PracticeImport, PracticeInput, PracticeStatus } from '../models/practice';
 import { isIsoDate } from './dates';
-import { isRecord, parsed, rejected, type Parsed } from './parsed';
+import type { Parsed } from '../models/parsed';
+import { isRecord, parsed, rejected } from './parsed';
 
 // Shared by the practice endpoint and the seed: relative imports only, no I/O.
 

@@ -70,4 +70,4 @@ With Google OAuth, anyone with a Google account can create an Identity user unle
 - A live run: no endpoints were exercised, no dev server touched, and no database queried (including the local one).
 - The full text of the 500 KB diff: I read all server, shared-rule, router and auth files, but the large restyle (Vue templates and SCSS) only by grep for `v-html` / `innerHTML` and dev-only imports.
 - Dependency advisories, the Yarn to pnpm migration files and `deno.lock`.
-- Client store and component logic beyond the router guard, `auth.ts`, `band-api.ts` and `dev-auth.ts` (client-side checks are not a security boundary here).
+- Client store and component logic beyond the router guard, `auth.ts`, `band-service-base.ts` and `dev-auth.ts` (client-side checks are not a security boundary here).

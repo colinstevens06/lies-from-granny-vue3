@@ -1,9 +1,11 @@
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useSaveLane } from '@/composables/use-save-lane';
+import { BandApiError } from '@models/band-api-error';
 import type { DayAnswer, MemberAvailability, MyAnswer } from '@models/availability';
 import type { CurrentMember } from '@models/band-member';
 import type { Form } from '@models/form';
+import type { LoadState } from '@models/load-state';
 import type { Practice, PracticeInput } from '@models/practice';
 
 /** Availability writes go out in chunks of at most this many days. */
@@ -11,11 +13,9 @@ const CHUNK = 400;
 const NOTICE_RETRYING = 'Not saved yet. Retrying…';
 const NOTICE_RELOADED = "Couldn't save that. Your answers were reloaded.";
 
-export type LoadState = 'idle' | 'loading' | 'ready' | 'error';
-
 /**
- * The only client holder of server data. nav.vue imports this store, so `band-api` and other API code are imported
- * inside actions, never at the top.
+ * The only client holder of server data. nav.vue imports this store, so the band service and other API code are
+ * imported inside actions, never at the top.
  */
 export const useBandStore = defineStore('band', () => {
 	const me = ref<CurrentMember>();
@@ -30,8 +30,7 @@ export const useBandStore = defineStore('band', () => {
 	/** Goes up on every successful save. A load only applies "mine" if it hasn't changed since the load began. */
 	let saveVersion = 0;
 
-	const bandApi = async <T>(path: string, options?: { method?: 'POST' | 'PUT' | 'PATCH'; body?: unknown }) =>
-		(await import('@utils/band-api')).bandApi<T>(path, options);
+	const service = async () => (await import('@/services/band-service')).bandService;
 
 	const mineRow = () => availability.value.find(row => row.member === me.value?.member);
 
@@ -58,12 +57,13 @@ export const useBandStore = defineStore('band', () => {
 	const answerLane = useSaveLane<Omit<MyAnswer, 'date'>, MemberAvailability>({
 		delayMs: 400,
 		async send(entries) {
+			const { saveAvailability } = await service();
 			let result!: { availability: MemberAvailability };
 			for (let i = 0; i < entries.length; i += CHUNK) {
-				result = await bandApi(`availability/${me.value!.member}`, {
-					method: 'PATCH',
-					body: { changes: entries.slice(i, i + CHUNK).map(([date, change]) => ({ date, ...change })) }
-				});
+				result = await saveAvailability(
+					me.value!.member,
+					entries.slice(i, i + CHUNK).map(([date, change]) => ({ date, ...change }))
+				);
 			}
 			return result.availability;
 		},
@@ -90,10 +90,9 @@ export const useBandStore = defineStore('band', () => {
 		delayMs: 600,
 		async send(entries) {
 			// Latest whole body per form wins; one request per form, and every form's server copy is kept.
+			const { saveFormAnswers } = await service();
 			const saved: Form[] = [];
-			for (const [formId, body] of entries) {
-				saved.push((await bandApi<{ form: Form }>(`forms/${formId}/answers`, { method: 'PUT', body })).form);
-			}
+			for (const [formId, body] of entries) saved.push((await saveFormAnswers(Number(formId), body)).form);
 			return saved;
 		},
 		onSaved(_entries, savedForms) {
@@ -159,11 +158,8 @@ export const useBandStore = defineStore('band', () => {
 		if (loadState.value !== 'ready') loadState.value = 'loading';
 
 		try {
-			const [avail, formList, practiceList] = await Promise.all([
-				bandApi<{ members: MemberAvailability[] }>('availability'),
-				bandApi<{ forms: Form[] }>('forms'),
-				bandApi<{ practices: Practice[] }>('practices')
-			]);
+			const api = await service();
+			const [avail, formList, practiceList] = await Promise.all([api.availability(), api.forms(), api.practices()]);
 			const mineChanged = saveVersion !== startedAt;
 			const mine = mineRow();
 
@@ -198,19 +194,16 @@ export const useBandStore = defineStore('band', () => {
 
 	/** Signs me off a form. Throws a `BandApiError`: 409 `incomplete` (with what's missing) or `closed`. */
 	const signOffForm = async (formId: number) => {
-		const { form } = await bandApi<{ form: Form }>(`forms/${formId}/sign-off`, { method: 'POST' });
+		const { form } = await (await service()).signOff(formId);
 		forms.value = forms.value.map(f => (f.id === form.id ? form : f));
 	};
 
 	/**
 	 * Admin: creates a practice (no `id`) or replaces one (whole record), and updates the store. Goes straight through
-	 * `band-api`, not the save queue. Throws a `BandApiError` (409 `date-taken`, 400 with the error code).
+	 * the service, not the save queue. Throws a `BandApiError` (409 `date-taken`, 400 with the error code).
 	 */
 	const savePractice = async (input: PracticeInput, id?: number) => {
-		const { practice } = await bandApi<{ practice: Practice }>(id === undefined ? 'practices' : `practices/${id}`, {
-			method: id === undefined ? 'POST' : 'PUT',
-			body: input
-		});
+		const { practice } = await (await service()).savePractice(input, id);
 		practices.value =
 			id === undefined
 				? [...practices.value, practice]
@@ -219,12 +212,12 @@ export const useBandStore = defineStore('band', () => {
 
 	/** Admin: books the days as scheduled practices and closes the form. Throws a `BandApiError` (409 `already-booked` names the days). */
 	const lockInForm = async (formId: number, days: string[]) => {
-		await bandApi(`forms/${formId}/lock-in`, { method: 'POST', body: { days } });
+		await (await service()).lockIn(formId, days);
 	};
 
 	/** Admin: closes an open form (the server refuses anyone else). */
 	const closeForm = async (formId: number) => {
-		const { form } = await bandApi<{ form: Form }>(`forms/${formId}/close`, { method: 'POST' });
+		const { form } = await (await service()).closeForm(formId);
 		forms.value = forms.value.map(f => (f.id === form.id ? form : f));
 	};
 
@@ -234,9 +227,9 @@ export const useBandStore = defineStore('band', () => {
 	const loadMe = async (): Promise<'ok' | 'signed-out' | 'not-a-member'> => {
 		if (me.value) return 'ok';
 
-		const { bandApi: request, BandApiError } = await import('@utils/band-api');
+		const { bandService } = await import('@/services/band-service');
 		try {
-			me.value = await request<CurrentMember>('me', { redirectOn401: false });
+			me.value = await bandService.me();
 			return 'ok';
 		} catch (error) {
 			if (error instanceof BandApiError && error.status === 401) return 'signed-out';

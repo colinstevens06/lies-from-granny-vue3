@@ -1,4 +1,4 @@
-import type { DayStatus } from '@utils/band-calendar';
+import type { DayStatus } from '@models/band-calendar';
 import type { LegendItem } from '@components/da-band/legend-keys.vue';
 
 // How each band-calendar status looks, shared by the day cell and the legend so a swatch can't drift from its day.

@@ -65,7 +65,7 @@
 	import SelectButton from 'primevue/selectbutton';
 	import Textarea from 'primevue/textarea';
 	import type { Practice, PracticeInput, PracticeStatus } from '@models/practice';
-	import { BandApiError } from '@utils/band-api';
+	import { BandApiError } from '@models/band-api-error';
 	import { formatCalendarDate } from '@utils/dates';
 	import { parsePracticeInput } from '@utils/practice-input';
 	import { PRACTICE_HOME } from '@utils/practices';

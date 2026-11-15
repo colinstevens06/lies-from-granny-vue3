@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { makeAvailability, makeForm } from '../test-utils/factories';
 import { useBandStore } from './band';
 
-// The store talks to the server through band-api's fetch, so the tests stub fetch. (Mocking the band-api module
+// The store talks to the server through the band service's fetch, so the tests stub fetch. (Mocking the band service module
 // instead doesn't work: the store imports it dynamically, and vitest 0.34 hands concurrent dynamic imports the real
 // module.) Real timers throughout, for the same reason.
 type Handler = (

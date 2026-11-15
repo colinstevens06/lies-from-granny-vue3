@@ -52,7 +52,7 @@
 	import BandLink from '@components/da-band/band-link.vue';
 	import ShowNightsSheet from '@components/da-band/forms/show-nights-sheet.vue';
 	import { showNightSummary } from '@utils/band-calendar';
-	import { BandApiError } from '@utils/band-api';
+	import { BandApiError } from '@models/band-api-error';
 	import { daysBetween, formatCalendarDate } from '@utils/dates';
 	import { clientFormFor } from '@/forms';
 	import { useFormProgress } from '@/composables/use-form-progress';

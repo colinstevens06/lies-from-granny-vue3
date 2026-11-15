@@ -63,3 +63,4 @@ Use this skill whenever a change adds, updates, reviews, or renders an image.
 - Does the `alt` text explain meaningful visual content without repeating nearby text?
 - Is only the above-the-fold primary image high priority?
 - If the home hero's CDN URL, width, or format changed, was the matching preload in [index.html](../../../index.html) updated too?
+

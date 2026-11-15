@@ -1,21 +1,11 @@
 import { computed, ref } from 'vue';
+import type { SaveLaneOptions } from '@models/save-lane';
 
 // One write lane: a keyed queue with one request in flight, debounced flushes and retries. Written once and used for
 // the availability lane and the form-answers lane, so both follow the same rules.
 
 const RETRY_MS = [2000, 4000, 8000];
 const RETRY_FOREVER_MS = 30000;
-
-export interface SaveLaneOptions<V, R> {
-	/** Quiet time after the last change before a flush. */
-	delayMs: number;
-	/** Sends one batch. Throw a `BandApiError` (or anything with a `status`) on failure. */
-	send(entries: [key: string, value: V][]): Promise<R>;
-	/** The batch saved. */
-	onSaved(entries: [string, V][], result: R): void;
-	/** The server refused the batch (a 4xx other than 401), so it was dropped. */
-	onRejected(entries: [string, V][]): void;
-}
 
 export const useSaveLane = <V, R>({ delayMs, send, onSaved, onRejected }: SaveLaneOptions<V, R>) => {
 	let queue = new Map<string, V>();
@@ -58,7 +48,7 @@ export const useSaveLane = <V, R>({ delayMs, send, onSaved, onRejected }: SaveLa
 			failing.value = false;
 			saved = { result };
 		} catch (error) {
-			// A BandApiError, matched by shape so this file doesn't pull band-api into the main bundle. Status 0 is no response.
+			// A BandApiError, matched by shape so this file doesn't pull the band service into the main bundle. Status 0 is no response.
 			const status = (error as { status?: number }).status ?? 0;
 
 			if (status === 0 || status >= 500) {

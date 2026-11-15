@@ -125,7 +125,7 @@ Fix: wrap the sections in `v-else` after the loading/error line.
 - Overwrite toggle: only today-onward in-range days are reachable (`availability-section.vue:64-73`), and only days whose answer differs are sent (`:85`). Off by default each time the sheet opens. Matches the plan. (Aside from #3 and #10.)
 - Sign-off rule: `useFormProgress` calls the shared `ruleFor().mineOf` then `.missing` with `availabilityMissing`; the song question does not gate `done`.
 - Dates: Eastern strings throughout, UTC-noon helpers for formatting, string compares for past/future. No DST problem found in `addDays`, `daysBetween`, `weeksInRange` or `monthsFrom`. `toIsoDate` (local) is only used by `showIsoDate`, where the parse and the format are both local.
-- Save lane: keyed queue, one in flight, retry keeps newer queued values, 401 handled by `band-api`. `pendingFormAnswer` is used as an overlay (not a copy) in `screen.vue`, so it can't go stale.
+- Save lane: keyed queue, one in flight, retry keeps newer queued values, 401 handled by `band-service-base`. `pendingFormAnswer` is used as an overlay (not a copy) in `screen.vue`, so it can't go stale.
 - Router: lazy routes, `requiresMember` meta, `redirect` is only honored when it starts with `/da-band` in `auth.ts`.
 - PrimeFlex class names in the changed `.vue` files (grep): no Tailwind-only names found. `w-2rem`, `w-4rem`, `white-space-nowrap`, `column-gap-3`, `row-gap-1`, `text-black-alpha-*`, `border-round-3xl`, `line-height-2` exist in PrimeFlex 3. Absolute/fixed positioning: none (sticky bars are in flow).
 - Hand-rolled controls: only `answer-cell.vue` and `calendar-day.vue`, both with a lint-disable reason comment.

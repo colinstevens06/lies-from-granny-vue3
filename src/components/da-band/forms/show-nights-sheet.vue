@@ -38,7 +38,7 @@
 <script setup lang="ts">
 	import Button from 'primevue/button';
 	import Sidebar from 'primevue/sidebar';
-	import type { ShowNightSummary } from '@utils/band-calendar';
+	import type { ShowNightSummary } from '@models/band-calendar';
 	import { formatCalendarDate } from '@utils/dates';
 
 	// The last look before sign-off: a show answer silently follows the day's answer, so every cell missed as "Yes, no

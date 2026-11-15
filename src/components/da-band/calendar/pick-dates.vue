@@ -59,7 +59,7 @@
 	import type { Form } from '@models/form';
 	import { shows } from '@components/shows/shows';
 	import { pickGroups } from '@utils/band-calendar';
-	import { BandApiError } from '@utils/band-api';
+	import { BandApiError } from '@models/band-api-error';
 	import { formatCalendarDate } from '@utils/dates';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandStore } from '@/stores/band';

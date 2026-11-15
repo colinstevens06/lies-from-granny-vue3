@@ -45,7 +45,7 @@ List them in the gitignored `band-data/import.ts` as `practices: PracticeImport[
 
 ## Client state (P4a)
 
-- `src/stores/band.ts` is the only client holder of server data; `src/utils/band-api.ts` is the only `fetch` for `/api/band/*`. The store imports `band-api` inside actions because `nav.vue` imports the store.
+- `src/stores/band.ts` is the only client holder of server data; `src/services/band-service.ts` (one method per endpoint, over `band-service-base.ts`, the only `fetch` for `/api/band/*`) is imported only by the store, inside its actions, because `nav.vue` imports the store. `BandApiError` lives in `src/models/band-api-error.ts`.
 - Every `/da-band*` view calls `band.load()` on mount. Practices come from the store; `src/components/da-band/practices.ts` is gone. To add practices, use the admin editor (P8) or the seed.
 - Answers save through two lanes built on `src/composables/use-save-lane.ts` (availability keyed by date, form answers keyed by form). Both follow the same rules: one request in flight, retries at 2/4/8 s then every 30 s on a network error or 5xx, a dropped batch plus a reload on any other 4xx.
 
@@ -78,7 +78,7 @@ Worked example: `early-2027-planning` (migration `0003`, `src/forms/early-2027-p
 
 Google sign-in can't work under `yarn netlify`: Identity isn't proxied locally (`/.netlify/identity/*` falls through to the Vue app), and Identity's OAuth state returns to production anyway. Real sign-in is checked on production at release, before Anna is invited.
 
-Instead, the login page shows **Sign in as {member}** buttons in dev (Colin is marked admin). The choice lives in `sessionStorage`, `band-api` sends it as an `x-dev-member` header, and **Sign out** clears it. Everything else works as in production: `/api/band/me` returns the member, and pages and API calls follow the real role rules.
+Instead, the login page shows **Sign in as {member}** buttons in dev (Colin is marked admin). The choice lives in `sessionStorage`, the band service sends it as an `x-dev-member` header, and **Sign out** clears it. Everything else works as in production: `/api/band/me` returns the member, and pages and API calls follow the real role rules.
 
 - **Server gate:** `devMemberFrom` in `netlify/lib/current-member.ts`, the single auth seam. It accepts the header only when `NETLIFY_DEV=true`, `NETLIFY_LOCAL=true` and `CONTEXT=dev` (what `netlify dev` sets, and a deployed function has none of them), the request's host is localhost or 127.0.0.1, and the header names a known member. Anything else runs the real Identity path. It also requires `DEPLOY_ID` and `NETLIFY` to be unset (`netlify dev` sets neither; every deployed function has `DEPLOY_ID`). **Never set `NETLIFY_DEV`, `NETLIFY_LOCAL`, `CONTEXT`, `DEPLOY_ID` or `NETLIFY` as environment variables in the Netlify UI**: they gate a sign-in bypass. The bypass code still ships in the function bundle behind these checks.
 - **Client gate:** the switcher and `src/utils/dev-auth.ts` sit behind `import.meta.env.DEV`, so a production build has none of it. After changing this code, run `yarn build-only` and confirm `grep -r "x-dev-member" dist` finds nothing.

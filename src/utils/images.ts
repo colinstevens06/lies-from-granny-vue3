@@ -1,4 +1,4 @@
-export type NetlifyImageFormat = 'webp' | 'avif' | 'jpg' | 'png';
+import type { NetlifyImageFormat } from '@models/image';
 
 /**
  * Builds a Netlify Image CDN URL for a source image under `public/images/`.

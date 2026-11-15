@@ -25,7 +25,8 @@
 <script setup lang="ts">
 	import { computed } from 'vue';
 	import type { MemberAvailability } from '@models/availability';
-	import { dayAnswers, type DayStatus } from '@utils/band-calendar';
+	import type { DayStatus } from '@models/band-calendar';
+	import { dayAnswers } from '@utils/band-calendar';
 	import { STATUS_CLASS, STATUS_LABEL } from './day-status';
 	import { formatCalendarDate } from '@utils/dates';
 

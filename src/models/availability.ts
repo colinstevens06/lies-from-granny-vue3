@@ -54,3 +54,26 @@ export interface AvailabilityImport {
 	 */
 	nightBeforeNoSunday?: MemberId[];
 }
+
+export interface AvailabilityBody {
+	changes: AvailabilityChange[];
+	/** Only the admin writing someone else's row may set this. */
+	source?: Exclude<AvailabilitySource, 'self'>;
+}
+
+export interface ExpandedAnswer {
+	member: MemberId;
+	date: string;
+	answer: Answer;
+	showAnswer?: 'no';
+}
+
+export interface AvailabilityRange {
+	startDay: string;
+	endDay: string;
+}
+
+export interface AvailabilityMissing {
+	missingDays: number;
+	firstMissing?: string;
+}

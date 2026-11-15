@@ -12,7 +12,7 @@ export const setDevMember = (member: MemberId) => sessionStorage.setItem(KEY, me
 
 export const clearDevMember = () => sessionStorage.removeItem(KEY);
 
-/** Headers that make `band-api` calls act as the chosen member, or none. */
+/** Headers that make band service calls act as the chosen member, or none. */
 export const devHeaders = (): Record<string, string> => {
 	const member = getDevMember();
 	return member ? { [HEADER]: member } : {};

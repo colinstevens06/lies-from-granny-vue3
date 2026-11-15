@@ -1,13 +1,17 @@
 import type {
 	Answer,
+	AvailabilityBody,
 	AvailabilityChange,
 	AvailabilityImport,
-	AvailabilitySource,
+	AvailabilityMissing,
+	AvailabilityRange,
+	ExpandedAnswer,
 	Weekday
 } from '../models/availability';
 import type { MemberId } from '../models/band-member';
 import { addDays, isIsoDate, isShowNight, weekdayIndex } from './dates';
-import { isRecord, parsed, rejected, type Parsed } from './parsed';
+import type { Parsed } from '../models/parsed';
+import { isRecord, parsed, rejected } from './parsed';
 
 // Shared by the Netlify functions and the client: relative imports only, no I/O.
 
@@ -15,12 +19,6 @@ const ANSWERS: Answer[] = ['yes', 'no', 'maybe'];
 const WEEKDAYS: Weekday[] = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 /** A form's range is under 400 days, so one request never needs more. */
 const MAX_CHANGES = 400;
-
-export interface AvailabilityBody {
-	changes: AvailabilityChange[];
-	/** Only the admin writing someone else's row may set this. */
-	source?: Exclude<AvailabilitySource, 'self'>;
-}
 
 interface ParseOptions {
 	/** Eastern 'YYYY-MM-DD'. */
@@ -77,13 +75,6 @@ export const parseAvailabilityChanges = (
 	return parsed({ changes, source: body.source });
 };
 
-export interface ExpandedAnswer {
-	member: MemberId;
-	date: string;
-	answer: Answer;
-	showAnswer?: 'no';
-}
-
 /**
  * Turns one import entry into unique (member, date) answers. An explicit yes beats a window no. For members in
  * `nightBeforeNoSunday`, a yes Saturday followed by a no Sunday also gets `showAnswer: 'no'`.
@@ -115,16 +106,6 @@ export const expandImport = ({ window, members, nightBeforeNoSunday = [] }: Avai
 
 	return answers;
 };
-
-export interface AvailabilityRange {
-	startDay: string;
-	endDay: string;
-}
-
-export interface AvailabilityMissing {
-	missingDays: number;
-	firstMissing?: string;
-}
 
 /** The unanswered days in [max(startDay, today), endDay]. Every form with availability uses this in its sign-off rule. */
 export const availabilityMissing = (
