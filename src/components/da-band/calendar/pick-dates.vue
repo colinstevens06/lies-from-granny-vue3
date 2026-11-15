@@ -60,7 +60,7 @@
 	import { shows } from '@components/shows/shows';
 	import { pickGroups } from '@utils/band-calendar';
 	import { BandApiError } from '@models/band-api-error';
-	import { formatCalendarDate } from '@utils/dates';
+	import { formatShortDay } from '@utils/dates';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandStore } from '@/stores/band';
 
@@ -89,7 +89,7 @@
 		needed.value === undefined ? `${chosen.value.length} picked` : `${chosen.value.length} of ${needed.value} picked`
 	);
 
-	const dayLabel = (day: string) => formatCalendarDate(day, { weekday: 'short', month: 'short', day: 'numeric' });
+	const dayLabel = formatShortDay;
 
 	const everyoneYesDays = computed(() => groups.value.everyoneYes);
 	const oneShortDays = computed(() => groups.value.oneShort.map(entry => entry.day));

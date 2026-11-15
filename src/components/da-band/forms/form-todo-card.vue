@@ -36,7 +36,7 @@
 <script setup lang="ts">
 	import { computed } from 'vue';
 	import type { Form } from '@models/form';
-	import { daysBetween, formatCalendarDate } from '@utils/dates';
+	import { daysBetween, formatShortDay } from '@utils/dates';
 	import { useFormProgress } from '@/composables/use-form-progress';
 
 	const props = defineProps<{ form: Form }>();
@@ -48,6 +48,6 @@
 	const dueText = computed(() =>
 		overdue.value
 			? `Overdue by ${overdueDays.value} ${overdueDays.value === 1 ? 'day' : 'days'}. Shame.`
-			: `Due ${formatCalendarDate(props.form.dueDay, { weekday: 'short', month: 'short', day: 'numeric' })}`
+			: `Due ${formatShortDay(props.form.dueDay)}`
 	);
 </script>

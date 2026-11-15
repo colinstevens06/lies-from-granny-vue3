@@ -2,7 +2,7 @@ import type { Config } from '@netlify/functions';
 import { members } from '../../src/components/da-band/members';
 import type { MemberId } from '../../src/models/band-member';
 import { parseAvailabilityChanges } from '../../src/utils/availability';
-import { easternNow } from '../../src/utils/dates';
+import { todayEastern } from '../../src/utils/dates';
 import { listAvailability, writeAvailability } from '../lib/band-db';
 import { authenticate, checkWrite, fail, json, methodNotAllowed, readBody } from '../lib/http';
 
@@ -29,7 +29,7 @@ export default async (req: Request) => {
 	if (target !== current.member && !isAdmin) return fail(403, 'not-yours');
 
 	const parsed = parseAvailabilityChanges(await readBody(req), {
-		today: easternNow().slice(0, 10),
+		today: todayEastern(),
 		memberLimits: !isAdmin
 	});
 	if (!parsed.ok) return fail(400, parsed.error);

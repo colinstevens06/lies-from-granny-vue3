@@ -53,7 +53,7 @@
 	import ShowNightsSheet from '@components/da-band/forms/show-nights-sheet.vue';
 	import { showNightSummary } from '@utils/band-calendar';
 	import { BandApiError } from '@models/band-api-error';
-	import { daysBetween, formatCalendarDate } from '@utils/dates';
+	import { daysBetween, formatShortDay } from '@utils/dates';
 	import { clientFormFor } from '@/forms';
 	import { useFormProgress } from '@/composables/use-form-progress';
 	import { useBandStore } from '@/stores/band';
@@ -76,7 +76,7 @@
 			? ''
 			: overdueDays.value > 0
 			? `Overdue by ${overdueDays.value} ${overdueDays.value === 1 ? 'day' : 'days'}. Shame.`
-			: `Due ${formatCalendarDate(form.value.dueDay, { weekday: 'short', month: 'short', day: 'numeric' })}`
+			: `Due ${formatShortDay(form.value.dueDay)}`
 	);
 
 	const message = ref('');

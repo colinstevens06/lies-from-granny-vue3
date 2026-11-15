@@ -25,7 +25,7 @@
 <script setup lang="ts">
 	import { computed } from 'vue';
 	import type { Answer, MyAnswer } from '@models/availability';
-	import { formatCalendarDate } from '@utils/dates';
+	import { formatShortDay } from '@utils/dates';
 	import { ANSWER_LABEL, nextDayChange } from '@utils/band-calendar';
 
 	// One day, one answer, tap to cycle (blank → Yes → No → Not sure → Yes; a Friday or Saturday adds "Yes, no show"
@@ -43,7 +43,7 @@
 
 	const emit = defineEmits<{ change: [change: MyAnswer] }>();
 
-	const label = computed(() => formatCalendarDate(props.date, { weekday: 'short', month: 'short', day: 'numeric' }));
+	const label = computed(() => formatShortDay(props.date));
 	const noShow = computed(() => props.answer === 'yes' && props.showAnswer !== undefined);
 	const state = computed(() => `${ANSWER_LABEL[props.answer ?? 'none']}${noShow.value ? ', no show' : ''}`);
 </script>

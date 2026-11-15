@@ -84,7 +84,7 @@
 	import Menu from 'primevue/menu';
 	import { netlifyImage } from '@utils/images';
 	import { computed, ref } from 'vue';
-	import { members } from '@components/da-band/members';
+	import { memberName } from '@components/da-band/members';
 	import { useBandStore } from '@/stores/band';
 
 	const menu = ref();
@@ -126,7 +126,7 @@
 	// Every /da-band route gets a slim bar (logo, then the band items) instead of the public site nav.
 	const isBand = computed(() => route.path.startsWith('/da-band'));
 
-	const signedInName = computed(() => members.find(m => m.id === band.me?.member)?.name);
+	const signedInName = computed(() => (band.me ? memberName(band.me.member) : undefined));
 
 	const signOutAndLeave = async () => {
 		await band.signOut();

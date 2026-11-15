@@ -39,7 +39,7 @@
 	import Button from 'primevue/button';
 	import Sidebar from 'primevue/sidebar';
 	import type { ShowNightSummary } from '@models/band-calendar';
-	import { formatCalendarDate } from '@utils/dates';
+	import { formatShortDay } from '@utils/dates';
 
 	// The last look before sign-off: a show answer silently follows the day's answer, so every cell missed as "Yes, no
 	// show" would read as "she can play". Go back leaves the member unsigned on the grid.
@@ -47,5 +47,5 @@
 
 	const emit = defineEmits<{ 'update:visible': [visible: boolean]; confirm: [] }>();
 
-	const dayLabel = (day: string) => formatCalendarDate(day, { weekday: 'short', month: 'short', day: 'numeric' });
+	const dayLabel = formatShortDay;
 </script>

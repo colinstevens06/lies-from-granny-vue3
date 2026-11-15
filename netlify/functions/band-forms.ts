@@ -1,5 +1,5 @@
 import type { Config } from '@netlify/functions';
-import { easternNow } from '../../src/utils/dates';
+import { todayEastern } from '../../src/utils/dates';
 import { closeForm, listForms, lockIn, saveFormAnswer, signOff } from '../lib/band-db';
 import {
 	authenticate,
@@ -46,7 +46,7 @@ export default async (req: Request) => {
 
 	const body = await readBody(req);
 	if (typeof body !== 'object' || body === null || Array.isArray(body)) return fail(400, 'bad-body');
-	const today = easternNow().slice(0, 10);
+	const today = todayEastern();
 
 	switch (action as Action) {
 		case 'answers':

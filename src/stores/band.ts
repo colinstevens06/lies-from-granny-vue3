@@ -190,7 +190,6 @@ export const useBandStore = defineStore('band', () => {
 	const myTodos = computed(() =>
 		openForms.value.filter(form => !form.members.find(m => m.member === me.value?.member)?.signedOffAt)
 	);
-	const everyoneIn = (form: Form) => form.members.every(m => m.signedOffAt);
 
 	/** Signs me off a form. Throws a `BandApiError`: 409 `incomplete` (with what's missing) or `closed`. */
 	const signOffForm = async (formId: number) => {
@@ -267,7 +266,6 @@ export const useBandStore = defineStore('band', () => {
 		openForms,
 		availabilityForm,
 		myTodos,
-		everyoneIn,
 		load,
 		loadMe,
 		signOut,

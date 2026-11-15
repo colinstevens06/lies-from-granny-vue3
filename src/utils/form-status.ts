@@ -1,7 +1,7 @@
 import type { Form } from '@models/form';
 import type { MemberAvailability } from '@models/availability';
 import type { MemberId } from '@models/band-member';
-import { daysBetween, EASTERN, formatCalendarDate } from '@utils/dates';
+import { daysBetween, EASTERN, formatMonthDay, formatMonthDayRange } from '@utils/dates';
 
 export const signedOffCount = (form: Form) => form.members.filter(m => m.signedOffAt).length;
 
@@ -16,16 +16,11 @@ export const formStateLabel = (form: Form) => {
 };
 
 /** 'Nov 29' */
-export const formatDueDay = (form: Form) => formatCalendarDate(form.dueDay, { month: 'short', day: 'numeric' });
+export const formatDueDay = (form: Form) => formatMonthDay(form.dueDay);
 
 /** A short line about what a form asks for, from its availability alone (the registry adds its own parts). */
 export const availabilitySummary = (form: Form) =>
-	form.availability
-		? `Dates ${formatCalendarDate(form.availability.startDay, {
-				month: 'short',
-				day: 'numeric'
-		  })} – ${formatCalendarDate(form.availability.endDay, { month: 'short', day: 'numeric' })}`
-		: undefined;
+	form.availability ? `Dates ${formatMonthDayRange(form.availability.startDay, form.availability.endDay)}` : undefined;
 
 /** Members who haven't signed off yet, in roster order. */
 export const waitingOn = (form: Form): MemberId[] => form.members.filter(m => !m.signedOffAt).map(m => m.member);

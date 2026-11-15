@@ -67,3 +67,30 @@ export const isIsoDate = (value: unknown): value is string => {
 	const day = calendarDay(value);
 	return !Number.isNaN(day.getTime()) && day.toISOString().slice(0, 10) === value;
 };
+
+/** Today as an Eastern 'YYYY-MM-DD'. */
+export const todayEastern = (now = new Date()): string => easternNow(now).slice(0, 10);
+
+/** The last day a member may answer: December 31 of the year after `today`'s. Servers and calendars share this. */
+export const lastDayOfNextYear = (today: string) => `${Number(today.slice(0, 4)) + 1}-12-31`;
+
+/** Every 'YYYY-MM-DD' day from `first` through `last`, inclusive. */
+export const daysInRange = (first: string, last: string) => {
+	const days: string[] = [];
+	for (let day = first; day <= last; day = addDays(day, 1)) days.push(day);
+	return days;
+};
+
+/** The days of [startDay, endDay] that are `today` or later. */
+export const daysFrom = (startDay: string, endDay: string, today: string) =>
+	daysInRange(startDay > today ? startDay : today, endDay);
+
+/** 'Mon, Nov 16' */
+export const formatShortDay = (day: string) =>
+	formatCalendarDate(day, { weekday: 'short', month: 'short', day: 'numeric' });
+
+/** 'Nov 16' */
+export const formatMonthDay = (day: string) => formatCalendarDate(day, { month: 'short', day: 'numeric' });
+
+/** 'Nov 16 – Dec 6' */
+export const formatMonthDayRange = (start: string, end: string) => `${formatMonthDay(start)} – ${formatMonthDay(end)}`;

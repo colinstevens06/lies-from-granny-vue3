@@ -31,7 +31,7 @@
 <script setup lang="ts">
 	import { computed } from 'vue';
 	import type { DayAnswer, MyAnswer } from '@models/availability';
-	import { formatCalendarDate } from '@utils/dates';
+	import { formatMonthDay } from '@utils/dates';
 	import { weeksInRange } from '@utils/band-calendar';
 	import LegendKeys, { type LegendItem } from '@components/da-band/legend-keys.vue';
 	import AnswerCell from './answer-cell.vue';
@@ -69,6 +69,6 @@
 
 	const weekLabel = (week: (string | undefined)[]) => {
 		const first = week.find(Boolean);
-		return first ? formatCalendarDate(first, { month: 'short', day: 'numeric' }) : '';
+		return first ? formatMonthDay(first) : '';
 	};
 </script>

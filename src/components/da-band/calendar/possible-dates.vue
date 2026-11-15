@@ -3,7 +3,7 @@
 		<p class="m-0 font-bold">{{ header }}</p>
 		<ul v-if="days.length" class="flex flex-wrap gap-2 m-0 p-0 list-none">
 			<li v-for="day in days" :key="day" class="py-1 px-2 border-round-3xl bg-white">
-				{{ formatCalendarDate(day, { weekday: 'short', month: 'short', day: 'numeric' }) }}
+				{{ formatShortDay(day) }}
 			</li>
 		</ul>
 		<p v-else class="text-black-alpha-70">No dates work for everyone yet.</p>
@@ -17,7 +17,7 @@
 					:key="day"
 					class="py-1 px-2 border-1 border-round-3xl border-lfg-pink bg-lfg-pink-tint"
 				>
-					{{ formatCalendarDate(day, { weekday: 'short', month: 'short', day: 'numeric' }) }}
+					{{ formatShortDay(day) }}
 				</li>
 			</ul>
 			<CopyButton label="Copy show nights" :text="possibleListText(nights, 'Show nights that work for everyone:')" />
@@ -31,7 +31,7 @@
 	import CopyButton from '@components/da-band/copy-button.vue';
 	import { shows } from '@components/shows/shows';
 	import { possibleDates, possibleListText, practicesStillNeeded, showNights, targetOf } from '@utils/band-calendar';
-	import { formatCalendarDate } from '@utils/dates';
+	import { formatShortDay } from '@utils/dates';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandStore } from '@/stores/band';
 

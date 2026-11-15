@@ -28,7 +28,7 @@
 	import type { DayStatus } from '@models/band-calendar';
 	import { dayAnswers } from '@utils/band-calendar';
 	import { STATUS_CLASS, STATUS_LABEL } from './day-status';
-	import { formatCalendarDate } from '@utils/dates';
+	import { formatShortDay } from '@utils/dates';
 
 	const props = defineProps<{
 		date: string;
@@ -42,5 +42,5 @@
 	// Five dots, one per member in roster order: green Yes, pink No, orange Not sure, hollow Pending, and a green dot
 	// ringed in pink for a Yes who can't play the show.
 	const answers = computed(() => dayAnswers(props.date, props.availability));
-	const label = computed(() => formatCalendarDate(props.date, { weekday: 'short', month: 'short', day: 'numeric' }));
+	const label = computed(() => formatShortDay(props.date));
 </script>

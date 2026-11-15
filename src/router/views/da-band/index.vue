@@ -13,10 +13,7 @@
 						<FormTodoCard v-for="form in band.myTodos" :key="form.id" :form="form" />
 					</BandSection>
 
-					<p
-						v-if="band.availabilityForm && band.everyoneIn(band.availabilityForm)"
-						class="band-card band-card--featured"
-					>
+					<p v-if="band.availabilityForm && isEveryoneIn(band.availabilityForm)" class="band-card band-card--featured">
 						<strong>Everyone's in.</strong>
 						{{ possibleCount }} {{ possibleCount === 1 ? 'date works' : 'dates work' }}. Practice dates are being
 						picked. They'll show up here.
@@ -78,6 +75,7 @@
 	import PracticeCard from '@components/da-band/practices/practice-card.vue';
 	import { shows } from '@components/shows/shows';
 	import { useEasternNow } from '@/composables/use-eastern-now';
+	import { isEveryoneIn } from '@utils/form-status';
 	import { upcomingPractices } from '@utils/practices';
 	import { possibleDates } from '@utils/band-calendar';
 	import { nextShowFrom } from '@utils/shows';

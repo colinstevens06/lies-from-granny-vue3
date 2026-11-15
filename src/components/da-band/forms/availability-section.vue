@@ -36,7 +36,7 @@
 	import Button from 'primevue/button';
 	import type { Answer, DayAnswer, MyAnswer } from '@models/availability';
 	import type { Form } from '@models/form';
-	import { addDays, weekdayIndex } from '@utils/dates';
+	import { daysFrom, weekdayIndex } from '@utils/dates';
 	import { prefilledCount } from '@utils/band-calendar';
 	import WeekGrid from './week-grid.vue';
 	import WeekdayFillSheet from './weekday-fill-sheet.vue';
@@ -67,7 +67,7 @@
 		if (!props.form.availability) return byWeekday;
 
 		const { startDay, endDay } = props.form.availability;
-		for (let day = startDay < props.today ? props.today : startDay; day <= endDay; day = addDays(day, 1)) {
+		for (const day of daysFrom(startDay, endDay, props.today)) {
 			byWeekday[weekdayIndex(day)].push(day);
 		}
 		return byWeekday;

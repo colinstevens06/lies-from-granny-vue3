@@ -9,7 +9,7 @@ import type {
 	Weekday
 } from '../models/availability';
 import type { MemberId } from '../models/band-member';
-import { addDays, isIsoDate, isShowNight, weekdayIndex } from './dates';
+import { addDays, daysFrom, daysInRange, isIsoDate, isShowNight, lastDayOfNextYear, weekdayIndex } from './dates';
 import type { Parsed } from '../models/parsed';
 import { isRecord, parsed, rejected } from './parsed';
 
@@ -18,7 +18,7 @@ import { isRecord, parsed, rejected } from './parsed';
 const ANSWERS: Answer[] = ['yes', 'no', 'maybe'];
 const WEEKDAYS: Weekday[] = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 /** A form's range is under 400 days, so one request never needs more. */
-const MAX_CHANGES = 400;
+export const MAX_DAYS_PER_REQUEST = 400;
 
 interface ParseOptions {
 	/** Eastern 'YYYY-MM-DD'. */
@@ -40,9 +40,9 @@ export const parseAvailabilityChanges = (
 	{ today, memberLimits }: ParseOptions
 ): Parsed<AvailabilityBody> => {
 	if (!isRecord(body) || !Array.isArray(body.changes)) return rejected('bad-body');
-	if (body.changes.length === 0 || body.changes.length > MAX_CHANGES) return rejected('bad-changes');
+	if (body.changes.length === 0 || body.changes.length > MAX_DAYS_PER_REQUEST) return rejected('bad-changes');
 
-	const lastDay = `${Number(today.slice(0, 4)) + 1}-12-31`;
+	const lastDay = lastDayOfNextYear(today);
 	const seen = new Set<string>();
 	const changes: AvailabilityChange[] = [];
 
@@ -87,7 +87,7 @@ export const expandImport = ({ window, members, nightBeforeNoSunday = [] }: Avai
 		const byDate = new Map<string, Answer>();
 
 		if (window) {
-			for (let day = window.start; day <= window.end; day = addDays(day, 1)) {
+			for (const day of daysInRange(window.start, window.end)) {
 				if (!busy || busy.includes(weekdayIndex(day))) byDate.set(day, 'no');
 			}
 		}
@@ -116,7 +116,7 @@ export const availabilityMissing = (
 	let missingDays = 0;
 	let firstMissing: string | undefined;
 
-	for (let day = startDay < today ? today : startDay; day <= endDay; day = addDays(day, 1)) {
+	for (const day of daysFrom(startDay, endDay, today)) {
 		if (myDays[day] !== undefined) continue;
 		missingDays++;
 		firstMissing ??= day;

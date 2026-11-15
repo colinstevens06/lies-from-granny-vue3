@@ -1,4 +1,5 @@
 import type { Form } from '../models/form';
+import { MAX_DAYS_PER_REQUEST } from './availability';
 import { isIsoDate } from './dates';
 import type { Parsed } from '../models/parsed';
 import { isRecord, parsed, rejected } from './parsed';
@@ -6,7 +7,12 @@ import { isRecord, parsed, rejected } from './parsed';
 /** One or more distinct days, each inside the form's availability range and on or after today. */
 export const parseLockIn = (body: unknown, form: Form, today: string): Parsed<{ days: string[] }> => {
 	if (!form.availability) return rejected('no-availability');
-	if (!isRecord(body) || !Array.isArray(body.days) || body.days.length === 0 || body.days.length > 400) {
+	if (
+		!isRecord(body) ||
+		!Array.isArray(body.days) ||
+		body.days.length === 0 ||
+		body.days.length > MAX_DAYS_PER_REQUEST
+	) {
 		return rejected('bad-days');
 	}
 

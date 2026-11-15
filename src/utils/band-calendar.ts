@@ -5,7 +5,17 @@ import type { Form } from '@models/form';
 import type { CalendarMonth, DayStatus, FormTarget, PickGroups, ShowNightSummary } from '@models/band-calendar';
 import type { Practice } from '@models/practice';
 import { members } from '@components/da-band/members';
-import { addDays, easternNow, formatCalendarDate, isShowNight, toIsoDate, weekdayIndex } from '@utils/dates';
+import {
+	addDays,
+	daysFrom,
+	daysInRange,
+	formatCalendarDate,
+	formatShortDay,
+	isShowNight,
+	lastDayOfNextYear,
+	todayEastern,
+	weekdayIndex
+} from '@utils/dates';
 import { showIsoDate } from '@utils/shows';
 
 // Pure helpers behind the availability UI (plan U3): no I/O, no Vue. Dates are Eastern 'YYYY-MM-DD' strings and
@@ -47,9 +57,6 @@ export const ANSWER_LABEL: Record<Answer | 'none', string> = {
 };
 
 // ---- Ranges ----------------------------------------------------------------------------------------------
-
-/** A Date's local calendar day as 'YYYY-MM-DD'. Same function as `toIsoDate`; the plan names it `toIsoDay`. */
-export const toIsoDay = toIsoDate;
 
 /** Calendar weeks (Sunday first) covering [startDay, endDay]. Cells outside the range are `undefined`. */
 export const weeksInRange = (startDay: string, endDay: string): (string | undefined)[][] => {
@@ -98,10 +105,6 @@ export const monthsFrom = (today: string): CalendarMonth[] => {
 
 	return months;
 };
-
-const lastDayOfNextYear = (today: string) => `${Number(today.slice(0, 4)) + 1}-12-31`;
-
-const todayEastern = () => easternNow().slice(0, 10);
 
 // ---- Status ----------------------------------------------------------------------------------------------
 
@@ -190,12 +193,6 @@ const candidateRange = (form: Form | undefined, shows: Gig[], today: string) => 
 	return { first: startDay > today ? startDay : today, last: endDay };
 };
 
-const daysBetweenInclusive = (first: string, last: string) => {
-	const days: string[] = [];
-	for (let day = first; day <= last; day = addDays(day, 1)) days.push(day);
-	return days;
-};
-
 const datesWithStatus = (
 	statuses: DayStatus[],
 	form: Form | undefined,
@@ -206,7 +203,7 @@ const datesWithStatus = (
 ) => {
 	const { first, last } = candidateRange(form, shows, today);
 
-	return daysBetweenInclusive(first, last).filter(day =>
+	return daysInRange(first, last).filter(day =>
 		statuses.includes(calendarDayStatus(day, availability, practices, shows))
 	);
 };
@@ -264,7 +261,7 @@ export const pickGroups = (
 	if (!form.availability) return groups;
 
 	const { startDay, endDay } = form.availability;
-	for (const day of daysBetweenInclusive(startDay > today ? startDay : today, endDay)) {
+	for (const day of daysFrom(startDay, endDay, today)) {
 		if (isBooked(day, practices, shows)) continue;
 
 		const notYes = dayAnswers(day, availability).filter(entry => entry.answer !== 'yes');
@@ -282,8 +279,7 @@ export const prefilledCount = (form: Form, myDays: Record<string, unknown>, toda
 	if (!form.availability) return 0;
 
 	const { startDay, endDay } = form.availability;
-	return daysBetweenInclusive(startDay > today ? startDay : today, endDay).filter(day => myDays[day] !== undefined)
-		.length;
+	return daysFrom(startDay, endDay, today).filter(day => myDays[day] !== undefined).length;
 };
 
 /** What the member's answers say about show nights, for the sheet that confirms them before sign-off. */
@@ -296,7 +292,7 @@ export const showNightSummary = (
 	if (!form.availability) return summary;
 
 	const { startDay, endDay } = form.availability;
-	for (const day of daysBetweenInclusive(startDay > today ? startDay : today, endDay).filter(isShowNight)) {
+	for (const day of daysFrom(startDay, endDay, today).filter(isShowNight)) {
 		summary.total++;
 
 		if (effectiveShowAnswer(myDays[day]) === 'yes') summary.playable.push(day);
@@ -311,19 +307,20 @@ export const showNightSummary = (
 const formLink = (form: Form) => `${SITE}/da-band/form/${form.id}`;
 
 /** 'Sun Nov 15' */
-const shortDay = (day: string) => formatCalendarDate(day, { weekday: 'short', month: 'short', day: 'numeric' });
 
 /** The text the admin pastes into the group thread when a form goes out. */
 export const inviteText = (form: Form): string =>
-	`${form.title} is open on the band site. Please fill it out by ${shortDay(form.dueDay)}: ${formLink(form)}`;
+	`${form.title} is open on the band site. Please fill it out by ${formatShortDay(form.dueDay)}: ${formLink(form)}`;
 
 /** A one-line reminder naming who hasn't signed off yet. */
 export const nudgeText = (form: Form, waiting: MemberId[]): string => {
 	const names = members.filter(member => waiting.includes(member.id)).map(member => member.name);
 
-	return `Still waiting on ${names.join(', ')} for ${form.title} (due ${shortDay(form.dueDay)}): ${formLink(form)}`;
+	return `Still waiting on ${names.join(', ')} for ${form.title} (due ${formatShortDay(form.dueDay)}): ${formLink(
+		form
+	)}`;
 };
 
 /** A plain list of dates for the group thread, soonest first, with an optional lead line. */
 export const possibleListText = (days: string[], header?: string): string =>
-	[header ?? 'Dates that work for everyone:', ...days.map(day => `• ${shortDay(day)}`)].join('\n');
+	[header ?? 'Dates that work for everyone:', ...days.map(day => `• ${formatShortDay(day)}`)].join('\n');

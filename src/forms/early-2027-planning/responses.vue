@@ -11,14 +11,14 @@
 <script setup lang="ts">
 	import { computed } from 'vue';
 	import type { Form } from '@models/form';
-	import { members } from '@components/da-band/members';
+	import { memberName } from '@components/da-band/members';
 
 	const props = defineProps<{ form: Form }>();
 
 	/** Every suggestion, in roster order, tagged with who made it. */
 	const suggestions = computed(() =>
 		props.form.details.songPitches.flatMap(pitch => {
-			const name = members.find(m => m.id === pitch.member)?.name ?? pitch.member;
+			const name = memberName(pitch.member);
 			return pitch.suggestion ? [{ suggestion: pitch.suggestion, name }] : [];
 		})
 	);
