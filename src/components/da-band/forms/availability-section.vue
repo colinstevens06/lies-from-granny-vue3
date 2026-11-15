@@ -37,7 +37,7 @@
 	import type { Answer, DayAnswer, MyAnswer } from '@models/availability';
 	import type { Form } from '@models/form';
 	import { daysFrom, weekdayIndex } from '@utils/dates';
-	import { prefilledCount } from '@utils/band-calendar';
+	import { prefilledCount } from '@utils/da-band/band-calendar';
 	import WeekGrid from './week-grid.vue';
 	import WeekdayFillSheet from './weekday-fill-sheet.vue';
 

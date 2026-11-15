@@ -50,7 +50,7 @@
 	import PracticeEditor from '@components/da-band/practices/practice-editor.vue';
 	import PracticeStatusBadge from '@components/da-band/practices/practice-status-badge.vue';
 	import type { Practice } from '@models/practice';
-	import { formatPracticeDay, formatPracticeTime, practiceLocation, upcomingPractices } from '@utils/practices';
+	import { formatPracticeDay, formatPracticeTime, practiceLocation, upcomingPractices } from '@utils/da-band/practices';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandStore } from '@/stores/band';
 

@@ -58,7 +58,7 @@
 	import SelectButton from 'primevue/selectbutton';
 	import type { Form } from '@models/form';
 	import { shows } from '@components/shows/shows';
-	import { pickGroups } from '@utils/band-calendar';
+	import { pickGroups } from '@utils/da-band/band-calendar';
 	import { BandApiError } from '@models/band-api-error';
 	import { formatShortDay } from '@utils/dates';
 	import { useEasternNow } from '@/composables/use-eastern-now';

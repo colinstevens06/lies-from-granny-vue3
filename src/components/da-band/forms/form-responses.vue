@@ -15,7 +15,7 @@
 <script setup lang="ts">
 	import type { Form } from '@models/form';
 	import { memberName } from '@components/da-band/members';
-	import { answeredCount, rangeDayCount } from '@utils/form-status';
+	import { answeredCount, rangeDayCount } from '@utils/da-band/form-status';
 	import { useBandStore } from '@/stores/band';
 
 	const props = defineProps<{ form: Form }>();

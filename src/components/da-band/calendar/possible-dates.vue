@@ -30,7 +30,13 @@
 	import type { Form } from '@models/form';
 	import CopyButton from '@components/da-band/copy-button.vue';
 	import { shows } from '@components/shows/shows';
-	import { possibleDates, possibleListText, practicesStillNeeded, showNights, targetOf } from '@utils/band-calendar';
+	import {
+		possibleDates,
+		possibleListText,
+		practicesStillNeeded,
+		showNights,
+		targetOf
+	} from '@utils/da-band/band-calendar';
 	import { formatShortDay } from '@utils/dates';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandStore } from '@/stores/band';

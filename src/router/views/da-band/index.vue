@@ -75,9 +75,9 @@
 	import PracticeCard from '@components/da-band/practices/practice-card.vue';
 	import { shows } from '@components/shows/shows';
 	import { useEasternNow } from '@/composables/use-eastern-now';
-	import { isEveryoneIn } from '@utils/form-status';
-	import { upcomingPractices } from '@utils/practices';
-	import { possibleDates } from '@utils/band-calendar';
+	import { isEveryoneIn } from '@utils/da-band/form-status';
+	import { upcomingPractices } from '@utils/da-band/practices';
+	import { possibleDates } from '@utils/da-band/band-calendar';
 	import { nextShowFrom } from '@utils/shows';
 	import { clientFormFor } from '@/forms';
 	import { useBandStore } from '@/stores/band';

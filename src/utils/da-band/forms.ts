@@ -1,8 +1,8 @@
-import type { Form } from '../models/form';
+import type { Form } from '../../models/form';
 import { MAX_DAYS_PER_REQUEST } from './availability';
-import { isIsoDate } from './dates';
-import type { Parsed } from '../models/parsed';
-import { isRecord, parsed, rejected } from './parsed';
+import { isIsoDate } from '../dates';
+import type { Parsed } from '../../models/parsed';
+import { isRecord, parsed, rejected } from '../parsed';
 
 /** One or more distinct days, each inside the form's availability range and on or after today. */
 export const parseLockIn = (body: unknown, form: Form, today: string): Parsed<{ days: string[] }> => {

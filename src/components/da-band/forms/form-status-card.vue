@@ -24,8 +24,8 @@
 	import CopyButton from '@components/da-band/copy-button.vue';
 	import FormState from '@components/da-band/forms/form-state.vue';
 	import { members } from '@components/da-band/members';
-	import { isEveryoneIn, waitingOn } from '@utils/form-status';
-	import { nudgeText } from '@utils/band-calendar';
+	import { isEveryoneIn, waitingOn } from '@utils/da-band/form-status';
+	import { nudgeText } from '@utils/da-band/band-calendar';
 
 	const props = defineProps<{ form: Form }>();
 

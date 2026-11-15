@@ -44,7 +44,7 @@
 	import SelectButton from 'primevue/selectbutton';
 	import Sidebar from 'primevue/sidebar';
 	import type { Answer } from '@models/availability';
-	import { ANSWER_LABEL } from '@utils/band-calendar';
+	import { ANSWER_LABEL } from '@utils/da-band/band-calendar';
 
 	const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 	const ANSWER_OPTIONS = (['yes', 'no', 'maybe'] as Answer[]).map(answer => ({

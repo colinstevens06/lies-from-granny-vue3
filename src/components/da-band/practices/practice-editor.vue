@@ -67,8 +67,8 @@
 	import type { Practice, PracticeInput, PracticeStatus } from '@models/practice';
 	import { BandApiError } from '@models/band-api-error';
 	import { formatCalendarDate } from '@utils/dates';
-	import { parsePracticeInput } from '@utils/practice-input';
-	import { PRACTICE_HOME } from '@utils/practices';
+	import { parsePracticeInput } from '@utils/da-band/practice-input';
+	import { PRACTICE_HOME } from '@utils/da-band/practices';
 	import { useBandStore } from '@/stores/band';
 
 	// The admin's editor for one practice (or a new one). It sends the whole record through `band.savePractice`.

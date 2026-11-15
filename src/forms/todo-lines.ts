@@ -1,6 +1,6 @@
 import type { Form } from '@models/form';
 import { daysFrom, formatMonthDayRange } from '@utils/dates';
-import { prefilledCount } from '@utils/band-calendar';
+import { prefilledCount } from '@utils/da-band/band-calendar';
 import type { TodoContext, TodoLine } from '@/forms/index';
 
 /** The to-do line for a form's availability part: "45 of 90 done", "Already on your calendar ✓" or "Done ✓". */

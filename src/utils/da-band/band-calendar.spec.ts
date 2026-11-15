@@ -7,7 +7,7 @@ import {
 	makeMyDays,
 	makePractice,
 	NO_SHOW
-} from '../test-utils/factories';
+} from '../../test-utils/factories';
 import {
 	calendarDayStatus,
 	effectiveShowAnswer,

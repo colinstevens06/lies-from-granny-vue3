@@ -26,7 +26,7 @@
 	import { computed } from 'vue';
 	import type { MemberAvailability } from '@models/availability';
 	import type { DayStatus } from '@models/band-calendar';
-	import { dayAnswers } from '@utils/band-calendar';
+	import { dayAnswers } from '@utils/da-band/band-calendar';
 	import { STATUS_CLASS, STATUS_LABEL } from './day-status';
 	import { formatShortDay } from '@utils/dates';
 

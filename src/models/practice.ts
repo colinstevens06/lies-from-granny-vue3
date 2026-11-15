@@ -8,7 +8,7 @@ export interface Practice {
 	/** Eastern wall-clock time, 24h 'HH:MM'. Omit both while the time is TBD. */
 	startTime?: string;
 	endTime?: string;
-	/** Omit for the usual spot (`PRACTICE_HOME` in `@utils/practices`); set it only when practice is somewhere else. */
+	/** Omit for the usual spot (`PRACTICE_HOME` in `@utils/da-band/practices`); set it only when practice is somewhere else. */
 	location?: string;
 	/** Songs to have ready. Use titles exactly as they appear in songs.ts. */
 	prepare?: string[];

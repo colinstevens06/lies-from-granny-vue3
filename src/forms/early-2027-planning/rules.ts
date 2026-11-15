@@ -1,7 +1,7 @@
 import type { MemberId } from '../../models/band-member';
 import type { Form } from '../../models/form';
 import type { AvailabilityMissing } from '../../models/availability';
-import { availabilityMissing } from '../../utils/availability';
+import { availabilityMissing } from '../../utils/da-band/availability';
 import type { Parsed } from '../../models/parsed';
 import { isRecord, parsed, rejected } from '../../utils/parsed';
 import type { SongPitch, SongPitchInput } from './model';

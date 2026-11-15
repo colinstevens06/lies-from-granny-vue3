@@ -13,7 +13,7 @@
 <script setup lang="ts">
 	import type { Form } from '@models/form';
 	import { memberName } from '@components/da-band/members';
-	import { signedOffCount } from '@utils/form-status';
+	import { signedOffCount } from '@utils/da-band/form-status';
 
 	defineProps<{ form: Form }>();
 </script>

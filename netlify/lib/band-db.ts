@@ -11,7 +11,7 @@ import type {
 import type { MemberId } from '../../src/models/band-member';
 import type { Form, FormAvailability } from '../../src/models/form';
 import type { Practice, PracticeImport, PracticeInput } from '../../src/models/practice';
-import { parseLockIn } from '../../src/utils/forms';
+import { parseLockIn } from '../../src/utils/da-band/forms';
 import { handlerFor } from '../forms';
 import { failure, isFailure, type Failure } from './failure';
 

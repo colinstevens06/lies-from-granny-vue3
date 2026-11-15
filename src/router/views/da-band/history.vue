@@ -39,7 +39,7 @@
 	import BandSection from '@components/da-band/band-section.vue';
 	import PracticeDetails from '@components/da-band/practices/practice-details.vue';
 	import PracticeStatusBadge from '@components/da-band/practices/practice-status-badge.vue';
-	import { formatPracticeDay, practiceHistory } from '@utils/practices';
+	import { formatPracticeDay, practiceHistory } from '@utils/da-band/practices';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandStore } from '@/stores/band';
 

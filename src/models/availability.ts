@@ -41,7 +41,7 @@ export type MyAnswer = Omit<AvailabilityChange, 'answer'> & { answer: Answer };
 
 export type Weekday = 'sun' | 'mon' | 'tue' | 'wed' | 'thu' | 'fri' | 'sat';
 
-/** One entry of `band-data/import.ts`, expanded by `expandImport` in `@utils/availability`. */
+/** One entry of `band-data/import.ts`, expanded by `expandImport` in `@utils/da-band/availability`. */
 export interface AvailabilityImport {
 	source: 'poll' | 'manual' | 'assumed';
 	/** In-window dates a listed member didn't list become 'no'; `busyWeekdays` narrows that to those weekdays. */

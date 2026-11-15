@@ -240,7 +240,7 @@ export const useBandStore = defineStore('band', () => {
 	const signOut = async () => {
 		// Local testing: the chosen member is the whole session, and Identity isn't running.
 		if (import.meta.env.DEV) {
-			const dev = await import('@utils/dev-auth');
+			const dev = await import('@utils/da-band/auth/dev-auth');
 			if (dev.getDevMember()) {
 				dev.clearDevMember();
 				me.value = undefined;
@@ -248,7 +248,7 @@ export const useBandStore = defineStore('band', () => {
 			}
 		}
 
-		const { signOut: leave } = await import('@utils/auth');
+		const { signOut: leave } = await import('@utils/da-band/auth/auth');
 		await leave();
 		me.value = undefined;
 	};

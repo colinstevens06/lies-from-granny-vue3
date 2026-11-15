@@ -56,7 +56,7 @@ Worked example: `early-2027-planning` (migration `0003`, `src/forms/early-2027-p
 1. Pick a slug (`^[a-z0-9-]{1,60}$`).
 2. Write a migration that inserts the form row (title, due date, and any availability columns) and its `form_members` rows, plus any new tables. Quote apostrophes in text as `''`. Never edit it once a deploy has applied it.
 3. Add `src/forms/<slug>/` with `model.ts` and `rules.ts` (`missing`). Add `screen.vue` and `responses.vue` there too (props: `form`), built from the shared pieces in `src/components/da-band/forms/` (`availability-section`, `yes-no-text`). Save answers through `band.setMyFormAnswer(form.id, body)` and, for availability, `band.setMyAnswers`.
-4. Add `netlify/forms/<slug>.ts` (`loadDetails`, and `saveAnswer` if members answer), plus `mineOf` and `missing` in `rules.ts`. A form with availability should call `availabilityMissing` from `src/utils/availability.ts` in its `missing`.
+4. Add `netlify/forms/<slug>.ts` (`loadDetails`, and `saveAnswer` if members answer), plus `mineOf` and `missing` in `rules.ts`. A form with availability should call `availabilityMissing` from `src/utils/da-band/availability.ts` in its `missing`.
 5. Wire all three registries: `src/forms/rules.ts`, `netlify/forms/index.ts`, and `src/forms/index.ts` (the client registry: `summary`, `asks`, lazy `screen` and `responses`, and `todoLines` for the to-do card and progress bar). They are typed `Record<FormSlug, …>`, so a missing one fails `yarn type-check`.
 6. Extend `FormDetails` in `src/models/form.ts` (`FormSlug` follows from it).
 7. Only one open form may have availability. Close the old one before a new availability form's migration runs.
@@ -81,7 +81,7 @@ Google sign-in can't work under `yarn netlify`: Identity isn't proxied locally (
 Instead, the login page shows **Sign in as {member}** buttons in dev (Colin is marked admin). The choice lives in `sessionStorage`, the band service sends it as an `x-dev-member` header, and **Sign out** clears it. Everything else works as in production: `/api/band/me` returns the member, and pages and API calls follow the real role rules.
 
 - **Server gate:** `devMemberFrom` in `netlify/lib/current-member.ts`, the single auth seam. It accepts the header only when `NETLIFY_DEV=true`, `NETLIFY_LOCAL=true` and `CONTEXT=dev` (what `netlify dev` sets, and a deployed function has none of them), the request's host is localhost or 127.0.0.1, and the header names a known member. Anything else runs the real Identity path. It also requires `DEPLOY_ID` and `NETLIFY` to be unset (`netlify dev` sets neither; every deployed function has `DEPLOY_ID`). **Never set `NETLIFY_DEV`, `NETLIFY_LOCAL`, `CONTEXT`, `DEPLOY_ID` or `NETLIFY` as environment variables in the Netlify UI**: they gate a sign-in bypass. The bypass code still ships in the function bundle behind these checks.
-- **Client gate:** the switcher and `src/utils/dev-auth.ts` sit behind `import.meta.env.DEV`, so a production build has none of it. After changing this code, run `yarn build-only` and confirm `grep -r "x-dev-member" dist` finds nothing.
+- **Client gate:** the switcher and `src/utils/da-band/auth/dev-auth.ts` sit behind `import.meta.env.DEV`, so a production build has none of it. After changing this code, run `yarn build-only` and confirm `grep -r "x-dev-member" dist` finds nothing.
 - Seed the local database first (`yarn seed:band --write` with `yarn netlify` running) to see Anna's prefill and the existing practice.
 
 ## Release order

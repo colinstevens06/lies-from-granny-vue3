@@ -8,7 +8,7 @@ import type { BandRequestOptions } from '@models/band-request';
 const localTestingHeaders = async (): Promise<Record<string, string>> => {
 	if (!import.meta.env.DEV) return {};
 
-	return (await import('@utils/dev-auth')).devHeaders();
+	return (await import('@utils/da-band/auth/dev-auth')).devHeaders();
 };
 
 export const bandRequest = async <T>(

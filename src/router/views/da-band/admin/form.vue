@@ -72,8 +72,8 @@
 	import PickDates from '@components/da-band/calendar/pick-dates.vue';
 	import PracticeCard from '@components/da-band/practices/practice-card.vue';
 	import { clientFormFor } from '@/forms';
-	import { nudgeText } from '@utils/band-calendar';
-	import { formatDueDay, formatInstantDay, isEveryoneIn, waitingOn } from '@utils/form-status';
+	import { nudgeText } from '@utils/da-band/band-calendar';
+	import { formatDueDay, formatInstantDay, isEveryoneIn, waitingOn } from '@utils/da-band/form-status';
 	import { useBandStore } from '@/stores/band';
 
 	const band = useBandStore();

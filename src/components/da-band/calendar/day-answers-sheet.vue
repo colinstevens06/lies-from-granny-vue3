@@ -14,7 +14,7 @@
 	import { computed } from 'vue';
 	import Sidebar from 'primevue/sidebar';
 	import type { MemberAvailability } from '@models/availability';
-	import { ANSWER_LABEL, dayAnswers, nearMissText, noGigText } from '@utils/band-calendar';
+	import { ANSWER_LABEL, dayAnswers, nearMissText, noGigText } from '@utils/da-band/band-calendar';
 	import { formatCalendarDate } from '@utils/dates';
 
 	const props = defineProps<{

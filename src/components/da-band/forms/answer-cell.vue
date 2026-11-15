@@ -26,7 +26,7 @@
 	import { computed } from 'vue';
 	import type { Answer, MyAnswer } from '@models/availability';
 	import { formatShortDay } from '@utils/dates';
-	import { ANSWER_LABEL, nextDayChange } from '@utils/band-calendar';
+	import { ANSWER_LABEL, nextDayChange } from '@utils/da-band/band-calendar';
 
 	// One day, one answer, tap to cycle (blank → Yes → No → Not sure → Yes; a Friday or Saturday adds "Yes, no show"
 	// after Yes). It owns no state: the parent passes the answer back in, so the same cell serves the sign-off form and

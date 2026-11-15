@@ -31,7 +31,7 @@
 	import { computed, ref } from 'vue';
 	import Button from 'primevue/button';
 	import type { Form } from '@models/form';
-	import { monthsFrom, weeksInRange } from '@utils/band-calendar';
+	import { monthsFrom, weeksInRange } from '@utils/da-band/band-calendar';
 
 	// One month at a time from the current month through December of next year. It only lays out the days: the
 	// parent's `day` slot draws each one, so the band calendar and Edit mine share this grid.

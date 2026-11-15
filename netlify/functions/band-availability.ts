@@ -1,7 +1,7 @@
 import type { Config } from '@netlify/functions';
 import { members } from '../../src/components/da-band/members';
 import type { MemberId } from '../../src/models/band-member';
-import { parseAvailabilityChanges } from '../../src/utils/availability';
+import { parseAvailabilityChanges } from '../../src/utils/da-band/availability';
 import { todayEastern } from '../../src/utils/dates';
 import { listAvailability, writeAvailability } from '../lib/band-db';
 import { authenticate, checkWrite, fail, json, methodNotAllowed, readBody } from '../lib/http';

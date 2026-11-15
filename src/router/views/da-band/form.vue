@@ -51,7 +51,7 @@
 	import Layout from '@router/layouts/main.vue';
 	import BandLink from '@components/da-band/band-link.vue';
 	import ShowNightsSheet from '@components/da-band/forms/show-nights-sheet.vue';
-	import { showNightSummary } from '@utils/band-calendar';
+	import { showNightSummary } from '@utils/da-band/band-calendar';
 	import { BandApiError } from '@models/band-api-error';
 	import { daysBetween, formatShortDay } from '@utils/dates';
 	import { clientFormFor } from '@/forms';

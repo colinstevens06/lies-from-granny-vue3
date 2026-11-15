@@ -1,5 +1,5 @@
 import type { Config } from '@netlify/functions';
-import { parsePracticeInput } from '../../src/utils/practice-input';
+import { parsePracticeInput } from '../../src/utils/da-band/practice-input';
 import { createPractice, listPractices, updatePractice } from '../lib/band-db';
 import {
 	authenticate,

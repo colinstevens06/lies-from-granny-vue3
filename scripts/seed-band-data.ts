@@ -13,8 +13,8 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import type { AvailabilityImport } from '../src/models/availability';
 import type { PracticeImport } from '../src/models/practice';
-import { expandImport } from '../src/utils/availability';
-import { parsePracticeImport } from '../src/utils/practice-input';
+import { expandImport } from '../src/utils/da-band/availability';
+import { parsePracticeImport } from '../src/utils/da-band/practice-input';
 import { importPractices, openDb, writeAvailability, type Db } from '../netlify/lib/band-db';
 
 const args = process.argv.slice(2);

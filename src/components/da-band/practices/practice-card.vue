@@ -18,7 +18,7 @@
 	import type { Practice } from '@models/practice';
 	import PracticeDetails from '@components/da-band/practices/practice-details.vue';
 	import PracticeStatusBadge from '@components/da-band/practices/practice-status-badge.vue';
-	import { formatPracticeDay } from '@utils/practices';
+	import { formatPracticeDay } from '@utils/da-band/practices';
 
 	const props = defineProps<{
 		practice: Practice;

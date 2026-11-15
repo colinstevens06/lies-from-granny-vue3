@@ -32,7 +32,7 @@
 	import { computed } from 'vue';
 	import type { DayAnswer, MyAnswer } from '@models/availability';
 	import { formatMonthDay } from '@utils/dates';
-	import { weeksInRange } from '@utils/band-calendar';
+	import { weeksInRange } from '@utils/da-band/band-calendar';
 	import LegendKeys, { type LegendItem } from '@components/da-band/legend-keys.vue';
 	import AnswerCell from './answer-cell.vue';
 

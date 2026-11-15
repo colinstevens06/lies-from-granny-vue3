@@ -11,7 +11,7 @@
 	import AdminTile from '@components/da-band/admin/admin-tile.vue';
 	import FormState from '@components/da-band/forms/form-state.vue';
 	import { clientFormFor } from '@/forms';
-	import { availabilitySummary, formatDueDay } from '@utils/form-status';
+	import { availabilitySummary, formatDueDay } from '@utils/da-band/form-status';
 
 	const props = defineProps<{ form: Form }>();
 

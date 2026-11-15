@@ -25,7 +25,7 @@
 	import MonthGrid from '@components/da-band/calendar/month-grid.vue';
 	import { CALENDAR_LEGEND } from '@components/da-band/calendar/day-status';
 	import { shows } from '@components/shows/shows';
-	import { calendarDayStatus } from '@utils/band-calendar';
+	import { calendarDayStatus } from '@utils/da-band/band-calendar';
 	import { useBandStore } from '@/stores/band';
 
 	// The shared calendar: each day's status fill (four keys, shown above it) plus five member dots. Tapping a day opens everyone's answers.

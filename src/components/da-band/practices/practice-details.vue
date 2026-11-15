@@ -24,7 +24,7 @@
 
 <script setup lang="ts">
 	import type { Practice } from '@models/practice';
-	import { formatPracticeTime, practiceGig, practiceLocation } from '@utils/practices';
+	import { formatPracticeTime, practiceGig, practiceLocation } from '@utils/da-band/practices';
 	import { computed } from 'vue';
 
 	const props = defineProps<{

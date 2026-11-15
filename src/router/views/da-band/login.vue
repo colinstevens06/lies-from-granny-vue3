@@ -47,7 +47,7 @@
 	const redirect = computed(() => (typeof route.query.redirect === 'string' ? route.query.redirect : '/da-band'));
 
 	// auth.ts is lazy: it's only needed once someone presses a button.
-	const signInWithGoogle = async (path: string) => (await import('@utils/auth')).signInWithGoogle(path);
+	const signInWithGoogle = async (path: string) => (await import('@utils/da-band/auth/auth')).signInWithGoogle(path);
 
 	const signOutAndStay = async () => {
 		await band.signOut();

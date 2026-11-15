@@ -43,7 +43,7 @@
 	import AdminTile from '@components/da-band/admin/admin-tile.vue';
 	import BandLink from '@components/da-band/band-link.vue';
 	import BandSection from '@components/da-band/band-section.vue';
-	import { formatPracticeDay, formatPracticeTime, needsTime, upcomingPractices } from '@utils/practices';
+	import { formatPracticeDay, formatPracticeTime, needsTime, upcomingPractices } from '@utils/da-band/practices';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandStore } from '@/stores/band';
 

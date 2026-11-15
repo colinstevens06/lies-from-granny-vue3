@@ -4,7 +4,7 @@ import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
 import PrimeVue from 'primevue/config';
-import { hasAuthCallbackHash } from './utils/auth-hash';
+import { hasAuthCallbackHash } from './utils/da-band/auth/auth-hash';
 
 //theme
 import './styles/_theme.scss';
@@ -22,7 +22,7 @@ app.use(PrimeVue);
 // Google sends the browser back with the sign-in in the URL hash. Finish it before the router's first guard runs.
 // Only a callback hash pulls in the Identity library; every other visit skips it.
 const finishSignIn = async () => {
-	const { completeAuthCallback } = await import('./utils/auth');
+	const { completeAuthCallback } = await import('./utils/da-band/auth/auth');
 	window.history.replaceState(undefined, '', await completeAuthCallback());
 };
 
