@@ -16,7 +16,7 @@
 		</header>
 
 		<div :style="ROW_STYLE" class="text-center text-xs text-black-alpha-60">
-			<span v-for="(name, i) in WEEKDAY_NAMES" :key="i">{{ name }}</span>
+			<span v-for="(name, i) in WEEKDAY_INITIALS" :key="i">{{ name }}</span>
 		</div>
 		<div v-for="(week, weekIndex) in weeks" :key="weekIndex" :style="ROW_STYLE">
 			<template v-for="(day, dayIndex) in week" :key="dayIndex">
@@ -31,7 +31,7 @@
 	import { computed, ref } from 'vue';
 	import Button from 'primevue/button';
 	import type { Form } from '@models/form';
-	import { monthsFrom, weeksInRange } from '@utils/da-band/band-calendar';
+	import { WEEKDAY_INITIALS, monthsFrom, weeksInRange } from '@utils/da-band/band-calendar';
 
 	// One month at a time from the current month through December of next year. It only lays out the days: the
 	// parent's `day` slot draws each one, so the band calendar and Edit mine share this grid.
@@ -41,8 +41,6 @@
 		/** The open availability form, so its months can be labeled. */
 		form?: Form;
 	}>();
-
-	const WEEKDAY_NAMES = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
 	// Seven equal columns, Sunday first. PrimeFlex 3 has no grid-template utilities.
 	const ROW_STYLE = { display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))', gap: '4px' };

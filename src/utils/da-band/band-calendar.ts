@@ -17,6 +17,7 @@ import {
 	weekdayIndex
 } from '@utils/dates';
 import { showIsoDate } from '@utils/shows';
+import { WEEKDAYS } from '@utils/da-band/availability';
 
 // Pure helpers behind the availability UI (plan U3): no I/O, no Vue. Dates are Eastern 'YYYY-MM-DD' strings and
 // every "today" parameter is one too, so tests and callers can pin it. Reuses `@utils/dates` and `@utils/shows`.
@@ -55,6 +56,11 @@ export const ANSWER_LABEL: Record<Answer | 'none', string> = {
 	maybe: 'Not sure',
 	none: 'Pending'
 };
+
+/** 'Sun' … 'Sat', Sunday first like `WEEKDAYS`, for rows that name each weekday. */
+export const WEEKDAY_LABELS = WEEKDAYS.map(day => day.charAt(0).toUpperCase() + day.slice(1));
+/** 'S', 'M', 'T' … for calendar column headers. */
+export const WEEKDAY_INITIALS = WEEKDAY_LABELS.map(label => label.charAt(0));
 
 // ---- Ranges ----------------------------------------------------------------------------------------------
 

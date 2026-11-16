@@ -2,7 +2,7 @@
 	<div class="flex flex-wrap align-items-center column-gap-3 row-gap-1 text-xs text-black-alpha-70">
 		<span v-for="item in items" :key="item.label" class="inline-flex align-items-center gap-1">
 			<i class="relative overflow-hidden block flex-none w-1rem h-1rem border-round" :class="item.swatch">
-				<b v-if="item.band" class="absolute left-0 right-0 bottom-0 bg-gray-900" style="height: 4px" />
+				<span v-if="item.band" class="absolute left-0 right-0 bottom-0 bg-gray-900" style="height: 4px" />
 			</i>
 			{{ item.label }}
 		</span>

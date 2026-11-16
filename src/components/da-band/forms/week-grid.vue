@@ -4,7 +4,7 @@
 		<div :style="ROW_STYLE">
 			<span />
 			<div
-				v-for="(name, index) in WEEKDAY_NAMES"
+				v-for="(name, index) in WEEKDAY_INITIALS"
 				:key="index"
 				class="text-xs font-bold text-center text-black-alpha-70"
 			>
@@ -32,11 +32,9 @@
 	import { computed } from 'vue';
 	import type { DayAnswer, MyAnswer } from '@models/availability';
 	import { formatMonthDay } from '@utils/dates';
-	import { weeksInRange } from '@utils/da-band/band-calendar';
+	import { WEEKDAY_INITIALS, weeksInRange } from '@utils/da-band/band-calendar';
 	import LegendKeys, { type LegendItem } from '@components/da-band/legend-keys.vue';
 	import AnswerCell from './answer-cell.vue';
-
-	const WEEKDAY_NAMES = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
 	const LEGEND: LegendItem[] = [
 		{ label: 'Blank', swatch: 'answer-cell--none' },

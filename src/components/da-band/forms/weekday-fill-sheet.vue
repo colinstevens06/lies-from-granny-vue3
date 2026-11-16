@@ -17,8 +17,8 @@
 					: "Fills only the days you haven't answered. Anything you picked stays as it is."
 			}}
 		</p>
-		<div v-for="(name, weekday) in WEEKDAY_NAMES" :key="name" class="flex align-items-center gap-2 py-1">
-			<b class="w-2rem flex-none">{{ name }}</b>
+		<div v-for="(name, weekday) in WEEKDAY_LABELS" :key="name" class="flex align-items-center gap-2 py-1">
+			<span class="w-2rem flex-none font-bold">{{ name }}</span>
 			<!-- Nothing stays selected, so tapping the same answer again (after flipping overwrite) still emits. -->
 			<!-- Yes / No / Not sure stay on one line at phone width: equal-width options, tight padding, no wrap. -->
 			<SelectButton
@@ -44,10 +44,9 @@
 	import SelectButton from 'primevue/selectbutton';
 	import Sidebar from 'primevue/sidebar';
 	import type { Answer } from '@models/availability';
-	import { ANSWERS, WEEKDAYS } from '@utils/da-band/availability';
-	import { ANSWER_LABEL } from '@utils/da-band/band-calendar';
+	import { ANSWERS } from '@utils/da-band/availability';
+	import { ANSWER_LABEL, WEEKDAY_LABELS } from '@utils/da-band/band-calendar';
 
-	const WEEKDAY_NAMES = WEEKDAYS.map(day => day.charAt(0).toUpperCase() + day.slice(1));
 	const ANSWER_OPTIONS = ANSWERS.map(answer => ({
 		value: answer,
 		label: ANSWER_LABEL[answer]
