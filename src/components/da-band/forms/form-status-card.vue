@@ -4,7 +4,6 @@
 		<FormState :form />
 		<p v-if="waiting.length" class="text-black-alpha-70">Waiting on {{ waitingNames }}</p>
 		<div class="flex flex-wrap align-items-center gap-3 mt-2">
-			<CopyButton v-if="waiting.length" label="Copy a nudge" :text="nudgeText(form, waiting)" />
 			<RouterLink
 				v-if="isEveryoneIn(form) && form.availability"
 				:to="`/da-band/admin/forms/${form.id}`"
@@ -21,11 +20,9 @@
 	import { computed } from 'vue';
 	import type { Form } from '@models/form';
 	import BandLink from '@components/da-band/band-link.vue';
-	import CopyButton from '@components/da-band/copy-button.vue';
 	import FormState from '@components/da-band/forms/form-state.vue';
 	import { members } from '@components/da-band/members';
 	import { isEveryoneIn, waitingOn } from '@utils/da-band/form-status';
-	import { nudgeText } from '@utils/da-band/band-calendar';
 
 	const props = defineProps<{ form: Form }>();
 

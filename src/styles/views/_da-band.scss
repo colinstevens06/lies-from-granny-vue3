@@ -32,6 +32,10 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 	border-color: $lfg-pink !important;
 }
 
+.bg-answer-yes {
+	background-color: $bf-yes !important;
+}
+
 .bg-poster-yellow {
 	background-color: $lfg-poster-yellow !important;
 }
@@ -106,29 +110,47 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 	}
 }
 
+// Calendar dots are solid fills with no outline, so none of them fights its neighbor. Pending is the one hollow dot,
+// ringed in its own gray. Yes to practice but no to a show is split down the middle: green left, pink right.
 .answer-dot {
-	border-color: #adb5bd;
-
 	&--yes {
-		border-color: $bf-yes;
 		background: $bf-yes;
 	}
 
 	&--no {
-		border-color: $lfg-pink;
 		background: $lfg-pink;
 	}
 
 	&--maybe {
-		border-color: $bf-maybe;
 		background: $bf-maybe;
 	}
 
-	// Yes to practice, no to a show: green, ringed in pink.
+	&--none {
+		background: #fff;
+		box-shadow: inset 0 0 0 1px #adb5bd;
+	}
+
 	&--no-show {
-		border-color: $bf-yes;
-		background: $bf-yes;
-		box-shadow: 0 0 0 1px $lfg-pink;
+		background: linear-gradient(to right, $bf-yes 50%, $lfg-pink 50%);
+	}
+}
+
+// The same answer colors as text, for the icons in the day sheet.
+.answer-ink {
+	&--yes {
+		color: $bf-yes;
+	}
+
+	&--no {
+		color: $lfg-pink;
+	}
+
+	&--maybe {
+		color: $bf-maybe;
+	}
+
+	&--none {
+		color: $bf-muted;
 	}
 }
 
@@ -146,7 +168,7 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 	background: $bf-no;
 }
 
-.weekday-fill {
+.band-drawer {
 	// The theme's sidebar header is display: block, which drops the close button under the title.
 	.p-sidebar-header {
 		display: flex;

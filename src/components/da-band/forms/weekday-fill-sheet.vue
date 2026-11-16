@@ -1,11 +1,5 @@
 <template>
-	<Sidebar
-		:visible
-		position="bottom"
-		header="Fill a weekday at once"
-		class="weekday-fill"
-		@update:visible="emit('update:visible', $event)"
-	>
+	<BandDrawer :visible header="Fill a weekday at once" @update:visible="emit('update:visible', $event)">
 		<div class="flex align-items-center gap-2 mb-2">
 			<InputSwitch v-model="overwrite" input-id="weekday-fill-overwrite" />
 			<label for="weekday-fill-overwrite" class="font-bold">Also change days I already answered</label>
@@ -35,14 +29,14 @@
 				{{ status(weekday) }}
 			</small>
 		</div>
-	</Sidebar>
+	</BandDrawer>
 </template>
 
 <script setup lang="ts">
 	import { reactive, ref, watch } from 'vue';
 	import InputSwitch from 'primevue/inputswitch';
 	import SelectButton from 'primevue/selectbutton';
-	import Sidebar from 'primevue/sidebar';
+	import BandDrawer from '@components/da-band/band-drawer.vue';
 	import type { Answer } from '@models/availability';
 	import { ANSWERS } from '@utils/da-band/availability';
 	import { ANSWER_LABEL, WEEKDAY_LABELS } from '@utils/da-band/band-calendar';

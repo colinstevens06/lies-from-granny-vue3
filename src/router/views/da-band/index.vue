@@ -47,7 +47,8 @@
 					</BandSection>
 
 					<template v-for="form in formStore.openForms" :key="form.id">
-						<BandSection v-if="clientFormFor(form.slug)" :title="`${form.title}: responses`">
+						<BandSection v-if="clientFormFor(form.slug)" :title="`${form.title} responses`">
+							<FormResponses :form />
 							<component :is="clientFormFor(form.slug)!.responses" :form />
 						</BandSection>
 					</template>
@@ -70,6 +71,7 @@
 	import BandLink from '@components/da-band/band-link.vue';
 	import BandLoadState from '@components/da-band/band-load-state.vue';
 	import BandSection from '@components/da-band/band-section.vue';
+	import FormResponses from '@components/da-band/forms/form-responses.vue';
 	import PossibleDates from '@components/da-band/calendar/possible-dates.vue';
 	import FormTodoCard from '@components/da-band/forms/form-todo-card.vue';
 	import FormStatusCard from '@components/da-band/forms/form-status-card.vue';

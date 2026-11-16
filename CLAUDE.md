@@ -64,6 +64,7 @@ These are the things that break silently if only one side is edited.
   - **Static data modules sit beside their feature's components**: `shows/shows.ts`, `songs/songs.ts`, `da-band/members.ts`. The Netlify functions import `members.ts` by relative path, so moving it means updating `netlify/` too.
   - **`src/forms/` is a top-level registry**, one folder per form slug, shared with `netlify/forms/`. Its `screen.vue` and `responses.vue` are loaded by path through `src/forms/index.ts`, never by tag, so they repeat across slugs the way route files do.
 - Shared social links belong in `src/utils/urls.ts`.
+- **Drawers open from the right** (Colin, 2026-11-16). Every `/da-band` sheet wraps `src/components/da-band/band-drawer.vue` (PrimeVue `Sidebar`, `position="right"`), never `Sidebar` directly.
 - Prettier config is authoritative and unusual: tabs, single quotes, no trailing commas, `printWidth` 120, `vueIndentScriptAndStyle: true`, and `endOfLine: "crlf"`. Run `yarn format` rather than hand-matching.
 - ESLint extends `vue3-essential` + TS + Prettier; `vue/multi-word-component-names` is off, which is why `nav.vue`, `footer.vue`, `shows.vue` are legal names.
 

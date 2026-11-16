@@ -11,7 +11,7 @@ export const early2027Planning: Pick<ClientForm, 'summary' | 'asks' | 'todoLines
 		form.availability
 			? `Your availability for ${form.availability.startDay} to ${form.availability.endDay}`
 			: 'Your availability',
-		"Optional: a new song you'd like to suggest"
+		"A new song you'd like to suggest, if any"
 	],
 
 	todoLines(form, mine, context) {
@@ -20,7 +20,7 @@ export const early2027Planning: Pick<ClientForm, 'summary' | 'asks' | 'todoLines
 		// Optional: never outstanding, so it reads as done whether or not they suggested a song.
 		return [
 			availabilityTodoLine(form, context),
-			{ label: 'New song (optional)', value: pitch?.wantsNew ? 'Suggested ✓' : 'No suggestion ✓', ok: true }
+			{ label: 'New song', value: pitch?.wantsNew ? 'Suggested ✓' : 'No suggestion ✓', ok: true }
 		];
 	}
 };

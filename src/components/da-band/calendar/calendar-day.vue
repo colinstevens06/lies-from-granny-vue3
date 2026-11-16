@@ -14,7 +14,7 @@
 			<i
 				v-for="entry in answers"
 				:key="entry.member.id"
-				class="inline-block border-circle border-1 answer-dot"
+				class="inline-block border-circle answer-dot"
 				:class="entry.noShow ? 'answer-dot--no-show' : `answer-dot--${entry.answer ?? 'none'}`"
 				style="width: 6px; height: 6px"
 			/>

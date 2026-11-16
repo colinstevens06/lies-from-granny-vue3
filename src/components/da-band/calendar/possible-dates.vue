@@ -7,7 +7,6 @@
 			</li>
 		</ul>
 		<p v-else class="text-black-alpha-70">No dates work for everyone yet.</p>
-		<CopyButton v-if="days.length" label="Copy list" :text="possibleListText(days, header)" />
 
 		<template v-if="nights.length">
 			<p class="m-0 mt-2 font-bold">Show nights · {{ nights.length }} {{ nights.length === 1 ? 'night' : 'nights' }}</p>
@@ -20,7 +19,6 @@
 					{{ formatShortDay(day) }}
 				</li>
 			</ul>
-			<CopyButton label="Copy show nights" :text="possibleListText(nights, 'Show nights that work for everyone:')" />
 		</template>
 	</section>
 </template>
@@ -28,8 +26,6 @@
 <script setup lang="ts">
 	import { computed } from 'vue';
 	import type { Form } from '@models/form';
-	import CopyButton from '@components/da-band/copy-button.vue';
-	import { possibleListText } from '@utils/da-band/band-calendar';
 	import { formatShortDay } from '@utils/dates';
 	import { useBandCalendar } from '@/composables/use-band-calendar';
 

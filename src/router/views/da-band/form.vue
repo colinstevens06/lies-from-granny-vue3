@@ -22,7 +22,7 @@
 						</span>
 					</div>
 
-					<component :is="registered.screen" :form />
+					<component :is="registered.screen" :form @blocking="blocker = $event" />
 
 					<div
 						class="sticky bottom-0 z-2 flex flex-wrap align-items-center gap-3 mt-4 p-3 border-top-1 border-black-alpha-10 surface-100"
@@ -31,7 +31,13 @@
 						<p v-if="signedOff" class="text-black-alpha-70">
 							You're signed off. You can still change answers until it closes.
 						</p>
-						<Button v-else label="Sign off" :disabled="!done || saving || signingOff" @click="askSignOff" />
+						<Button
+							v-else
+							label="Sign off"
+							:disabled="!done || !!blocker || saving || signingOff"
+							@click="askSignOff"
+						/>
+						<p v-if="blocker && !signedOff" class="m-0 font-bold text-pink-600">{{ blocker }}</p>
 						<span v-if="saveNotice" class="font-bold">{{ saveNotice }}</span>
 					</div>
 
@@ -81,6 +87,8 @@
 			: `Due ${formatShortDay(form.value.dueDay)}`
 	);
 
+	// Set by the form's screen while an answer is half-typed; holds the Sign off button.
+	const blocker = ref<string>();
 	const message = ref('');
 	const signingOff = ref(false);
 
@@ -91,7 +99,7 @@
 
 	const signOff = async () => {
 		// Rechecked at click time: the rule and the save queue can change between render and tap.
-		if (!form.value || !done.value || saving.value) return;
+		if (!form.value || !done.value || blocker.value || saving.value) return;
 
 		confirming.value = false;
 		signingOff.value = true;

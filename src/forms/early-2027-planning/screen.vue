@@ -3,13 +3,14 @@
 		<AvailabilitySection :form :my-days="myDays" :today @change="onChange" />
 
 		<YesNoText
-			prompt="Would you like to suggest a new song? (optional)"
+			prompt="Would you like to suggest a new song?"
 			label="Song – Artist"
 			placeholder="Bangers only"
 			:max-length="MAX_SUGGESTION"
 			:wants="answer?.wantsNew"
 			:text="answer?.suggestion"
 			@change="onSong"
+			@update:incomplete="emit('blocking', $event ? 'Type the song or choose No to sign off.' : undefined)"
 		/>
 	</div>
 </template>
@@ -25,6 +26,9 @@
 	import { MAX_SUGGESTION } from './rules';
 
 	const props = defineProps<{ form: Form }>();
+
+	// `blocking` carries why the member can't sign off yet, beyond what the shared rule knows: a Yes with no song typed.
+	const emit = defineEmits<{ blocking: [reason?: string] }>();
 
 	const { today, mine, myDays, setMyAnswers, setMyFormAnswer, pendingFormAnswer } = useFormProgress(() => props.form);
 

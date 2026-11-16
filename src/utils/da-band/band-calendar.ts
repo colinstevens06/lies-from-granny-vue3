@@ -326,7 +326,3 @@ export const nudgeText = (form: Form, waiting: MemberId[]): string => {
 		form
 	)}`;
 };
-
-/** A plain list of dates for the group thread, soonest first, with an optional lead line. */
-export const possibleListText = (days: string[], header?: string): string =>
-	[header ?? 'Dates that work for everyone:', ...days.map(day => `• ${formatShortDay(day)}`)].join('\n');

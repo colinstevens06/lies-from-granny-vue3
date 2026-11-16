@@ -1,3 +1,4 @@
+import type { Answer } from '@models/availability';
 import type { DayStatus } from '@models/band-calendar';
 import type { LegendItem } from '@components/da-band/legend-keys.vue';
 
@@ -26,3 +27,11 @@ export const CALENDAR_LEGEND: LegendItem[] = [
 	{ label: "Someone can't", swatch: STATUS_CLASS.blocked },
 	{ label: 'Booked', swatch: STATUS_CLASS.booked }
 ];
+
+/** The icon for each answer in the day sheet; its color class is `answer-ink--<answer>`. Shape carries the meaning, color backs it up. */
+export const ANSWER_ICON: Record<Answer | 'none', string> = {
+	yes: 'pi-check-circle',
+	no: 'pi-times-circle',
+	maybe: 'pi-question-circle',
+	none: 'pi-circle'
+};

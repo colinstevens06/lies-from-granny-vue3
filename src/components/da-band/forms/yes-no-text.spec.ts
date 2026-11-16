@@ -14,13 +14,20 @@ describe('yes-no-text', () => {
 		expect(wrapper.find('input[type="text"], input.p-inputtext').exists()).toBe(false);
 	});
 
-	it('Yes with empty text says how to save or skip, and emits nothing', async () => {
+	it('Yes with empty text says what is needed, reports incomplete and emits no answer', async () => {
 		const wrapper = mountWithPrime(YesNoText, { props });
 		await choose(wrapper, 'Yes');
 		expect(wrapper.find('input.p-inputtext').exists()).toBe(true);
-		expect(wrapper.text()).toContain('Type the song to save it, or choose No.');
+		expect(wrapper.text()).toContain('Type the song to sign off, or choose No.');
 		expect(wrapper.text()).not.toContain('required');
 		expect(wrapper.emitted('change')).toBeUndefined();
+		expect(wrapper.emitted('update:incomplete')!.at(-1)).toEqual([true]);
+	});
+
+	it('starts on No with nothing saved, and is complete', () => {
+		const wrapper = mountWithPrime(YesNoText, { props });
+		expect(wrapper.find('input.p-inputtext').exists()).toBe(false);
+		expect(wrapper.emitted('update:incomplete')!.at(-1)).toEqual([false]);
 	});
 
 	it('Yes with text emits the trimmed answer and drops the message', async () => {

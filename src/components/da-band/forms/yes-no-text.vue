@@ -24,26 +24,25 @@
 				:maxlength="maxLength"
 				@input="publish"
 			/>
-			<small v-if="textValue.trim() === ''" class="font-bold text-pink-600">
-				Type the song to save it, or choose No.
-			</small>
+			<small v-if="incomplete" class="font-bold text-pink-600">Type the song to sign off, or choose No.</small>
 		</div>
 	</fieldset>
 </template>
 
 <script setup lang="ts">
-	import { ref, watch } from 'vue';
+	import { computed, ref, watch } from 'vue';
 	import InputText from 'primevue/inputtext';
 	import SelectButton from 'primevue/selectbutton';
 
-	// A yes/no question; Yes reveals one text input. It emits only a savable answer: No, or Yes with text. A Yes with
-	// an empty box stays here until something is typed, so a blank Yes never reaches the server.
+	// A yes/no question that starts on No; Yes reveals one text input. It emits only a savable answer: No, or Yes with
+	// text. A Yes with an empty box stays here and reports `incomplete`, so the page can hold the sign-off until the
+	// member types the song or goes back to No.
 	const props = defineProps<{
 		prompt: string;
 		label: string;
 		placeholder?: string;
 		maxLength: number;
-		/** The saved answer: undefined until chosen. */
+		/** The saved answer; undefined (nothing saved yet) shows as No. */
 		wants?: boolean;
 		/** The saved text. */
 		text?: string;
@@ -51,6 +50,8 @@
 
 	const emit = defineEmits<{
 		change: [value: { wants: boolean; text: string }];
+		/** True while Yes is chosen and the box is empty. */
+		'update:incomplete': [incomplete: boolean];
 	}>();
 
 	const CHOICES = [
@@ -59,7 +60,7 @@
 	];
 
 	const inputId = `yes-no-${Math.random().toString(36).slice(2, 8)}`;
-	const wantsValue = ref(props.wants);
+	const wantsValue = ref(props.wants ?? false);
 	const textValue = ref(props.text ?? '');
 
 	// A refresh (a reload after a refused save, say) changes what's saved. Follow it, but leave the box alone when it
@@ -67,14 +68,16 @@
 	watch(
 		() => [props.wants, props.text] as const,
 		([wants, text]) => {
-			if (wants !== wantsValue.value) wantsValue.value = wants;
+			if ((wants ?? false) !== wantsValue.value) wantsValue.value = wants ?? false;
 			if (wants && text !== undefined && text !== textValue.value.trim()) textValue.value = text;
 			if (wants === false) textValue.value = '';
 		}
 	);
 
+	const incomplete = computed(() => wantsValue.value && textValue.value.trim() === '');
+	watch(incomplete, value => emit('update:incomplete', value), { immediate: true });
+
 	const publish = () => {
-		if (wantsValue.value === undefined) return;
 		const text = wantsValue.value ? textValue.value.trim() : '';
 		if (wantsValue.value && text === '') return;
 		emit('change', { wants: wantsValue.value, text });

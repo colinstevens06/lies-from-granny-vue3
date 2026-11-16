@@ -1,11 +1,5 @@
 <template>
-	<Sidebar
-		:visible
-		position="bottom"
-		header="Confirm show nights"
-		class="weekday-fill"
-		@update:visible="emit('update:visible', $event)"
-	>
+	<BandDrawer :visible header="Confirm show nights" @update:visible="emit('update:visible', $event)">
 		<p class="mt-0 mb-2 font-bold">
 			You can play a show on {{ summary.playable.length }} of {{ summary.total }} Friday and Saturday nights.
 		</p>
@@ -32,12 +26,12 @@
 			<Button label="Looks right, sign off" :disabled="busy" @click="emit('confirm')" />
 			<Button label="Go back" severity="secondary" outlined @click="emit('update:visible', false)" />
 		</div>
-	</Sidebar>
+	</BandDrawer>
 </template>
 
 <script setup lang="ts">
 	import Button from 'primevue/button';
-	import Sidebar from 'primevue/sidebar';
+	import BandDrawer from '@components/da-band/band-drawer.vue';
 	import type { ShowNightSummary } from '@models/band-calendar';
 	import { formatShortDay } from '@utils/dates';
 
