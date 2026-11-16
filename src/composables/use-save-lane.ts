@@ -48,7 +48,7 @@ export const useSaveLane = <V, R>({ delayMs, send, onSaved, onRejected }: SaveLa
 			failing.value = false;
 			saved = { result };
 		} catch (error) {
-			// A BandApiError, matched by shape so this file doesn't pull the band service into the main bundle. Status 0 is no response.
+			// An ApiError, matched by shape so this file doesn't pull a service into the main bundle. Status 0 is no response.
 			const status = (error as { status?: number }).status ?? 0;
 
 			if (status === 0 || status >= 500) {

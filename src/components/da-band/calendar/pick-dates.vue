@@ -59,7 +59,7 @@
 	import type { Form } from '@models/form';
 	import { shows } from '@components/shows/shows';
 	import { pickGroups } from '@utils/da-band/band-calendar';
-	import { BandApiError } from '@models/band-api-error';
+	import { ApiError } from '@models/api-error';
 	import { formatShortDay } from '@utils/dates';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandStore } from '@/stores/band';
@@ -109,12 +109,12 @@
 			await band.lockInForm(props.form.id, chosen.value);
 			await band.load();
 		} catch (error) {
-			if (error instanceof BandApiError && error.code === 'already-booked') {
+			if (error instanceof ApiError && error.code === 'already-booked') {
 				const taken = (error.details.days as string[] | undefined) ?? [];
 				await band.load();
 				picked.value = picked.value.filter(day => !taken.includes(day));
 				message.value = `Already booked: ${taken.map(dayLabel).join(', ')}`;
-			} else if (!(error instanceof BandApiError && error.status === 401)) {
+			} else if (!(error instanceof ApiError && error.status === 401)) {
 				message.value = "Couldn't lock those in. Try again.";
 			}
 		} finally {

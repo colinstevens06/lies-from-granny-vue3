@@ -52,7 +52,7 @@
 	import BandLink from '@components/da-band/band-link.vue';
 	import ShowNightsSheet from '@components/da-band/forms/show-nights-sheet.vue';
 	import { showNightSummary } from '@utils/da-band/band-calendar';
-	import { BandApiError } from '@models/band-api-error';
+	import { ApiError } from '@models/api-error';
 	import { daysBetween, formatShortDay } from '@utils/dates';
 	import { clientFormFor } from '@/forms';
 	import { useFormProgress } from '@/composables/use-form-progress';
@@ -61,7 +61,7 @@
 	const band = useBandStore();
 	const route = useRoute();
 	const router = useRouter();
-	onMounted(band.load);
+	onMounted(() => band.load());
 
 	const form = computed(() => band.forms.find(f => f.id === Number(route.params.id)));
 	const registered = computed(() => (form.value ? clientFormFor(form.value.slug) : undefined));
@@ -98,17 +98,17 @@
 			await band.signOffForm(form.value.id);
 			await router.push('/da-band');
 		} catch (error) {
-			if (error instanceof BandApiError && error.code === 'incomplete') {
+			if (error instanceof ApiError && error.code === 'incomplete') {
 				await band.load();
 				message.value = "Something's still missing.";
 				const first = error.details.firstMissing;
 				await nextTick();
 				if (typeof first === 'string')
 					document.querySelector(`[data-day="${first}"]`)?.scrollIntoView({ block: 'center' });
-			} else if (error instanceof BandApiError && error.code === 'closed') {
+			} else if (error instanceof ApiError && error.code === 'closed') {
 				message.value = 'This form just closed.';
 				setTimeout(() => router.push('/da-band'), 1500);
-			} else if (!(error instanceof BandApiError && error.status === 401)) {
+			} else if (!(error instanceof ApiError && error.status === 401)) {
 				message.value = "Couldn't sign off. Try again.";
 			}
 		} finally {

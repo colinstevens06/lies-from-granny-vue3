@@ -65,7 +65,7 @@
 	import SelectButton from 'primevue/selectbutton';
 	import Textarea from 'primevue/textarea';
 	import type { Practice, PracticeInput, PracticeStatus } from '@models/practice';
-	import { BandApiError } from '@models/band-api-error';
+	import { ApiError } from '@models/api-error';
 	import { formatCalendarDate } from '@utils/dates';
 	import { parsePracticeInput } from '@utils/da-band/practice-input';
 	import { PRACTICE_HOME } from '@utils/da-band/practices';
@@ -151,12 +151,12 @@
 			await band.savePractice(input.value as PracticeInput, props.practice?.id);
 			emit('close');
 		} catch (caught) {
-			if (caught instanceof BandApiError && caught.code === 'date-taken') {
+			if (caught instanceof ApiError && caught.code === 'date-taken') {
 				error.value = `Another practice is already on ${formatCalendarDate(date.value, {
 					month: 'long',
 					day: 'numeric'
 				})}.`;
-			} else if (caught instanceof BandApiError && caught.status !== 401) {
+			} else if (caught instanceof ApiError && caught.status !== 401) {
 				error.value = MESSAGES[caught.code] ?? "Couldn't save that. Try again.";
 			}
 		} finally {

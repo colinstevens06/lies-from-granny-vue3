@@ -35,7 +35,7 @@ here; git keeps the history.
 
 The first suite (Vitest unit and component tests, three read-only Playwright smoke specs) covers the release gate only. Write these next (2026-11-13):
 
-- **Save lanes with fake timers.** Availability and form-answer queues: one in flight, retry keeps newer queued values, immediate flush for weekday fills, 401 handling in `band-service-base`.
+- **Save lanes with fake timers.** Availability and form-answer queues: one in flight, retry keeps newer queued values, immediate flush for weekday fills, 401 handling in `BandService.onUnauthorized`.
 - **Store load and reject paths.** `src/stores/band.ts`: initial load, a rejected save, `pendingFormAnswer` overlay, stale reload.
 - **Pick-dates and lock-in.** `pick-dates.vue` and `possible-dates.vue`: picks dropped when they leave the groups (code review #2), lock-in request body, practices created per form.
 - **Admin pages.** Form tile and status, practice editor validation (`practice-input.ts`), sign-off dots, the admin gate.

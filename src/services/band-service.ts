@@ -2,38 +2,77 @@ import type { MemberAvailability } from '@models/availability';
 import type { CurrentMember, MemberId } from '@models/band-member';
 import type { Form } from '@models/form';
 import type { Practice, PracticeInput } from '@models/practice';
-import { bandHttp } from './band-service-base';
+import { ServiceBase } from './service-base';
 
-// Stateless: one method per /api/band endpoint, named by verb and returning the response body. Only `stores/band.ts`
-// imports this.
+/**
+ * Stateless: one method per /api/band endpoint, named by verb and returning the response body. Only `stores/band.ts`
+ * imports this.
+ */
+class BandService extends ServiceBase {
+	constructor() {
+		super('/api/band');
+	}
 
-export const bandService = {
+	/** Local testing only: in a production build `import.meta.env.DEV` is false, so dev-auth is dropped from the bundle. */
+	protected override async requestHeaders() {
+		if (!import.meta.env.DEV) return {};
+
+		return (await import('@utils/da-band/auth/dev-auth')).devHeaders();
+	}
+
+	/** A 401 means the Identity session ended: off to login, coming back here after. */
+	protected override async onUnauthorized() {
+		const { default: router } = await import('@router/index');
+		await router.push({ name: 'da-band-login', query: { redirect: router.currentRoute.value.fullPath } });
+	}
+
 	/** Who's signed in. Its 401 is the answer "signed out", so it doesn't redirect to login. */
-	getMe: () => bandHttp.get<CurrentMember>('me', { redirectOn401: false }),
+	getMe() {
+		return this.get<CurrentMember>('me', { handleUnauthorized: false });
+	}
 
-	getAvailability: () => bandHttp.get<MemberAvailability[]>('availability'),
+	getAvailability() {
+		return this.get<MemberAvailability[]>('availability');
+	}
 
-	patchAvailability: (member: MemberId, changes: unknown[]) =>
-		bandHttp.patch<MemberAvailability>(`availability/${member}`, { changes }),
+	patchAvailability(member: MemberId, changes: unknown[]) {
+		return this.patch<MemberAvailability>(`availability/${member}`, { changes });
+	}
 
-	getForms: () => bandHttp.get<Form[]>('forms'),
+	getForms() {
+		return this.get<Form[]>('forms');
+	}
 
 	/** Admin: the only change a form takes is closing. */
-	patchForm: (formId: number, patch: { closed: true }) => bandHttp.patch<Form>(`forms/${formId}`, patch),
+	patchForm(formId: number, patch: { closed: true }) {
+		return this.patch<Form>(`forms/${formId}`, patch);
+	}
 
 	/** Admin: books the days as practices and closes the form. */
-	putFormSchedule: (formId: number, days: string[]) => bandHttp.put<Practice[]>(`forms/${formId}/schedule`, { days }),
+	putFormSchedule(formId: number, days: string[]) {
+		return this.put<Practice[]>(`forms/${formId}/schedule`, { days });
+	}
 
 	/** A member's own row on a form: the only change is signing off. */
-	patchFormMember: (formId: number, member: MemberId, patch: { signedOff: true }) =>
-		bandHttp.patch<Form>(`forms/${formId}/members/${member}`, patch),
+	patchFormMember(formId: number, member: MemberId, patch: { signedOff: true }) {
+		return this.patch<Form>(`forms/${formId}/members/${member}`, patch);
+	}
 
-	putFormMemberAnswers: (formId: number, member: MemberId, body: unknown) =>
-		bandHttp.put<Form>(`forms/${formId}/members/${member}/answers`, body),
+	putFormMemberAnswers(formId: number, member: MemberId, body: object) {
+		return this.put<Form>(`forms/${formId}/members/${member}/answers`, body);
+	}
 
-	getPractices: () => bandHttp.get<Practice[]>('practices'),
+	getPractices() {
+		return this.get<Practice[]>('practices');
+	}
 
-	postPractice: (input: PracticeInput) => bandHttp.post<Practice>('practices', input),
+	postPractice(input: PracticeInput) {
+		return this.post<Practice>('practices', input);
+	}
 
-	putPractice: (id: number, input: PracticeInput) => bandHttp.put<Practice>(`practices/${id}`, input)
-};
+	putPractice(id: number, input: PracticeInput) {
+		return this.put<Practice>(`practices/${id}`, input);
+	}
+}
+
+export const bandService = new BandService();

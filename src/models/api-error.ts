@@ -1,4 +1,4 @@
-export class BandApiError extends Error {
+export class ApiError extends Error {
 	constructor(
 		readonly status: number,
 		/** The server's machine-readable code, or 'network' when there was no response. */

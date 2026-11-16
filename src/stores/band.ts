@@ -2,7 +2,7 @@ import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 import { useSaveLane } from '@/composables/use-save-lane';
 import { bandService } from '@/services/band-service';
-import { BandApiError } from '@models/band-api-error';
+import { ApiError } from '@models/api-error';
 import type { DayAnswer, MemberAvailability, MyAnswer } from '@models/availability';
 import type { CurrentMember } from '@models/band-member';
 import type { Form } from '@models/form';
@@ -84,7 +84,7 @@ export const useBandStore = defineStore('band', () => {
 	/** Forms whose answers saved since the current load began: that load's copy of them may predate the save. */
 	const formsSavedDuringLoad = new Set<number>();
 
-	const formLane = useSaveLane<unknown, Form[]>({
+	const formLane = useSaveLane<object, Form[]>({
 		delayMs: 600,
 		async send(entries) {
 			// Latest whole body per form wins; one request per form, and every form's server copy is kept.
@@ -118,7 +118,7 @@ export const useBandStore = defineStore('band', () => {
 	};
 
 	/** Queues my answers to one form. The latest whole body wins. */
-	const setMyFormAnswer = (formId: number, body: unknown) => formLane.enqueue(String(formId), body);
+	const setMyFormAnswer = (formId: number, body: object) => formLane.enqueue(String(formId), body);
 
 	/** The body still waiting to save for a form, so its screen can keep showing what the member typed. */
 	const pendingFormAnswer = (formId: number) => formLane.pendingValue(String(formId));
@@ -193,14 +193,14 @@ export const useBandStore = defineStore('band', () => {
 
 	const replaceForm = (form: Form) => (forms.value = forms.value.map(f => (f.id === form.id ? form : f)));
 
-	/** Signs me off a form. Throws a `BandApiError`: 409 `incomplete` (with what's missing) or `closed`. */
+	/** Signs me off a form. Throws an `ApiError`: 409 `incomplete` (with what's missing) or `closed`. */
 	const signOffForm = async (formId: number) => {
 		replaceForm(await bandService.patchFormMember(formId, me.value!.member, { signedOff: true }));
 	};
 
 	/**
 	 * Admin: creates a practice (no `id`) or replaces one (whole record), and updates the store. Goes straight through
-	 * the service, not the save queue. Throws a `BandApiError` (409 `date-taken`, 400 with the error code).
+	 * the service, not the save queue. Throws an `ApiError` (409 `date-taken`, 400 with the error code).
 	 */
 	const savePractice = async (input: PracticeInput, id?: number) => {
 		const practice = await (id === undefined ? bandService.postPractice(input) : bandService.putPractice(id, input));
@@ -210,7 +210,7 @@ export const useBandStore = defineStore('band', () => {
 				: practices.value.map(p => (p.id === practice.id ? practice : p));
 	};
 
-	/** Admin: books the days as scheduled practices and closes the form. Throws a `BandApiError` (409 `already-booked` names the days). */
+	/** Admin: books the days as scheduled practices and closes the form. Throws an `ApiError` (409 `already-booked` names the days). */
 	const lockInForm = async (formId: number, days: string[]) => {
 		await bandService.putFormSchedule(formId, days);
 	};
@@ -230,8 +230,8 @@ export const useBandStore = defineStore('band', () => {
 			me.value = await bandService.getMe();
 			return 'ok';
 		} catch (error) {
-			if (error instanceof BandApiError && error.status === 401) return 'signed-out';
-			if (error instanceof BandApiError && error.status === 403) return 'not-a-member';
+			if (error instanceof ApiError && error.status === 401) return 'signed-out';
+			if (error instanceof ApiError && error.status === 403) return 'not-a-member';
 			throw error;
 		}
 	};
