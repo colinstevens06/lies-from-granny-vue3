@@ -59,15 +59,15 @@
 	import { useFormStore } from '@/stores/forms';
 	import { useMemberStore } from '@/stores/member';
 
-	const member = useMemberStore();
-	const forms = useFormStore();
+	const memberStore = useMemberStore();
+	const formStore = useFormStore();
 	const { loadState, saveNotice, saving, load } = useBandPage();
 	const route = useRoute();
 	const router = useRouter();
 
-	const form = computed(() => forms.forms.find(f => f.id === Number(route.params.id)));
+	const form = computed(() => formStore.forms.find(f => f.id === Number(route.params.id)));
 	const registered = computed(() => (form.value ? clientFormFor(form.value.slug) : undefined));
-	const signedOff = computed(() => form.value?.members.some(m => m.member === member.me?.member && m.signedOffAt));
+	const signedOff = computed(() => form.value?.members.some(m => m.member === memberStore.me?.member && m.signedOffAt));
 
 	// The progress composable wants a form even before one loads; it's only read once `form` exists.
 	const { today, myDays, done, lines } = useFormProgress(() => form.value!);
@@ -97,7 +97,7 @@
 		signingOff.value = true;
 		message.value = '';
 		try {
-			await forms.signOffForm(form.value.id);
+			await formStore.signOffForm(form.value.id);
 			await router.push('/da-band');
 		} catch (error) {
 			if (error instanceof ApiError && error.code === 'incomplete') {

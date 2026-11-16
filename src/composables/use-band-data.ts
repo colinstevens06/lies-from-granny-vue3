@@ -15,10 +15,10 @@ const SAVE_NOTICE: Record<SaveProblem, string> = {
  * `useBandPage` adds the load on mount.
  */
 export const useBandData = () => {
-	const availability = useAvailabilityStore();
-	const forms = useFormStore();
-	const practices = usePracticeStore();
-	const stores = [availability, forms, practices];
+	const availabilityStore = useAvailabilityStore();
+	const formStore = useFormStore();
+	const practiceStore = usePracticeStore();
+	const stores = [availabilityStore, formStore, practiceStore];
 
 	/** Loads all three in parallel. Never rejects: each store records its own failure in its `loadState`. */
 	const load = async () => {
@@ -32,10 +32,10 @@ export const useBandData = () => {
 	});
 
 	/** True while either save queue is busy, so sign-off waits for answers of both kinds. */
-	const saving = computed(() => availability.saving || forms.saving);
+	const saving = computed(() => availabilityStore.saving || formStore.saving);
 
 	const saveNotice = computed(() => {
-		const problems = [availability.saveProblem, forms.saveProblem];
+		const problems = [availabilityStore.saveProblem, formStore.saveProblem];
 		const problem = problems.includes('retrying') ? 'retrying' : problems.includes('reloaded') ? 'reloaded' : undefined;
 		return problem && SAVE_NOTICE[problem];
 	});
@@ -45,8 +45,8 @@ export const useBandData = () => {
 	 * `already-booked` names the days); the caller reloads with `load()` then.
 	 */
 	const lockIn = async (formId: number, days: string[]) => {
-		await forms.lockInForm(formId, days);
-		await Promise.all([forms.load(), practices.load()]);
+		await formStore.lockInForm(formId, days);
+		await Promise.all([formStore.load(), practiceStore.load()]);
 	};
 
 	return { load, loadState, saving, saveNotice, lockIn };

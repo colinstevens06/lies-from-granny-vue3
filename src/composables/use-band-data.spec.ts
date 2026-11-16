@@ -47,7 +47,7 @@ describe('useBandData', () => {
 	it('counts as saving while only an availability answer is waiting to save', async () => {
 		serve(() => ({ body: makeAvailability('colin', { '2026-12-01': 'yes' }) }));
 		useMemberStore().me = { member: 'colin' } as never;
-		useAvailabilityStore().availability = [makeAvailability('colin', {})];
+		useAvailabilityStore().byMember = [makeAvailability('colin', {})];
 		const { data, stop } = runBandData();
 
 		useAvailabilityStore().setMyAnswers([{ date: '2026-12-01', answer: 'yes' }]);
@@ -59,9 +59,9 @@ describe('useBandData', () => {
 	});
 
 	it('reloads forms and practices after a lock-in', async () => {
-		const forms = useFormStore();
-		const lockInForm = vi.spyOn(forms, 'lockInForm').mockResolvedValue();
-		const formsLoad = vi.spyOn(forms, 'load').mockResolvedValue();
+		const formStore = useFormStore();
+		const lockInForm = vi.spyOn(formStore, 'lockInForm').mockResolvedValue();
+		const formsLoad = vi.spyOn(formStore, 'load').mockResolvedValue();
 		const practicesLoad = vi.spyOn(usePracticeStore(), 'load').mockResolvedValue();
 		const availabilityLoad = vi.spyOn(useAvailabilityStore(), 'load').mockResolvedValue();
 		const { data, stop } = runBandData();
@@ -77,9 +77,9 @@ describe('useBandData', () => {
 	});
 
 	it('reloads nothing when the lock-in is refused, and passes the error on', async () => {
-		const forms = useFormStore();
-		vi.spyOn(forms, 'lockInForm').mockRejectedValue(new Error('already-booked'));
-		const formsLoad = vi.spyOn(forms, 'load').mockResolvedValue();
+		const formStore = useFormStore();
+		vi.spyOn(formStore, 'lockInForm').mockRejectedValue(new Error('already-booked'));
+		const formsLoad = vi.spyOn(formStore, 'load').mockResolvedValue();
 		const practicesLoad = vi.spyOn(usePracticeStore(), 'load').mockResolvedValue();
 		const { data, stop } = runBandData();
 

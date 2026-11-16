@@ -30,7 +30,7 @@
 								{{ formatPracticeTime(practice) }} · {{ practiceLocation(practice) }}
 							</span>
 						</button>
-						<p v-if="!upcoming.length" class="band-card m-0 text-xl font-bold">No upcoming practices.</p>
+						<p v-if="!upcoming.length" class="band-card m-0 text-xl font-bold">No upcoming practiceStore.</p>
 					</BandSection>
 				</AdminGate>
 			</div>
@@ -54,12 +54,12 @@
 	import { useBandPage } from '@/composables/use-band-page';
 	import { usePracticeStore } from '@/stores/practices';
 
-	const practices = usePracticeStore();
+	const practiceStore = usePracticeStore();
 	const { loadState } = useBandPage();
 
 	/** The practice being edited, 'new' for an empty editor, or nothing for the list. */
 	const editing = ref<Practice | 'new'>();
 
 	const { now } = useEasternNow();
-	const upcoming = computed(() => upcomingPractices(practices.practices, now.value));
+	const upcoming = computed(() => upcomingPractices(practiceStore.practices, now.value));
 </script>

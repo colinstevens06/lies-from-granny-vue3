@@ -11,7 +11,7 @@ const answer = (day: string, value: 'yes' | 'no' | 'maybe') => ({ date: day, ans
 const signedInStore = (days: Parameters<typeof makeAvailability>[1] = {}) => {
 	useMemberStore().me = { member: 'colin' } as never;
 	const store = useAvailabilityStore();
-	store.availability = [makeAvailability('colin', days)];
+	store.byMember = [makeAvailability('colin', days)];
 	return store;
 };
 
@@ -71,8 +71,8 @@ describe('availability store', () => {
 	// availability load kept my stale local row instead of the server's.
 	it("takes the server's copy of my row when only a form save finished during the load", async () => {
 		const store = signedInStore({ '2026-12-01': 'yes' });
-		const forms = useFormStore();
-		forms.forms = [makeForm({ id: 1 })];
+		const formStore = useFormStore();
+		formStore.forms = [makeForm({ id: 1 })];
 
 		const availabilityGate = gate();
 		serve(async path => {
@@ -82,7 +82,7 @@ describe('availability store', () => {
 		});
 
 		const loading = store.load();
-		forms.setMyFormAnswer(1, { wantsNew: false });
+		formStore.setMyFormAnswer(1, { wantsNew: false });
 		await wait(700); // the form lane's 600 ms debounce, then the save lands
 		availabilityGate.release();
 		await loading;

@@ -14,16 +14,17 @@ const CHUNK = 400;
 
 /** Everyone's availability, plus my answers' save queue. */
 export const useAvailabilityStore = defineStore('availability', () => {
-	const member = useMemberStore();
+	const memberStore = useMemberStore();
 
-	const availability = ref<MemberAvailability[]>([]);
+	/** Everyone's answers, one row per member. */
+	const byMember = ref<MemberAvailability[]>([]);
 	const loadState = ref<LoadState>('idle');
 	const saveWasRefused = ref(false);
 
 	/** Goes up on every successful availability save. A load only applies "mine" if it hasn't changed since the load began. */
 	let saveVersion = 0;
 
-	const mineRow = () => availability.value.find(row => row.member === member.me?.member);
+	const mineRow = () => byMember.value.find(row => row.member === memberStore.me?.member);
 
 	/** Applies my queued (not yet confirmed) answers on top of the row the server just sent. */
 	const dayFor = ({ answer, showAnswer }: Omit<MyAnswer, 'date'>, id: CurrentMember['member']): DayAnswer => ({
@@ -36,10 +37,10 @@ export const useAvailabilityStore = defineStore('availability', () => {
 
 	const reapplyPendingAnswers = () => {
 		const row = mineRow();
-		if (!row || !member.me) return;
+		if (!row || !memberStore.me) return;
 
 		for (const date of answerLane.pendingKeys()) {
-			row.days[date] = dayFor(answerLane.pendingValue(date)!, member.me.member);
+			row.days[date] = dayFor(answerLane.pendingValue(date)!, memberStore.me.member);
 		}
 	};
 
@@ -49,7 +50,7 @@ export const useAvailabilityStore = defineStore('availability', () => {
 			let row!: MemberAvailability;
 			for (let i = 0; i < entries.length; i += CHUNK) {
 				row = await bandService.patchAvailability(
-					member.me!.member,
+					memberStore.me!.member,
 					entries.slice(i, i + CHUNK).map(([date, change]) => ({ date, ...change }))
 				);
 			}
@@ -58,7 +59,7 @@ export const useAvailabilityStore = defineStore('availability', () => {
 		onSaved(_entries, row) {
 			saveVersion++;
 			saveWasRefused.value = false;
-			availability.value = availability.value.map(r => (r.member === row.member ? row : r));
+			byMember.value = byMember.value.map(r => (r.member === row.member ? row : r));
 			reapplyPendingAnswers();
 		},
 		onRejected(entries) {
@@ -74,10 +75,10 @@ export const useAvailabilityStore = defineStore('availability', () => {
 	/** Queues my answers (keyed by date). Each replaces its whole day. `immediate` is for a weekday fill. */
 	const setMyAnswers = (changes: MyAnswer[], { immediate = false } = {}) => {
 		const row = mineRow();
-		if (!row || !member.me) return;
+		if (!row || !memberStore.me) return;
 
 		for (const { date, ...change } of changes) {
-			row.days[date] = dayFor(change, member.me.member);
+			row.days[date] = dayFor(change, memberStore.me.member);
 			answerLane.enqueue(date, change, { immediate });
 		}
 	};
@@ -101,7 +102,7 @@ export const useAvailabilityStore = defineStore('availability', () => {
 			const mineChanged = saveVersion !== startedAt;
 			const mine = mineRow();
 
-			availability.value = rows.map(row => (row.member === member.me?.member && mineChanged && mine ? mine : row));
+			byMember.value = rows.map(row => (row.member === memberStore.me?.member && mineChanged && mine ? mine : row));
 			reapplyPendingAnswers();
 			loadState.value = 'ready';
 		} catch {
@@ -113,5 +114,5 @@ export const useAvailabilityStore = defineStore('availability', () => {
 	/** My own availability, keyed by day. */
 	const myDays = computed(() => mineRow()?.days ?? {});
 
-	return { availability, loadState, saving, saveProblem, myDays, load, setMyAnswers };
+	return { byMember, loadState, saving, saveProblem, myDays, load, setMyAnswers };
 });

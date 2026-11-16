@@ -24,10 +24,10 @@ describe('pick-dates', () => {
 	// No) left the chips but stayed in `picked`, so Lock in still counted and posted it.
 	it('counts and sends only the picked days that are still offered (code review #2)', async () => {
 		const store = useAvailabilityStore();
-		store.availability = makeBandAvailability(DAYS);
-		const forms = useFormStore();
-		const lockIn = vi.spyOn(forms, 'lockInForm').mockResolvedValue();
-		vi.spyOn(forms, 'load').mockResolvedValue();
+		store.byMember = makeBandAvailability(DAYS);
+		const formStore = useFormStore();
+		const lockIn = vi.spyOn(formStore, 'lockInForm').mockResolvedValue();
+		vi.spyOn(formStore, 'load').mockResolvedValue();
 		vi.spyOn(usePracticeStore(), 'load').mockResolvedValue();
 
 		const wrapper = mountWithPrime(PickDates, { props: { form } });
@@ -35,7 +35,7 @@ describe('pick-dates', () => {
 		expect(wrapper.text()).toContain('Lock in 2');
 
 		// Two members now say No for the 3rd, so it's neither "everyone" nor "one short".
-		store.availability = makeBandAvailability(DAYS, 'yes', {
+		store.byMember = makeBandAvailability(DAYS, 'yes', {
 			anna: { '2099-03-03': 'no' },
 			kyle: { '2099-03-03': 'no' }
 		});

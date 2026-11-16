@@ -20,8 +20,8 @@
 
 	const props = defineProps<{ form: Form }>();
 
-	const availability = useAvailabilityStore();
+	const availabilityStore = useAvailabilityStore();
 	const total = rangeDayCount(props.form);
 
-	const rowOf = (id: string) => availability.availability.find(row => row.member === id);
+	const rowOf = (id: string) => availabilityStore.byMember.find(row => row.member === id);
 </script>

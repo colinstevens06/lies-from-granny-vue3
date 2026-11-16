@@ -7,12 +7,12 @@
 					:date
 					:past
 					:status="dayStatus(date)"
-					:availability="availability.availability"
+					:availability="availabilityStore.byMember"
 					@select="selected = $event"
 				/>
 			</template>
 		</MonthGrid>
-		<DayAnswersSheet :date="selected" :availability="availability.availability" @close="selected = undefined" />
+		<DayAnswersSheet :date="selected" :availability="availabilityStore.byMember" @close="selected = undefined" />
 	</div>
 </template>
 
@@ -30,7 +30,7 @@
 	// The shared calendar: each day's status fill (four keys, shown above it) plus five member dots. Tapping a day opens everyone's answers.
 	defineProps<{ today: string; form?: Form }>();
 
-	const availability = useAvailabilityStore();
+	const availabilityStore = useAvailabilityStore();
 	const { dayStatus } = useBandCalendar();
 	const selected = ref<string>();
 </script>

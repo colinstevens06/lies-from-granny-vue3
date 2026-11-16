@@ -15,13 +15,15 @@ import { useMemberStore } from '@/stores/member';
  * each form's `screen.vue`.
  */
 export const useFormProgress = (form: () => Form) => {
-	const member = useMemberStore();
-	const availability = useAvailabilityStore();
-	const forms = useFormStore();
+	const memberStore = useMemberStore();
+	const availabilityStore = useAvailabilityStore();
+	const formStore = useFormStore();
 	const { today } = useEasternNow();
 
-	const myDays = computed(() => availability.myDays);
-	const mine = computed(() => (member.me ? ruleFor(form().slug)?.mineOf(form(), member.me.member) : undefined));
+	const myDays = computed(() => availabilityStore.myDays);
+	const mine = computed(() =>
+		memberStore.me ? ruleFor(form().slug)?.mineOf(form(), memberStore.me.member) : undefined
+	);
 	const missing = computed(() => ruleFor(form().slug)?.missing(form(), myDays.value, mine.value, today.value));
 	const done = computed(() => missing.value?.done === true);
 	const lines = computed(() =>
@@ -36,13 +38,13 @@ export const useFormProgress = (form: () => Form) => {
 
 	/** Queues my availability answers. `immediate` is for a weekday fill. */
 	const setMyAnswers = (changes: MyAnswer[], options?: { immediate?: boolean }) =>
-		availability.setMyAnswers(changes, options);
+		availabilityStore.setMyAnswers(changes, options);
 
 	/** Queues my whole answer body for this form. */
-	const setMyFormAnswer = (body: object) => forms.setMyFormAnswer(form().id, body);
+	const setMyFormAnswer = (body: object) => formStore.setMyFormAnswer(form().id, body);
 
 	/** This form's body still waiting to save, so the screen keeps showing what the member typed. */
-	const pendingFormAnswer = () => forms.pendingFormAnswer(form().id);
+	const pendingFormAnswer = () => formStore.pendingFormAnswer(form().id);
 
 	return { today, myDays, mine, missing, done, lines, setMyAnswers, setMyFormAnswer, pendingFormAnswer };
 };

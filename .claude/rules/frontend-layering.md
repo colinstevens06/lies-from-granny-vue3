@@ -43,6 +43,10 @@ Service (HTTP) → Store (server state) → Composable (joins, UI/workflow state
 - **A store exposes state, not wording.** A failing save is `saveProblem: 'retrying' | 'reloaded'`; the composable that
   owns the page turns it into the sentence the member reads.
 - **Getters that derive from one store's state belong on that store** (`openForms`, `myDays`).
+- **Naming (Colin, 2026-11-16):** a variable holding a store ends in `Store` (`const formStore = useFormStore()`,
+  Speed Shopper's `recipeStore`), and a store's state is named for what it holds, never repeating the store's name.
+  `availabilityStore.byMember` (one row per member), not `availability.availability`; plural collections read
+  naturally (`formStore.forms`, `practiceStore.practices`). Specs may call the store under test `store`.
 
 ## Composables
 

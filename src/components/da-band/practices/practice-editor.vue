@@ -71,14 +71,14 @@
 	import { PRACTICE_HOME } from '@utils/da-band/practices';
 	import { usePracticeStore } from '@/stores/practices';
 
-	// The admin's editor for one practice (or a new one). It sends the whole record through `practices.savePractice`.
+	// The admin's editor for one practice (or a new one). It sends the whole record through `practiceStore.savePractice`.
 	const props = defineProps<{ practice?: Practice }>();
 	const emit = defineEmits<{ close: [] }>();
 
 	// A label (or group) stacked over its control.
 	const FIELD = 'flex flex-column gap-1 font-bold';
 
-	const practices = usePracticeStore();
+	const practiceStore = usePracticeStore();
 
 	const date = ref(props.practice?.date ?? '');
 	const startTime = ref(props.practice?.startTime ?? '');
@@ -148,7 +148,7 @@
 		saving.value = true;
 		error.value = '';
 		try {
-			await practices.savePractice(input.value as PracticeInput, props.practice?.id);
+			await practiceStore.savePractice(input.value as PracticeInput, props.practice?.id);
 			emit('close');
 		} catch (caught) {
 			if (caught instanceof ApiError && caught.code === 'date-taken') {

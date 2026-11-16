@@ -10,7 +10,7 @@ import { warnBeforeUnloadWhile } from './unload-guard';
 
 /** Every band form, plus the save queue for my answers to them. */
 export const useFormStore = defineStore('forms', () => {
-	const member = useMemberStore();
+	const memberStore = useMemberStore();
 
 	const forms = ref<Form[]>([]);
 	const loadState = ref<LoadState>('idle');
@@ -25,7 +25,7 @@ export const useFormStore = defineStore('forms', () => {
 			// Latest whole body per form wins; one request per form, and every form's server copy is kept.
 			const saved: Form[] = [];
 			for (const [formId, body] of entries) {
-				saved.push(await bandService.putFormMemberAnswers(Number(formId), member.me!.member, body));
+				saved.push(await bandService.putFormMemberAnswers(Number(formId), memberStore.me!.member, body));
 			}
 			return saved;
 		},
@@ -75,14 +75,14 @@ export const useFormStore = defineStore('forms', () => {
 	const availabilityForm = computed(() => openForms.value.find(form => form.availability));
 	/** Open forms I haven't signed off. */
 	const myTodos = computed(() =>
-		openForms.value.filter(form => !form.members.find(m => m.member === member.me?.member)?.signedOffAt)
+		openForms.value.filter(form => !form.members.find(m => m.member === memberStore.me?.member)?.signedOffAt)
 	);
 
 	const replaceForm = (form: Form) => (forms.value = forms.value.map(f => (f.id === form.id ? form : f)));
 
 	/** Signs me off a form. Throws an `ApiError`: 409 `incomplete` (with what's missing) or `closed`. */
 	const signOffForm = async (formId: number) => {
-		replaceForm(await bandService.patchFormMember(formId, member.me!.member, { signedOff: true }));
+		replaceForm(await bandService.patchFormMember(formId, memberStore.me!.member, { signedOff: true }));
 	};
 
 	/** Admin: closes an open form (the server refuses anyone else). */

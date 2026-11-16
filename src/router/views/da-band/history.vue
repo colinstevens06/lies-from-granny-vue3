@@ -44,9 +44,9 @@
 	import { useBandPage } from '@/composables/use-band-page';
 	import { usePracticeStore } from '@/stores/practices';
 
-	const practices = usePracticeStore();
+	const practiceStore = usePracticeStore();
 	const { loadState } = useBandPage();
 
 	const { now } = useEasternNow();
-	const history = computed(() => practiceHistory(practices.practices, now.value));
+	const history = computed(() => practiceHistory(practiceStore.practices, now.value));
 </script>

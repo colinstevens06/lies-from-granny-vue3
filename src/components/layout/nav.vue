@@ -65,8 +65,12 @@
 				</div>
 			</template>
 
-			<div v-else-if="member.me" class="flex align-items-center gap-3">
-				<router-link v-if="member.me.role === 'admin'" class="top-nav__item nav-btn ml-0 py-2 px-3" to="/da-band/admin">
+			<div v-else-if="memberStore.me" class="flex align-items-center gap-3">
+				<router-link
+					v-if="memberStore.me.role === 'admin'"
+					class="top-nav__item nav-btn ml-0 py-2 px-3"
+					to="/da-band/admin"
+				>
 					<span>Admin</span>
 				</router-link>
 				<p class="align-self-center m-0 text-sm white-space-nowrap">
@@ -121,15 +125,15 @@
 
 	const route = useRoute();
 	const router = useRouter();
-	const member = useMemberStore();
+	const memberStore = useMemberStore();
 
 	// Every /da-band route gets a slim bar (logo, then the band items) instead of the public site nav.
 	const isBand = computed(() => route.path.startsWith('/da-band'));
 
-	const signedInName = computed(() => (member.me ? memberName(member.me.member) : undefined));
+	const signedInName = computed(() => (memberStore.me ? memberName(memberStore.me.member) : undefined));
 
 	const signOutAndLeave = async () => {
-		await member.signOut();
+		await memberStore.signOut();
 		await router.push({ name: 'da-band-login' });
 	};
 

@@ -40,7 +40,7 @@
 
 	const route = useRoute();
 	const router = useRouter();
-	const member = useMemberStore();
+	const memberStore = useMemberStore();
 
 	const notAMember = computed(() => route.query.reason === 'not-a-member');
 	const loadFailed = computed(() => route.query.reason === 'error');
@@ -50,7 +50,7 @@
 	const signInWithGoogle = async (path: string) => (await import('@utils/da-band/auth/auth')).signInWithGoogle(path);
 
 	const signOutAndStay = async () => {
-		await member.signOut();
+		await memberStore.signOut();
 		await router.replace({ name: 'da-band-login', query: { redirect: redirect.value } });
 	};
 </script>

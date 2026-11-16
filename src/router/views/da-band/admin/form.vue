@@ -77,15 +77,15 @@
 	import { useFormStore } from '@/stores/forms';
 	import { usePracticeStore } from '@/stores/practices';
 
-	const forms = useFormStore();
-	const practices = usePracticeStore();
+	const formStore = useFormStore();
+	const practiceStore = usePracticeStore();
 	const { loadState } = useBandPage();
 	const route = useRoute();
 
-	const form = computed(() => forms.forms.find(f => f.id === Number(route.params.id)));
+	const form = computed(() => formStore.forms.find(f => f.id === Number(route.params.id)));
 	const registered = computed(() => (form.value ? clientFormFor(form.value.slug) : undefined));
 	const waiting = computed(() => (form.value ? waitingOn(form.value) : []));
-	const formPractices = computed(() => practices.practices.filter(p => p.formId === form.value?.id));
+	const formPractices = computed(() => practiceStore.practices.filter(p => p.formId === form.value?.id));
 
 	const confirming = ref(false);
 	const closing = ref(false);
@@ -97,7 +97,7 @@
 		closing.value = true;
 		closeError.value = '';
 		try {
-			await forms.closeForm(form.value.id);
+			await formStore.closeForm(form.value.id);
 		} catch {
 			closeError.value = "Couldn't close it. Try again.";
 		} finally {
