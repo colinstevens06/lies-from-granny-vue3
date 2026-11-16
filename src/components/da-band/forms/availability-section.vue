@@ -17,14 +17,14 @@
 		<WeekGrid
 			:start-day="form.availability.startDay"
 			:end-day="form.availability.endDay"
-			:my-days="myDays"
-			:today="today"
+			:my-days
+			:today
 			@change="change => emit('change', [change], false)"
 		/>
 		<WeekdayFillSheet
 			v-model:visible="sheetOpen"
-			:blank-counts="blankCounts"
-			:day-counts="dayCounts"
+			:blank-counts
+			:day-counts
 			:count-changes="(weekday, answer, overwrite) => changesFor(weekday, answer, overwrite).length"
 			@fill="fillWeekday"
 		/>

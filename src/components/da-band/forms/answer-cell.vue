@@ -5,7 +5,7 @@
 		class="answer-cell relative overflow-hidden flex flex-column align-items-center justify-content-center py-1 px-0 border-none border-round text-sm font-bold line-height-1"
 		:class="[`answer-cell--${answer ?? 'none'}`, disabled ? 'opacity-40' : 'cursor-pointer']"
 		style="min-height: 46px"
-		:disabled="disabled"
+		:disabled
 		:data-day="date"
 		:aria-label="`${label}: ${state}`"
 		@click="emit('change', { date, ...nextDayChange(date, { answer, showAnswer }) })"

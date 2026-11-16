@@ -2,7 +2,7 @@
 	<AdminTile :title="form.title" :to="`/da-band/admin/forms/${form.id}`">
 		<p v-if="summary" class="text-black-alpha-70">{{ summary }}</p>
 		<p class="text-black-alpha-70">Due {{ formatDueDay(form) }}</p>
-		<FormState :form="form" />
+		<FormState :form />
 	</AdminTile>
 </template>
 

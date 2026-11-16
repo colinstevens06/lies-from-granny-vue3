@@ -1,6 +1,6 @@
 <template>
 	<div class="flex flex-column gap-5">
-		<AvailabilitySection :form="form" :my-days="band.myDays" :today="today" @change="onChange" />
+		<AvailabilitySection :form :my-days="band.myDays" :today @change="onChange" />
 
 		<YesNoText
 			prompt="Would you like to suggest a new song? (optional)"

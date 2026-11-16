@@ -11,14 +11,14 @@
 					</p>
 
 					<BandSection title="Forms">
-						<AdminFormTile v-for="form in band.openForms" :key="form.id" :form="form" />
+						<AdminFormTile v-for="form in band.openForms" :key="form.id" :form />
 						<p v-if="band.loadState === 'ready' && !band.openForms.length" class="band-card m-0 text-xl font-bold">
 							No form is open.
 						</p>
 					</BandSection>
 
 					<BandSection v-if="pastForms.length" title="Past forms">
-						<AdminFormTile v-for="form in pastForms" :key="form.id" :form="form" />
+						<AdminFormTile v-for="form in pastForms" :key="form.id" :form />
 					</BandSection>
 
 					<BandSection>

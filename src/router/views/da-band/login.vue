@@ -16,7 +16,7 @@
 						<Button label="Try again" @click="router.replace(redirect)" />
 					</template>
 					<template v-else>
-						<DevSignIn v-if="DevSignIn" :redirect="redirect" />
+						<DevSignIn v-if="DevSignIn" :redirect />
 						<Button label="Sign in with Google" icon="pi pi-google" @click="signInWithGoogle(redirect)" />
 					</template>
 				</BandSection>

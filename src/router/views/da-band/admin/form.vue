@@ -13,17 +13,17 @@
 					<template v-else>
 						<h1 class="font-permanent-marker m-0">{{ form.title }}</h1>
 						<p class="text-black-alpha-70">Due {{ formatDueDay(form) }}</p>
-						<FormState :form="form" />
+						<FormState :form />
 
 						<BandSection>
 							<template v-if="form.closedAt">
 								<h2 class="m-0">Closed</h2>
 								<p class="text-black-alpha-70">Closed {{ formatInstantDay(form.closedAt) }}.</p>
-								<PracticeCard v-for="practice in formPractices" :key="practice.id" :practice="practice" />
+								<PracticeCard v-for="practice in formPractices" :key="practice.id" :practice />
 							</template>
 							<template v-else>
 								<h2 class="m-0">{{ isEveryoneIn(form) ? "Everyone's in" : 'Waiting on answers' }}</h2>
-								<PickDates v-if="isEveryoneIn(form) && form.availability" :form="form" />
+								<PickDates v-if="isEveryoneIn(form) && form.availability" :form />
 								<div class="flex flex-wrap align-items-center gap-3 mt-2">
 									<CopyButton v-if="waiting.length" label="Copy a nudge" :text="nudgeText(form, waiting)" />
 									<Button label="Close form" severity="secondary" @click="confirming = true" />
@@ -33,8 +33,8 @@
 						</BandSection>
 
 						<BandSection title="Responses">
-							<FormResponses :form="form" />
-							<component :is="registered.responses" v-if="registered" :form="form" />
+							<FormResponses :form />
+							<component :is="registered.responses" v-if="registered" :form />
 						</BandSection>
 
 						<BandSection v-if="registered" title="What this form asks">

@@ -20,7 +20,7 @@
 				:id="inputId"
 				v-model="textValue"
 				class="w-full"
-				:placeholder="placeholder"
+				:placeholder
 				:maxlength="maxLength"
 				@input="publish"
 			/>

@@ -1,7 +1,7 @@
 <template>
 	<article class="band-card">
 		<h3 class="text-xl font-bold">{{ form.title }}</h3>
-		<FormState :form="form" />
+		<FormState :form />
 		<p v-if="waiting.length" class="text-black-alpha-70">Waiting on {{ waitingNames }}</p>
 		<div class="flex flex-wrap align-items-center gap-3 mt-2">
 			<CopyButton v-if="waiting.length" label="Copy a nudge" :text="nudgeText(form, waiting)" />

@@ -10,7 +10,7 @@
 
 				<template v-else>
 					<BandSection v-if="band.myTodos.length">
-						<FormTodoCard v-for="form in band.myTodos" :key="form.id" :form="form" />
+						<FormTodoCard v-for="form in band.myTodos" :key="form.id" :form />
 					</BandSection>
 
 					<p v-if="band.availabilityForm && isEveryoneIn(band.availabilityForm)" class="band-card band-card--featured">
@@ -20,7 +20,7 @@
 					</p>
 
 					<BandSection v-if="band.me?.role === 'admin' && band.openForms.length" title="Forms">
-						<FormStatusCard v-for="form in band.openForms" :key="form.id" :form="form" />
+						<FormStatusCard v-for="form in band.openForms" :key="form.id" :form />
 					</BandSection>
 
 					<BandSection title="Next practice">
@@ -29,7 +29,7 @@
 					</BandSection>
 
 					<BandSection title="Next gig">
-						<NextGig :gig="nextGig" :today="today" />
+						<NextGig :gig="nextGig" :today />
 					</BandSection>
 
 					<BandSection v-if="band.availabilityForm" title="Possible dates">
@@ -37,7 +37,7 @@
 					</BandSection>
 
 					<BandSection title="Band calendar">
-						<BandCalendar :today="today" :form="band.availabilityForm" />
+						<BandCalendar :today :form="band.availabilityForm" />
 						<BandLink to="/da-band/edit">Edit my availability &rarr;</BandLink>
 					</BandSection>
 
@@ -47,12 +47,12 @@
 
 					<template v-for="form in band.openForms" :key="form.id">
 						<BandSection v-if="clientFormFor(form.slug)" :title="`${form.title}: responses`">
-							<component :is="clientFormFor(form.slug)!.responses" :form="form" />
+							<component :is="clientFormFor(form.slug)!.responses" :form />
 						</BandSection>
 					</template>
 
 					<BandSection v-if="laterPractices.length" title="Upcoming practices">
-						<PracticeCard v-for="practice in laterPractices" :key="practice.id" :practice="practice" />
+						<PracticeCard v-for="practice in laterPractices" :key="practice.id" :practice />
 					</BandSection>
 
 					<BandLink to="/da-band/history" class="inline-block mt-4">Practice history &rarr;</BandLink>

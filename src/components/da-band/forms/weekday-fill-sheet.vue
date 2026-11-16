@@ -1,6 +1,6 @@
 <template>
 	<Sidebar
-		:visible="visible"
+		:visible
 		position="bottom"
 		header="Fill a weekday at once"
 		class="weekday-fill"

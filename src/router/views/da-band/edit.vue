@@ -10,10 +10,10 @@
 					{{ band.loadState === 'error' ? "Couldn't load. Refresh to try again." : 'Loading…' }}
 				</p>
 				<template v-else>
-					<MonthGrid :today="today" :form="band.availabilityForm">
+					<MonthGrid :today :form="band.availabilityForm">
 						<template #day="{ date, past }">
 							<AnswerCell
-								:date="date"
+								:date
 								:answer="band.myDays[date]?.answer"
 								:show-answer="band.myDays[date]?.showAnswer"
 								:disabled="past"

@@ -24,7 +24,7 @@
 						</span>
 					</div>
 
-					<component :is="registered.screen" :form="form" />
+					<component :is="registered.screen" :form />
 
 					<div
 						class="sticky bottom-0 z-2 flex flex-wrap align-items-center gap-3 mt-4 p-3 border-top-1 border-black-alpha-10 surface-100"

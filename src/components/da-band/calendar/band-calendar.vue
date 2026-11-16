@@ -1,11 +1,11 @@
 <template>
 	<div>
 		<LegendKeys :items="CALENDAR_LEGEND" class="mb-2" />
-		<MonthGrid :today="today" :form="form">
+		<MonthGrid :today :form>
 			<template #day="{ date, past }">
 				<CalendarDay
-					:date="date"
-					:past="past"
+					:date
+					:past
 					:status="calendarDayStatus(date, band.availability, band.practices, shows)"
 					:availability="band.availability"
 					@select="selected = $event"

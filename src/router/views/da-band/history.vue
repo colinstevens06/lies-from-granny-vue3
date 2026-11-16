@@ -20,7 +20,7 @@
 							<PracticeStatusBadge :status="practice.status" class="ml-2" />
 						</summary>
 						<div class="flex flex-column gap-1 mt-2">
-							<PracticeDetails :practice="practice" songs-open />
+							<PracticeDetails :practice songs-open />
 						</div>
 					</details>
 					<p v-if="band.loadState === 'ready' && !history.length" class="band-card m-0 text-xl font-bold">

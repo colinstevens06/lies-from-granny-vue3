@@ -1,6 +1,6 @@
 <template>
 	<Sidebar
-		:visible="visible"
+		:visible
 		position="bottom"
 		header="Confirm show nights"
 		class="weekday-fill"

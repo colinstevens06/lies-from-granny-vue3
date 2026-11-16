@@ -9,7 +9,7 @@
 		>
 			{{ formatPracticeDay(practice) }}
 		</div>
-		<PracticeDetails :practice="practice" :songs-open="featured" :featured="featured" />
+		<PracticeDetails :practice :songs-open="featured" :featured />
 	</article>
 </template>
 

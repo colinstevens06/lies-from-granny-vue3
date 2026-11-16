@@ -6,7 +6,7 @@
 		>
 			{{ formStateLabel(form) }}
 		</span>
-		<SignedOffDots :form="form" />
+		<SignedOffDots :form />
 	</div>
 </template>
 
