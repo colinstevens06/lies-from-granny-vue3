@@ -73,9 +73,10 @@
 				>
 					<span>Admin</span>
 				</router-link>
-				<p class="align-self-center m-0 text-sm white-space-nowrap">
+				<p class="flex align-items-center gap-1 m-0 text-sm white-space-nowrap">
 					{{ signedInName }} &middot;
-					<a href="#" @click.prevent="signOutAndLeave">Sign out</a>
+					<!-- band-link.vue's pink: PrimeVue's link button is blue here (CLAUDE.md, Styling). -->
+					<Button label="Sign out" link class="p-0 text-sm text-pink-600" @click="signOutAndLeave" />
 				</p>
 			</div>
 		</nav>

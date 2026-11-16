@@ -1,5 +1,34 @@
-import { describe, expect, it } from 'vitest';
-import { checkWrite, created, idFrom, memberFrom, methodNotAllowed } from './http';
+import { getUser } from '@netlify/identity';
+import { describe, expect, it, vi } from 'vitest';
+import { authenticate, checkWrite, created, idFrom, memberFrom, methodNotAllowed } from './http';
+
+vi.mock('@netlify/identity', () => ({ getUser: vi.fn(async () => null) }));
+
+const read = () => new Request('https://liesfromgranny.com/api/band/me');
+
+const statusOf = async (result: Awaited<ReturnType<typeof authenticate>>) =>
+	result instanceof Response ? result.status : 'passed';
+
+describe('authenticate', () => {
+	it('answers 401 when signed out', async () => {
+		expect(await statusOf(await authenticate(read()))).toBe(401);
+	});
+
+	it('answers 403 for an account that is not a band member', async () => {
+		vi.mocked(getUser).mockResolvedValueOnce({ id: 'user-1', roles: [] });
+		expect(await statusOf(await authenticate(read()))).toBe(403);
+	});
+
+	it('answers 403 when a member calls an admin route', async () => {
+		vi.mocked(getUser).mockResolvedValueOnce({ id: 'user-1', roles: ['nick'] });
+		expect(await statusOf(await authenticate(read(), true))).toBe(403);
+	});
+
+	it('returns the caller when they pass', async () => {
+		vi.mocked(getUser).mockResolvedValueOnce({ id: 'user-1', roles: ['colin', 'admin'] });
+		expect(await authenticate(read(), true)).toEqual({ member: 'colin', role: 'admin' });
+	});
+});
 
 const write = (headers: Record<string, string>) =>
 	new Request('https://liesfromgranny.com/api/band/forms/1', { method: 'PATCH', headers });

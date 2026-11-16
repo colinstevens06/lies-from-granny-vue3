@@ -16,6 +16,7 @@
 						<Button label="Try again" @click="router.replace(redirect)" />
 					</template>
 					<template v-else>
+						<p v-if="signInFailed" class="band-card m-0 text-xl font-bold">Google sign-in didn't finish. Try again.</p>
 						<DevSignIn v-if="DevSignIn" :redirect />
 						<Button label="Sign in with Google" icon="pi pi-google" @click="signInWithGoogle(redirect)" />
 					</template>
@@ -32,6 +33,7 @@
 	import Layout from '@router/layouts/main.vue';
 	import BandSection from '@components/da-band/band-section.vue';
 	import { useMemberStore } from '@/stores/member';
+	import { bandRedirect } from '@utils/da-band/auth/band-redirect';
 
 	// Local testing only. Behind import.meta.env.DEV so the production build drops the component and its import.
 	const DevSignIn = import.meta.env.DEV
@@ -44,7 +46,8 @@
 
 	const notAMember = computed(() => route.query.reason === 'not-a-member');
 	const loadFailed = computed(() => route.query.reason === 'error');
-	const redirect = computed(() => (typeof route.query.redirect === 'string' ? route.query.redirect : '/da-band'));
+	const signInFailed = computed(() => route.query.reason === 'sign-in-failed');
+	const redirect = computed(() => bandRedirect(route.query.redirect));
 
 	// auth.ts is lazy: it's only needed once someone presses a button.
 	const signInWithGoogle = async (path: string) => (await import('@utils/da-band/auth/auth')).signInWithGoogle(path);

@@ -13,6 +13,14 @@ class BandService extends ServiceBase {
 		super('/api/band');
 	}
 
+	/** Renews the Identity token first, so a member isn't sent back to Google an hour after signing in. */
+	protected override async beforeRequest() {
+		// Local testing: a chosen member has no Identity session to renew.
+		if (import.meta.env.DEV && (await import('@utils/da-band/auth/dev-auth')).getDevMember()) return;
+
+		await (await import('@utils/da-band/auth/auth')).refreshIfNeeded();
+	}
+
 	/** Local testing only: in a production build `import.meta.env.DEV` is false, so dev-auth is dropped from the bundle. */
 	protected override async requestHeaders() {
 		if (!import.meta.env.DEV) return {};

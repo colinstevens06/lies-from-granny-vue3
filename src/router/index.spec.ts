@@ -20,4 +20,15 @@ describe('band route guard', () => {
 		expect(router.currentRoute.value.name).toBe('da-band-login');
 		expect(router.currentRoute.value.query).toEqual({ reason: 'error', redirect: '/da-band' });
 	});
+
+	// Code review on PR 21: after a 401 sent the browser to login, the nav still showed the member and the guard
+	// let the next band page through on the cached answer.
+	it('forgets the cached member on the way to the login page', async () => {
+		const memberStore = useMemberStore();
+		memberStore.me = { member: 'colin', role: 'admin' };
+
+		await router.push({ name: 'da-band-login' });
+
+		expect(memberStore.me).toBeUndefined();
+	});
 });

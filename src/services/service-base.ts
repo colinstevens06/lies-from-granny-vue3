@@ -6,8 +6,8 @@ import type { HttpMethod, JsonBody, RequestOptions } from '@models/request-optio
  * and calls the protected verb helpers, so no service method names a verb as a string or touches `fetch`. JSON in and
  * out; a failure throws an `ApiError`.
  *
- * Two hooks for what differs per API: `requestHeaders` (extra headers on every request) and `onUnauthorized` (what a
- * 401 does). Both default to nothing.
+ * Three hooks for what differs per API: `beforeRequest` (work to finish before any request, like renewing a session),
+ * `requestHeaders` (extra headers on every request) and `onUnauthorized` (what a 401 does). All default to nothing.
  */
 export class ServiceBase {
 	constructor(private readonly basePath: string) {}
@@ -32,6 +32,9 @@ export class ServiceBase {
 		return this.request<T>('DELETE', path, undefined, options);
 	}
 
+	/** Runs before every request is sent. */
+	protected async beforeRequest(): Promise<void> {}
+
 	/** Extra headers sent with every request. */
 	protected async requestHeaders(): Promise<Record<string, string>> {
 		return {};
@@ -46,6 +49,8 @@ export class ServiceBase {
 		body: JsonBody | undefined,
 		{ handleUnauthorized = true }: RequestOptions = {}
 	): Promise<T> {
+		await this.beforeRequest();
+
 		let response: Response;
 		try {
 			response = await fetch(`${this.basePath}/${path}`, {

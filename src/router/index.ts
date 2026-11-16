@@ -99,6 +99,10 @@ const router = createRouter({
 });
 
 router.beforeEach(async to => {
+	// Reaching login means the session is gone or in doubt (a 401 sends the browser here). Drop the cached member so
+	// the nav stops showing them and the next band page checks with the server instead of trusting the cache.
+	if (to.name === 'da-band-login') useMemberStore().forget();
+
 	if (!to.meta.requiresMember) return;
 
 	// An offline or failing server must not reject the navigation (a blank first load, dead links); the login page says so.

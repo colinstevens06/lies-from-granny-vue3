@@ -26,21 +26,26 @@ export const useMemberStore = defineStore('member', () => {
 		}
 	};
 
+	/** Drops the cached member, so the next band page asks the server again. */
+	const forget = () => {
+		me.value = undefined;
+	};
+
 	const signOut = async () => {
 		// Local testing: the chosen member is the whole session, and Identity isn't running.
 		if (import.meta.env.DEV) {
 			const dev = await import('@utils/da-band/auth/dev-auth');
 			if (dev.getDevMember()) {
 				dev.clearDevMember();
-				me.value = undefined;
+				forget();
 				return;
 			}
 		}
 
 		const { signOut: leave } = await import('@utils/da-band/auth/auth');
 		await leave();
-		me.value = undefined;
+		forget();
 	};
 
-	return { me, loadMe, signOut };
+	return { me, loadMe, forget, signOut };
 });
