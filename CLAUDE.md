@@ -39,7 +39,7 @@ Package manager is Yarn 3 (Berry, pinned via `.yarnrc.yml` → `.yarn/releases/`
 - `src/components/shows/shows.ts` → `Gig[]` (`src/models/gig.ts`)
 - `src/components/songs/songs.ts` → `BandListing[]` (`src/models/song.ts`)
 
-Views compute over these arrays directly. Pinia is registered but effectively unused — `src/stores/counter.ts` is the untouched Vue scaffold store. Don't add a store for content that belongs in these static modules.
+Views compute over these arrays directly. Don't add a store for content that belongs in these static modules. Pinia holds only the `/da-band` server data (member, availability, forms, practices in `src/stores/`); `src/stores/counter.ts` is the untouched Vue scaffold store.
 
 **Images.** Source files live in `public/images/` and are referenced by root-relative path in the static data. Every *rendered* URL goes through `netlifyImage(src, width, format)` in `src/utils/images.ts`, which builds a Netlify Image CDN URL. The transform happens at render time only — never store a CDN URL in `shows.ts`/`songs.ts`. Widths are chosen from the rendered slot size, not the source size.
 

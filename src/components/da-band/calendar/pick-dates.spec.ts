@@ -2,7 +2,9 @@ import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { makeBandAvailability, makeForm } from '../../../test-utils/factories';
 import { mountWithPrime } from '../../../test-utils/mount';
-import { useBandStore } from '@/stores/band';
+import { useAvailabilityStore } from '@/stores/availability';
+import { useFormStore } from '@/stores/forms';
+import { usePracticeStore } from '@/stores/practices';
 import PickDates from './pick-dates.vue';
 
 // Far in the future so the real clock never puts these days in the past.
@@ -21,10 +23,12 @@ describe('pick-dates', () => {
 	// Code review #2 (planning/2026-11-da-band-code-review.md): a picked day that stops being offered (a member flips to
 	// No) left the chips but stayed in `picked`, so Lock in still counted and posted it.
 	it('counts and sends only the picked days that are still offered (code review #2)', async () => {
-		const store = useBandStore();
+		const store = useAvailabilityStore();
 		store.availability = makeBandAvailability(DAYS);
-		const lockIn = vi.spyOn(store, 'lockInForm').mockResolvedValue();
-		vi.spyOn(store, 'load').mockResolvedValue();
+		const forms = useFormStore();
+		const lockIn = vi.spyOn(forms, 'lockInForm').mockResolvedValue();
+		vi.spyOn(forms, 'load').mockResolvedValue();
+		vi.spyOn(usePracticeStore(), 'load').mockResolvedValue();
 
 		const wrapper = mountWithPrime(PickDates, { props: { form } });
 		for (const option of wrapper.findAll('[role="checkbox"]')) await option.trigger('click');

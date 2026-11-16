@@ -42,11 +42,11 @@
 	import { formatPracticeDay, practiceHistory } from '@utils/da-band/practices';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandPage } from '@/composables/use-band-page';
-	import { useBandStore } from '@/stores/band';
+	import { usePracticeStore } from '@/stores/practices';
 
-	const band = useBandStore();
+	const practices = usePracticeStore();
 	const { loadState } = useBandPage();
 
 	const { now } = useEasternNow();
-	const history = computed(() => practiceHistory(band.practices, now.value));
+	const history = computed(() => practiceHistory(practices.practices, now.value));
 </script>

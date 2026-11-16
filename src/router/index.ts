@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { useBandStore } from '@/stores/band';
+import { useMemberStore } from '@/stores/member';
 
 declare module 'vue-router' {
 	interface RouteMeta {
@@ -102,7 +102,7 @@ router.beforeEach(async to => {
 	if (!to.meta.requiresMember) return;
 
 	// An offline or failing server must not reject the navigation (a blank first load, dead links); the login page says so.
-	const status = await useBandStore()
+	const status = await useMemberStore()
 		.loadMe()
 		.catch(() => 'error' as const);
 	if (status === 'error') return { name: 'da-band-login', query: { reason: 'error', redirect: to.fullPath } };

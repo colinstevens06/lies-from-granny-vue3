@@ -31,7 +31,7 @@
 						<p v-if="signedOff" class="text-black-alpha-70">
 							You're signed off. You can still change answers until it closes.
 						</p>
-						<Button v-else label="Sign off" :disabled="!done || band.saving || signingOff" @click="askSignOff" />
+						<Button v-else label="Sign off" :disabled="!done || saving || signingOff" @click="askSignOff" />
 						<span v-if="saveNotice" class="font-bold">{{ saveNotice }}</span>
 					</div>
 
@@ -56,16 +56,18 @@
 	import { clientFormFor } from '@/forms';
 	import { useFormProgress } from '@/composables/use-form-progress';
 	import { useBandPage } from '@/composables/use-band-page';
-	import { useBandStore } from '@/stores/band';
+	import { useFormStore } from '@/stores/forms';
+	import { useMemberStore } from '@/stores/member';
 
-	const band = useBandStore();
-	const { loadState, saveNotice } = useBandPage();
+	const member = useMemberStore();
+	const forms = useFormStore();
+	const { loadState, saveNotice, saving, load } = useBandPage();
 	const route = useRoute();
 	const router = useRouter();
 
-	const form = computed(() => band.forms.find(f => f.id === Number(route.params.id)));
+	const form = computed(() => forms.forms.find(f => f.id === Number(route.params.id)));
 	const registered = computed(() => (form.value ? clientFormFor(form.value.slug) : undefined));
-	const signedOff = computed(() => form.value?.members.some(m => m.member === band.me?.member && m.signedOffAt));
+	const signedOff = computed(() => form.value?.members.some(m => m.member === member.me?.member && m.signedOffAt));
 
 	// The progress composable wants a form even before one loads; it's only read once `form` exists.
 	const { today, myDays, done, lines } = useFormProgress(() => form.value!);
@@ -89,17 +91,17 @@
 
 	const signOff = async () => {
 		// Rechecked at click time: the rule and the save queue can change between render and tap.
-		if (!form.value || !done.value || band.saving) return;
+		if (!form.value || !done.value || saving.value) return;
 
 		confirming.value = false;
 		signingOff.value = true;
 		message.value = '';
 		try {
-			await band.signOffForm(form.value.id);
+			await forms.signOffForm(form.value.id);
 			await router.push('/da-band');
 		} catch (error) {
 			if (error instanceof ApiError && error.code === 'incomplete') {
-				await band.load();
+				await load();
 				message.value = "Something's still missing.";
 				const first = error.details.firstMissing;
 				await nextTick();

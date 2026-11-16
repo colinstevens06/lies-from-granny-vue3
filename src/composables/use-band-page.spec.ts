@@ -4,12 +4,20 @@ import { defineComponent, h, nextTick, ref } from 'vue';
 import type { VueWrapper } from '@vue/test-utils';
 import { mountWithPrime } from '../test-utils/mount';
 import type { SaveProblem } from '@models/save-lane';
-import { useBandStore } from '@/stores/band';
+import { useAvailabilityStore } from '@/stores/availability';
+import { useFormStore } from '@/stores/forms';
+import { usePracticeStore } from '@/stores/practices';
 import { useBandPage } from './use-band-page';
 
-/** Mounts a bare component running the composable, so its `onMounted` fires as it does in a view. */
 let mounted: VueWrapper | undefined;
 
+/** Stubs the three loads, so a mounted page never reaches fetch. */
+const stubLoads = () =>
+	[useAvailabilityStore(), useFormStore(), usePracticeStore()].map(store =>
+		vi.spyOn(store, 'load').mockResolvedValue()
+	);
+
+/** Mounts a bare component running the composable, so its `onMounted` fires as it does in a view. */
 const mountPage = () => {
 	let page!: ReturnType<typeof useBandPage>;
 	mounted = mountWithPrime(
@@ -32,10 +40,10 @@ describe('useBandPage', () => {
 		mounted = undefined;
 	});
 
-	it('loads the band data once when the page opens', () => {
-		const load = vi.spyOn(useBandStore(), 'load').mockResolvedValue();
+	it('loads availability, forms and practices once each when the page opens', () => {
+		const loads = stubLoads();
 		mountPage();
-		expect(load).toHaveBeenCalledTimes(1);
+		for (const load of loads) expect(load).toHaveBeenCalledTimes(1);
 	});
 
 	it.each<[SaveProblem | undefined, string | undefined]>([
@@ -43,11 +51,11 @@ describe('useBandPage', () => {
 		['reloaded', "Couldn't save that. Your answers were reloaded."],
 		[undefined, undefined]
 	])('words the save problem %s for the member, and follows it as it changes', async (problem, notice) => {
-		const store = useBandStore();
-		vi.spyOn(store, 'load').mockResolvedValue();
-		// `saveProblem` is a getter over the save queues (the store spec drives a real refusal); a ref stands in for it here.
+		stubLoads();
+		// `saveProblem` is a getter over a store's save queue (the availability spec drives a real refusal); a ref stands
+		// in for the form store's here.
 		const current = ref<SaveProblem>();
-		Object.defineProperty(store, 'saveProblem', { get: () => current.value });
+		Object.defineProperty(useFormStore(), 'saveProblem', { get: () => current.value });
 
 		const page = mountPage();
 		expect(page.saveNotice.value).toBeUndefined();
@@ -55,5 +63,13 @@ describe('useBandPage', () => {
 		current.value = problem;
 		await nextTick();
 		expect(page.saveNotice.value).toBe(notice);
+	});
+
+	it('says "retrying" when one queue is retrying and the other was refused', () => {
+		stubLoads();
+		Object.defineProperty(useAvailabilityStore(), 'saveProblem', { get: () => 'reloaded' });
+		Object.defineProperty(useFormStore(), 'saveProblem', { get: () => 'retrying' });
+
+		expect(mountPage().saveNotice.value).toBe('Not saved yet. Retrying…');
 	});
 });

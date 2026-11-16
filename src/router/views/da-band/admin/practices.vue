@@ -52,14 +52,14 @@
 	import { formatPracticeDay, formatPracticeTime, practiceLocation, upcomingPractices } from '@utils/da-band/practices';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandPage } from '@/composables/use-band-page';
-	import { useBandStore } from '@/stores/band';
+	import { usePracticeStore } from '@/stores/practices';
 
-	const band = useBandStore();
+	const practices = usePracticeStore();
 	const { loadState } = useBandPage();
 
 	/** The practice being edited, 'new' for an empty editor, or nothing for the list. */
 	const editing = ref<Practice | 'new'>();
 
 	const { now } = useEasternNow();
-	const upcoming = computed(() => upcomingPractices(band.practices, now.value));
+	const upcoming = computed(() => upcomingPractices(practices.practices, now.value));
 </script>

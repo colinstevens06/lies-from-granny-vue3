@@ -9,7 +9,8 @@ import {
 	targetOf as targetOfFor
 } from '@utils/da-band/band-calendar';
 import { useEasternNow } from '@/composables/use-eastern-now';
-import { useBandStore } from '@/stores/band';
+import { useAvailabilityStore } from '@/stores/availability';
+import { usePracticeStore } from '@/stores/practices';
 
 /**
  * The one place availability, practices and `shows` are joined for the calendar and the date lists. Each function reads
@@ -17,26 +18,30 @@ import { useBandStore } from '@/stores/band';
  * changes, including at midnight on a tab left open.
  */
 export const useBandCalendar = () => {
-	const band = useBandStore();
+	const availability = useAvailabilityStore();
+	const practices = usePracticeStore();
 	const { now, today } = useEasternNow();
 
 	/** A day's fill on the band calendar. */
-	const dayStatus = (date: string) => calendarDayStatus(date, band.availability, band.practices, shows);
+	const dayStatus = (date: string) => calendarDayStatus(date, availability.availability, practices.practices, shows);
 
 	/** Upcoming unbooked days all five can practice, inside the form's range when there is one. */
-	const possibleDates = (form?: Form) => possibleDatesFor(form, band.availability, band.practices, shows, today.value);
+	const possibleDates = (form?: Form) =>
+		possibleDatesFor(form, availability.availability, practices.practices, shows, today.value);
 
 	/** The Fridays and Saturdays among them that all five can also play. */
-	const showNights = (form?: Form) => showNightsFor(form, band.availability, band.practices, shows, today.value);
+	const showNights = (form?: Form) =>
+		showNightsFor(form, availability.availability, practices.practices, shows, today.value);
 
 	/** How many practices the form still wants, or undefined when it doesn't say. */
-	const practicesStillNeeded = (form: Form) => practicesStillNeededFor(form, band.practices, shows);
+	const practicesStillNeeded = (form: Form) => practicesStillNeededFor(form, practices.practices, shows);
 
 	/** What the form is scheduling toward: its gig if still upcoming, else its free-text label. */
 	const targetOf = (form: Form) => targetOfFor(form, shows, today.value);
 
 	/** The admin's lock-in groups for a form. */
-	const pickGroups = (form: Form) => pickGroupsFor(form, band.availability, band.practices, today.value, shows);
+	const pickGroups = (form: Form) =>
+		pickGroupsFor(form, availability.availability, practices.practices, today.value, shows);
 
 	return { now, today, dayStatus, possibleDates, showNights, practicesStillNeeded, targetOf, pickGroups };
 };

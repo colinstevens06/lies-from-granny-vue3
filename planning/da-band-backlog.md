@@ -36,7 +36,7 @@ here; git keeps the history.
 The first suite (Vitest unit and component tests, three read-only Playwright smoke specs) covers the release gate only. Write these next (2026-11-13):
 
 - **Save lanes with fake timers.** Availability and form-answer queues: one in flight, retry keeps newer queued values, immediate flush for weekday fills, 401 handling in `BandService.onUnauthorized`.
-- **Store load and reject paths.** `src/stores/band.ts`: initial load, a rejected save, `pendingFormAnswer` overlay, stale reload.
+- **Store load and reject paths.** `src/stores/availability.ts` and `forms.ts`: initial load, `pendingFormAnswer` overlay, stale reload. (A rejected availability save and both queues' load merges have specs since the 2026-11 layering split.)
 - **Pick-dates and lock-in.** `pick-dates.vue` and `possible-dates.vue`: picks dropped when they leave the groups (code review #2), lock-in request body, practices created per form.
 - **Admin pages.** Form tile and status, practice editor validation (`practice-input.ts`), sign-off dots, the admin gate.
 - **More component cases.** `week-grid.vue` and `answer-cell.vue` tap cycle, `form-todo-card.vue` copy and overdue states, `calendar-day.vue`.

@@ -31,7 +31,7 @@
 	import Button from 'primevue/button';
 	import Layout from '@router/layouts/main.vue';
 	import BandSection from '@components/da-band/band-section.vue';
-	import { useBandStore } from '@/stores/band';
+	import { useMemberStore } from '@/stores/member';
 
 	// Local testing only. Behind import.meta.env.DEV so the production build drops the component and its import.
 	const DevSignIn = import.meta.env.DEV
@@ -40,7 +40,7 @@
 
 	const route = useRoute();
 	const router = useRouter();
-	const band = useBandStore();
+	const member = useMemberStore();
 
 	const notAMember = computed(() => route.query.reason === 'not-a-member');
 	const loadFailed = computed(() => route.query.reason === 'error');
@@ -50,7 +50,7 @@
 	const signInWithGoogle = async (path: string) => (await import('@utils/da-band/auth/auth')).signInWithGoogle(path);
 
 	const signOutAndStay = async () => {
-		await band.signOut();
+		await member.signOut();
 		await router.replace({ name: 'da-band-login', query: { redirect: redirect.value } });
 	};
 </script>

@@ -10,9 +10,8 @@ The canonical layer rules for this repo's client code, adopted from Speed Shoppe
 match Speed Shopper's. Where this repo differs, § Deliberate differences says so and why. The plan that adopted them is
 `planning/2026-11-da-band-layering.md`.
 
-**Today:** `/da-band` still has one store, `useBandStore` (`src/stores/band.ts`), holding the session and all three
-entities. Phase 2 of that plan splits it as § Stores describes. Until then, treat each entity's slice of it as that
-entity's store: a join across slices is still a composable's job.
+**`/da-band` stores** (`src/stores/`): `useMemberStore` (the session store), `useAvailabilityStore`,
+`useFormStore`, `usePracticeStore`. `useBandData()` combines them for a page; `useBandPage()` adds the load on mount.
 
 ```
 Service (HTTP) → Store (server state) → Composable (joins, UI/workflow state) → Component (render)
@@ -30,7 +29,8 @@ Service (HTTP) → Store (server state) → Composable (joins, UI/workflow state
 - **Page views** (`src/router/views/**`) are the page shells. They load through a page composable (`useBandPage()` on
   `/da-band`) and may read stores.
 - **A presentational component** (it renders what its props say: `calendar-day.vue`, `answer-cell.vue`) takes props
-  and emits events. A feature component under one page may read one store or call one store's method.
+  and emits events. A feature component uses at most one entity store (plus the member store) for a read or a
+  write. One that needs two goes through a composable: form screens use `useFormProgress`, lock-in uses `useBandData`.
 - **Deriving across two stores, or across a store and static data like `shows`, is a composable's job.** Its result is
   computed in one place, never re-derived in a component. `useBandCalendar()` is the reference.
 

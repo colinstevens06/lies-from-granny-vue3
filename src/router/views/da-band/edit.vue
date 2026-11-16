@@ -8,14 +8,14 @@
 
 				<BandLoadState v-if="loadState !== 'ready'" :load-state />
 				<template v-else>
-					<MonthGrid :today :form="band.availabilityForm">
+					<MonthGrid :today :form="forms.availabilityForm">
 						<template #day="{ date, past }">
 							<AnswerCell
 								:date
-								:answer="band.myDays[date]?.answer"
-								:show-answer="band.myDays[date]?.showAnswer"
+								:answer="availability.myDays[date]?.answer"
+								:show-answer="availability.myDays[date]?.showAnswer"
 								:disabled="past"
-								@change="change => band.setMyAnswers([change])"
+								@change="change => availability.setMyAnswers([change])"
 							/>
 						</template>
 					</MonthGrid>
@@ -34,9 +34,11 @@
 	import MonthGrid from '@components/da-band/calendar/month-grid.vue';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandPage } from '@/composables/use-band-page';
-	import { useBandStore } from '@/stores/band';
+	import { useAvailabilityStore } from '@/stores/availability';
+	import { useFormStore } from '@/stores/forms';
 
-	const band = useBandStore();
+	const availability = useAvailabilityStore();
+	const forms = useFormStore();
 	const { loadState, saveNotice } = useBandPage();
 
 	const { today } = useEasternNow();

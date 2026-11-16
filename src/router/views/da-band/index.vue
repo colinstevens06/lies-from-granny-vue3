@@ -7,18 +7,21 @@
 				<BandLoadState v-if="loadState !== 'ready'" :load-state />
 
 				<template v-else>
-					<BandSection v-if="band.myTodos.length">
-						<FormTodoCard v-for="form in band.myTodos" :key="form.id" :form />
+					<BandSection v-if="forms.myTodos.length">
+						<FormTodoCard v-for="form in forms.myTodos" :key="form.id" :form />
 					</BandSection>
 
-					<p v-if="band.availabilityForm && isEveryoneIn(band.availabilityForm)" class="band-card band-card--featured">
+					<p
+						v-if="forms.availabilityForm && isEveryoneIn(forms.availabilityForm)"
+						class="band-card band-card--featured"
+					>
 						<strong>Everyone's in.</strong>
 						{{ possibleCount }} {{ possibleCount === 1 ? 'date works' : 'dates work' }}. Practice dates are being
 						picked. They'll show up here.
 					</p>
 
-					<BandSection v-if="band.me?.role === 'admin' && band.openForms.length" title="Forms">
-						<FormStatusCard v-for="form in band.openForms" :key="form.id" :form />
+					<BandSection v-if="member.me?.role === 'admin' && forms.openForms.length" title="Forms">
+						<FormStatusCard v-for="form in forms.openForms" :key="form.id" :form />
 					</BandSection>
 
 					<BandSection title="Next practice">
@@ -30,20 +33,20 @@
 						<NextGig :gig="nextGig" :today />
 					</BandSection>
 
-					<BandSection v-if="band.availabilityForm" title="Possible dates">
-						<PossibleDates :form="band.availabilityForm" />
+					<BandSection v-if="forms.availabilityForm" title="Possible dates">
+						<PossibleDates :form="forms.availabilityForm" />
 					</BandSection>
 
 					<BandSection title="Band calendar">
-						<BandCalendar :today :form="band.availabilityForm" />
+						<BandCalendar :today :form="forms.availabilityForm" />
 						<BandLink to="/da-band/edit">Edit my availability &rarr;</BandLink>
 					</BandSection>
 
-					<BandSection v-if="!band.availabilityForm" title="Possible dates">
+					<BandSection v-if="!forms.availabilityForm" title="Possible dates">
 						<PossibleDates />
 					</BandSection>
 
-					<template v-for="form in band.openForms" :key="form.id">
+					<template v-for="form in forms.openForms" :key="form.id">
 						<BandSection v-if="clientFormFor(form.slug)" :title="`${form.title}: responses`">
 							<component :is="clientFormFor(form.slug)!.responses" :form />
 						</BandSection>
@@ -79,17 +82,21 @@
 	import { nextShowFrom } from '@utils/shows';
 	import { clientFormFor } from '@/forms';
 	import { useBandPage } from '@/composables/use-band-page';
-	import { useBandStore } from '@/stores/band';
+	import { useFormStore } from '@/stores/forms';
+	import { useMemberStore } from '@/stores/member';
+	import { usePracticeStore } from '@/stores/practices';
 
-	const band = useBandStore();
+	const member = useMemberStore();
+	const forms = useFormStore();
+	const practices = usePracticeStore();
 	const { loadState } = useBandPage();
 
 	const { now, today, possibleDates } = useBandCalendar();
 
-	const upcoming = computed(() => upcomingPractices(band.practices, now.value));
+	const upcoming = computed(() => upcomingPractices(practices.practices, now.value));
 	const nextPractice = computed(() => upcoming.value.find(practice => practice.status !== 'cancelled'));
 	const laterPractices = computed(() => upcoming.value.filter(practice => practice !== nextPractice.value));
 	const nextGig = computed(() => nextShowFrom(shows, today.value));
 
-	const possibleCount = computed(() => possibleDates(band.availabilityForm).length);
+	const possibleCount = computed(() => possibleDates(forms.availabilityForm).length);
 </script>

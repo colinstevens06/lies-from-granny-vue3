@@ -5,8 +5,8 @@ import type { Practice, PracticeInput } from '@models/practice';
 import { ServiceBase } from './service-base';
 
 /**
- * Stateless: one method per /api/band endpoint, named by verb and returning the response body. Only `stores/band.ts`
- * imports this.
+ * Stateless: one method per /api/band endpoint, named by verb and returning the response body. Only the stores in
+ * `src/stores/` import this.
  */
 class BandService extends ServiceBase {
 	constructor() {

@@ -9,5 +9,5 @@ export interface SaveLaneOptions<V, R> {
 	onRejected(entries: [string, V][]): void;
 }
 
-/** Why the last save didn't land: still retrying, or refused (and the data reloaded). `useBandPage` words it. */
+/** Why the last save didn't land: still retrying, or refused (and the data reloaded). `useBandData` words it. */
 export type SaveProblem = 'retrying' | 'reloaded';

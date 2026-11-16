@@ -16,12 +16,12 @@
 	import type { Form } from '@models/form';
 	import { memberName } from '@components/da-band/members';
 	import { answeredCount, rangeDayCount } from '@utils/da-band/form-status';
-	import { useBandStore } from '@/stores/band';
+	import { useAvailabilityStore } from '@/stores/availability';
 
 	const props = defineProps<{ form: Form }>();
 
-	const band = useBandStore();
+	const availability = useAvailabilityStore();
 	const total = rangeDayCount(props.form);
 
-	const rowOf = (id: string) => band.availability.find(row => row.member === id);
+	const rowOf = (id: string) => availability.availability.find(row => row.member === id);
 </script>

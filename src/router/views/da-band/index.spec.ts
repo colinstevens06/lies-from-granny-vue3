@@ -2,7 +2,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises } from '@vue/test-utils';
 import { mountWithPrime } from '../../../test-utils/mount';
-import { useBandStore } from '@/stores/band';
+import { useMemberStore } from '@/stores/member';
 import DaBand from './index.vue';
 
 // Stub the child components but keep their slots, so the page's own text is what's under test. The load-state line
@@ -28,7 +28,7 @@ describe('da-band home page', () => {
 			'fetch',
 			vi.fn(() => new Promise(() => undefined))
 		);
-		const store = useBandStore();
+		const store = useMemberStore();
 		store.me = { member: 'colin', role: 'admin' } as never;
 
 		const wrapper = mountHome();
@@ -44,7 +44,7 @@ describe('da-band home page', () => {
 			'fetch',
 			vi.fn(async () => Promise.reject(new Error('offline')))
 		);
-		const store = useBandStore();
+		const store = useMemberStore();
 		store.me = { member: 'colin', role: 'admin' } as never;
 
 		const wrapper = mountHome();

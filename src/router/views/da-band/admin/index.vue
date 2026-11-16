@@ -9,8 +9,8 @@
 					<BandLoadState v-if="loadState === 'error'" :load-state />
 
 					<BandSection title="Forms">
-						<AdminFormTile v-for="form in band.openForms" :key="form.id" :form />
-						<p v-if="loadState === 'ready' && !band.openForms.length" class="band-card m-0 text-xl font-bold">
+						<AdminFormTile v-for="form in forms.openForms" :key="form.id" :form />
+						<p v-if="loadState === 'ready' && !forms.openForms.length" class="band-card m-0 text-xl font-bold">
 							No form is open.
 						</p>
 					</BandSection>
@@ -45,18 +45,20 @@
 	import { formatPracticeDay, formatPracticeTime, needsTime, upcomingPractices } from '@utils/da-band/practices';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandPage } from '@/composables/use-band-page';
-	import { useBandStore } from '@/stores/band';
+	import { useFormStore } from '@/stores/forms';
+	import { usePracticeStore } from '@/stores/practices';
 
-	const band = useBandStore();
+	const forms = useFormStore();
+	const practices = usePracticeStore();
 	const { loadState } = useBandPage();
 
 	const { now } = useEasternNow();
-	const upcoming = computed(() => upcomingPractices(band.practices, now.value));
+	const upcoming = computed(() => upcomingPractices(practices.practices, now.value));
 	const needTime = computed(() => upcoming.value.filter(needsTime).length);
 	const nextPracticeLine = computed(() => {
 		const next = upcoming.value.find(practice => practice.status !== 'cancelled');
 		return next ? `Next: ${formatPracticeDay(next)}, ${formatPracticeTime(next)}` : 'No practice on the calendar.';
 	});
 
-	const pastForms = computed(() => band.forms.filter(form => form.closedAt));
+	const pastForms = computed(() => forms.forms.filter(form => form.closedAt));
 </script>

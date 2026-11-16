@@ -60,7 +60,7 @@
 	import { ApiError } from '@models/api-error';
 	import { formatShortDay } from '@utils/dates';
 	import { useBandCalendar } from '@/composables/use-band-calendar';
-	import { useBandStore } from '@/stores/band';
+	import { useBandData } from '@/composables/use-band-data';
 
 	// The admin's lock-in: pick dates, then Lock in creates those practices (time TBD) and closes the form.
 	const props = defineProps<{ form: Form }>();
@@ -68,7 +68,7 @@
 	// Separate pills, not one joined group.
 	const CHIP_PT = { button: { class: 'border-1 border-round-3xl' } };
 
-	const band = useBandStore();
+	const { load, lockIn: lockInDays } = useBandData();
 	const { pickGroups } = useBandCalendar();
 
 	const groups = computed(() => pickGroups(props.form));
@@ -104,12 +104,11 @@
 		locking.value = true;
 		message.value = '';
 		try {
-			await band.lockInForm(props.form.id, chosen.value);
-			await band.load();
+			await lockInDays(props.form.id, chosen.value);
 		} catch (error) {
 			if (error instanceof ApiError && error.code === 'already-booked') {
 				const taken = (error.details.days as string[] | undefined) ?? [];
-				await band.load();
+				await load();
 				picked.value = picked.value.filter(day => !taken.includes(day));
 				message.value = `Already booked: ${taken.map(dayLabel).join(', ')}`;
 			} else if (!(error instanceof ApiError && error.status === 401)) {

@@ -65,8 +65,8 @@
 				</div>
 			</template>
 
-			<div v-else-if="band.me" class="flex align-items-center gap-3">
-				<router-link v-if="band.me.role === 'admin'" class="top-nav__item nav-btn ml-0 py-2 px-3" to="/da-band/admin">
+			<div v-else-if="member.me" class="flex align-items-center gap-3">
+				<router-link v-if="member.me.role === 'admin'" class="top-nav__item nav-btn ml-0 py-2 px-3" to="/da-band/admin">
 					<span>Admin</span>
 				</router-link>
 				<p class="align-self-center m-0 text-sm white-space-nowrap">
@@ -85,7 +85,7 @@
 	import { netlifyImage } from '@utils/images';
 	import { computed, ref } from 'vue';
 	import { memberName } from '@components/da-band/members';
-	import { useBandStore } from '@/stores/band';
+	import { useMemberStore } from '@/stores/member';
 
 	const menu = ref();
 
@@ -121,15 +121,15 @@
 
 	const route = useRoute();
 	const router = useRouter();
-	const band = useBandStore();
+	const member = useMemberStore();
 
 	// Every /da-band route gets a slim bar (logo, then the band items) instead of the public site nav.
 	const isBand = computed(() => route.path.startsWith('/da-band'));
 
-	const signedInName = computed(() => (band.me ? memberName(band.me.member) : undefined));
+	const signedInName = computed(() => (member.me ? memberName(member.me.member) : undefined));
 
 	const signOutAndLeave = async () => {
-		await band.signOut();
+		await member.signOut();
 		await router.push({ name: 'da-band-login' });
 	};
 

@@ -1,6 +1,6 @@
 <template>
 	<div class="flex flex-column gap-5">
-		<AvailabilitySection :form :my-days="band.myDays" :today @change="onChange" />
+		<AvailabilitySection :form :my-days="myDays" :today @change="onChange" />
 
 		<YesNoText
 			prompt="Would you like to suggest a new song? (optional)"
@@ -21,24 +21,22 @@
 	import AvailabilitySection from '@components/da-band/forms/availability-section.vue';
 	import YesNoText from '@components/da-band/forms/yes-no-text.vue';
 	import { useFormProgress } from '@/composables/use-form-progress';
-	import { useBandStore } from '@/stores/band';
 	import type { SongPitch, SongPitchInput } from './model';
 	import { MAX_SUGGESTION } from './rules';
 
 	const props = defineProps<{ form: Form }>();
 
-	const band = useBandStore();
-	const { today, mine } = useFormProgress(() => props.form);
+	const { today, mine, myDays, setMyAnswers, setMyFormAnswer, pendingFormAnswer } = useFormProgress(() => props.form);
 
 	/** What to show for the song answer: what's still waiting to save, else what the server has. */
 	const answer = computed(
-		() => (band.pendingFormAnswer(props.form.id) as SongPitchInput | undefined) ?? (mine.value as SongPitch | undefined)
+		() => (pendingFormAnswer() as SongPitchInput | undefined) ?? (mine.value as SongPitch | undefined)
 	);
 
-	const onChange = (changes: MyAnswer[], immediate: boolean) => band.setMyAnswers(changes, { immediate });
+	const onChange = (changes: MyAnswer[], immediate: boolean) => setMyAnswers(changes, { immediate });
 
 	const onSong = ({ wants, text }: { wants: boolean; text: string }) => {
 		const body: SongPitchInput = wants ? { wantsNew: true, suggestion: text } : { wantsNew: false };
-		band.setMyFormAnswer(props.form.id, body);
+		setMyFormAnswer(body);
 	};
 </script>

@@ -7,12 +7,12 @@
 					:date
 					:past
 					:status="dayStatus(date)"
-					:availability="band.availability"
+					:availability="availability.availability"
 					@select="selected = $event"
 				/>
 			</template>
 		</MonthGrid>
-		<DayAnswersSheet :date="selected" :availability="band.availability" @close="selected = undefined" />
+		<DayAnswersSheet :date="selected" :availability="availability.availability" @close="selected = undefined" />
 	</div>
 </template>
 
@@ -25,12 +25,12 @@
 	import MonthGrid from '@components/da-band/calendar/month-grid.vue';
 	import { CALENDAR_LEGEND } from '@components/da-band/calendar/day-status';
 	import { useBandCalendar } from '@/composables/use-band-calendar';
-	import { useBandStore } from '@/stores/band';
+	import { useAvailabilityStore } from '@/stores/availability';
 
 	// The shared calendar: each day's status fill (four keys, shown above it) plus five member dots. Tapping a day opens everyone's answers.
 	defineProps<{ today: string; form?: Form }>();
 
-	const band = useBandStore();
+	const availability = useAvailabilityStore();
 	const { dayStatus } = useBandCalendar();
 	const selected = ref<string>();
 </script>
