@@ -4,9 +4,7 @@
 			<div class="da-band">
 				<BandLink to="/da-band" class="inline-block mb-3">&larr; Da Band</BandLink>
 
-				<p v-if="band.loadState !== 'ready'" class="band-card m-0 text-xl font-bold">
-					{{ band.loadState === 'error' ? "Couldn't load. Refresh to try again." : 'Loading…' }}
-				</p>
+				<BandLoadState v-if="loadState !== 'ready'" :load-state />
 				<p v-else-if="!form || form.closedAt" class="band-card m-0 text-xl font-bold">That form isn't open.</p>
 				<p v-else-if="!registered" class="band-card m-0 text-xl font-bold">This form needs an app update.</p>
 
@@ -34,7 +32,7 @@
 							You're signed off. You can still change answers until it closes.
 						</p>
 						<Button v-else label="Sign off" :disabled="!done || band.saving || signingOff" @click="askSignOff" />
-						<span v-if="band.saveNotice" class="font-bold">{{ band.saveNotice }}</span>
+						<span v-if="saveNotice" class="font-bold">{{ saveNotice }}</span>
 					</div>
 
 					<ShowNightsSheet v-model:visible="confirming" :summary="nights" :busy="signingOff" @confirm="signOff" />
@@ -45,23 +43,25 @@
 </template>
 
 <script setup lang="ts">
-	import { computed, nextTick, onMounted, ref } from 'vue';
+	import { computed, nextTick, ref } from 'vue';
 	import { useRoute, useRouter } from 'vue-router';
 	import Button from 'primevue/button';
 	import Layout from '@router/layouts/main.vue';
 	import BandLink from '@components/da-band/band-link.vue';
+	import BandLoadState from '@components/da-band/band-load-state.vue';
 	import ShowNightsSheet from '@components/da-band/forms/show-nights-sheet.vue';
 	import { showNightSummary } from '@utils/da-band/band-calendar';
 	import { ApiError } from '@models/api-error';
 	import { daysBetween, formatShortDay } from '@utils/dates';
 	import { clientFormFor } from '@/forms';
 	import { useFormProgress } from '@/composables/use-form-progress';
+	import { useBandPage } from '@/composables/use-band-page';
 	import { useBandStore } from '@/stores/band';
 
 	const band = useBandStore();
+	const { loadState, saveNotice } = useBandPage();
 	const route = useRoute();
 	const router = useRouter();
-	onMounted(() => band.load());
 
 	const form = computed(() => band.forms.find(f => f.id === Number(route.params.id)));
 	const registered = computed(() => (form.value ? clientFormFor(form.value.slug) : undefined));

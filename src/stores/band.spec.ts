@@ -64,6 +64,20 @@ describe('band store', () => {
 		await wait(450); // let the queued tap save, so it can't leak into the next test
 	});
 
+	it("reports a refused save as 'reloaded' until the next save lands", async () => {
+		const store = signedInStore();
+		serve(path => {
+			if (path.startsWith('availability/')) return { status: 400, body: { error: 'date-out-of-range' } };
+			if (path === 'availability') return { body: [makeAvailability('colin', {})] };
+			return { body: [] };
+		});
+
+		expect(store.saveProblem).toBeUndefined();
+		store.setMyAnswers([answer('2026-12-01', 'yes')], { immediate: true });
+		await vi.waitFor(() => expect(store.saveProblem).toBe('reloaded'));
+		await vi.waitFor(() => expect(store.loadState).toBe('ready'));
+	});
+
 	it('signs me off by patching my own row on the form, and shows the form the server returns', async () => {
 		const store = signedInStore();
 		store.forms = [makeForm({ id: 1 })];

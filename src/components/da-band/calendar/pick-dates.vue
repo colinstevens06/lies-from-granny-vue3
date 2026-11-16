@@ -57,11 +57,9 @@
 	import Button from 'primevue/button';
 	import SelectButton from 'primevue/selectbutton';
 	import type { Form } from '@models/form';
-	import { shows } from '@components/shows/shows';
-	import { pickGroups } from '@utils/da-band/band-calendar';
 	import { ApiError } from '@models/api-error';
 	import { formatShortDay } from '@utils/dates';
-	import { useEasternNow } from '@/composables/use-eastern-now';
+	import { useBandCalendar } from '@/composables/use-band-calendar';
 	import { useBandStore } from '@/stores/band';
 
 	// The admin's lock-in: pick dates, then Lock in creates those practices (time TBD) and closes the form.
@@ -71,9 +69,9 @@
 	const CHIP_PT = { button: { class: 'border-1 border-round-3xl' } };
 
 	const band = useBandStore();
-	const { today } = useEasternNow();
+	const { pickGroups } = useBandCalendar();
 
-	const groups = computed(() => pickGroups(props.form, band.availability, band.practices, today.value, shows));
+	const groups = computed(() => pickGroups(props.form));
 
 	const picked = ref<string[]>([]);
 	const message = ref('');

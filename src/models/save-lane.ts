@@ -8,3 +8,6 @@ export interface SaveLaneOptions<V, R> {
 	/** The server refused the batch (a 4xx other than 401), so it was dropped. */
 	onRejected(entries: [string, V][]): void;
 }
+
+/** Why the last save didn't land: still retrying, or refused (and the data reloaded). `useBandPage` words it. */
+export type SaveProblem = 'retrying' | 'reloaded';

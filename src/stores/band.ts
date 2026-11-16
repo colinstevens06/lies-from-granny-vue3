@@ -8,11 +8,10 @@ import type { CurrentMember } from '@models/band-member';
 import type { Form } from '@models/form';
 import type { LoadState } from '@models/load-state';
 import type { Practice, PracticeInput } from '@models/practice';
+import type { SaveProblem } from '@models/save-lane';
 
 /** Availability writes go out in chunks of at most this many days. */
 const CHUNK = 400;
-const NOTICE_RETRYING = 'Not saved yet. Retrying…';
-const NOTICE_RELOADED = "Couldn't save that. Your answers were reloaded.";
 
 /**
  * The only client holder of server data. `nav.vue` imports this store on every page, so the heavy sign-in code
@@ -24,9 +23,7 @@ export const useBandStore = defineStore('band', () => {
 	const forms = ref<Form[]>([]);
 	const practices = ref<Practice[]>([]);
 	const loadState = ref<LoadState>('idle');
-	/** Partly filled follow-up rows, keyed by form id. They live only on this device; `load()` never touches them. */
-	const drafts = ref<Record<number, unknown>>({});
-	const reloadedNotice = ref(false);
+	const saveWasRefused = ref(false);
 
 	/** Goes up on every successful save. A load only applies "mine" if it hasn't changed since the load began. */
 	let saveVersion = 0;
@@ -67,7 +64,7 @@ export const useBandStore = defineStore('band', () => {
 		},
 		onSaved(_entries, row) {
 			saveVersion++;
-			reloadedNotice.value = false;
+			saveWasRefused.value = false;
 			availability.value = availability.value.map(r => (r.member === row.member ? row : r));
 			reapplyPendingAnswers();
 		},
@@ -76,7 +73,7 @@ export const useBandStore = defineStore('band', () => {
 			// they can't outlive the reload while the lane is still busy.
 			const row = mineRow();
 			for (const [date] of entries) if (row && answerLane.pendingValue(date) === undefined) delete row.days[date];
-			reloadedNotice.value = true;
+			saveWasRefused.value = true;
 			void load();
 		}
 	});
@@ -96,12 +93,12 @@ export const useBandStore = defineStore('band', () => {
 		},
 		onSaved(_entries, savedForms) {
 			saveVersion++;
-			reloadedNotice.value = false;
+			saveWasRefused.value = false;
 			for (const saved of savedForms) formsSavedDuringLoad.add(saved.id);
 			forms.value = forms.value.map(f => savedForms.find(saved => saved.id === f.id) ?? f);
 		},
 		onRejected() {
-			reloadedNotice.value = true;
+			saveWasRefused.value = true;
 			void load();
 		}
 	});
@@ -124,20 +121,13 @@ export const useBandStore = defineStore('band', () => {
 	const pendingFormAnswer = (formId: number) => formLane.pendingValue(String(formId));
 
 	const saving = computed(() => answerLane.busy.value || formLane.busy.value);
-	const saveNotice = computed(() =>
-		answerLane.failing.value || formLane.failing.value
-			? NOTICE_RETRYING
-			: reloadedNotice.value
-			? NOTICE_RELOADED
-			: undefined
+	const saveProblem = computed((): SaveProblem | undefined =>
+		answerLane.failing.value || formLane.failing.value ? 'retrying' : saveWasRefused.value ? 'reloaded' : undefined
 	);
-
-	const setDraft = (formId: number, value: unknown) => (drafts.value[formId] = value);
-	const clearDraft = (formId: number) => delete drafts.value[formId];
 
 	if (typeof window !== 'undefined') {
 		window.addEventListener('beforeunload', event => {
-			if (saving.value || Object.keys(drafts.value).length > 0) {
+			if (saving.value) {
 				event.preventDefault();
 				event.returnValue = '';
 			}
@@ -259,8 +249,7 @@ export const useBandStore = defineStore('band', () => {
 		practices,
 		loadState,
 		saving,
-		saveNotice,
-		drafts,
+		saveProblem,
 		myDays,
 		openForms,
 		availabilityForm,
@@ -274,8 +263,6 @@ export const useBandStore = defineStore('band', () => {
 		signOffForm,
 		setMyAnswers,
 		setMyFormAnswer,
-		pendingFormAnswer,
-		setDraft,
-		clearDraft
+		pendingFormAnswer
 	};
 });

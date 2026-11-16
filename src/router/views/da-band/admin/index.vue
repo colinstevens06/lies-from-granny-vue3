@@ -6,13 +6,11 @@
 				<h1 class="font-permanent-marker m-0">Admin</h1>
 
 				<AdminGate>
-					<p v-if="band.loadState === 'error'" class="band-card m-0 text-xl font-bold">
-						Couldn't load. Refresh to try again.
-					</p>
+					<BandLoadState v-if="loadState === 'error'" :load-state />
 
 					<BandSection title="Forms">
 						<AdminFormTile v-for="form in band.openForms" :key="form.id" :form />
-						<p v-if="band.loadState === 'ready' && !band.openForms.length" class="band-card m-0 text-xl font-bold">
+						<p v-if="loadState === 'ready' && !band.openForms.length" class="band-card m-0 text-xl font-bold">
 							No form is open.
 						</p>
 					</BandSection>
@@ -36,19 +34,21 @@
 </template>
 
 <script setup lang="ts">
-	import { computed, onMounted } from 'vue';
+	import { computed } from 'vue';
 	import Layout from '@router/layouts/main.vue';
 	import AdminFormTile from '@components/da-band/admin/admin-form-tile.vue';
 	import AdminGate from '@components/da-band/admin/admin-gate.vue';
 	import AdminTile from '@components/da-band/admin/admin-tile.vue';
 	import BandLink from '@components/da-band/band-link.vue';
+	import BandLoadState from '@components/da-band/band-load-state.vue';
 	import BandSection from '@components/da-band/band-section.vue';
 	import { formatPracticeDay, formatPracticeTime, needsTime, upcomingPractices } from '@utils/da-band/practices';
 	import { useEasternNow } from '@/composables/use-eastern-now';
+	import { useBandPage } from '@/composables/use-band-page';
 	import { useBandStore } from '@/stores/band';
 
 	const band = useBandStore();
-	onMounted(() => band.load());
+	const { loadState } = useBandPage();
 
 	const { now } = useEasternNow();
 	const upcoming = computed(() => upcomingPractices(band.practices, now.value));

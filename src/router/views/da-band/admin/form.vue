@@ -5,9 +5,7 @@
 				<BandLink to="/da-band/admin" class="inline-block mb-3">&larr; Admin</BandLink>
 
 				<AdminGate>
-					<p v-if="band.loadState !== 'ready'" class="band-card m-0 text-xl font-bold">
-						{{ band.loadState === 'error' ? "Couldn't load. Refresh to try again." : 'Loading…' }}
-					</p>
+					<BandLoadState v-if="loadState !== 'ready'" :load-state />
 					<p v-else-if="!form" class="band-card m-0 text-xl font-bold">No such form.</p>
 
 					<template v-else>
@@ -58,13 +56,14 @@
 </template>
 
 <script setup lang="ts">
-	import { computed, onMounted, ref } from 'vue';
+	import { computed, ref } from 'vue';
 	import { useRoute } from 'vue-router';
 	import Button from 'primevue/button';
 	import Dialog from 'primevue/dialog';
 	import Layout from '@router/layouts/main.vue';
 	import AdminGate from '@components/da-band/admin/admin-gate.vue';
 	import BandLink from '@components/da-band/band-link.vue';
+	import BandLoadState from '@components/da-band/band-load-state.vue';
 	import BandSection from '@components/da-band/band-section.vue';
 	import CopyButton from '@components/da-band/copy-button.vue';
 	import FormResponses from '@components/da-band/forms/form-responses.vue';
@@ -74,11 +73,12 @@
 	import { clientFormFor } from '@/forms';
 	import { nudgeText } from '@utils/da-band/band-calendar';
 	import { formatDueDay, formatInstantDay, isEveryoneIn, waitingOn } from '@utils/da-band/form-status';
+	import { useBandPage } from '@/composables/use-band-page';
 	import { useBandStore } from '@/stores/band';
 
 	const band = useBandStore();
+	const { loadState } = useBandPage();
 	const route = useRoute();
-	onMounted(() => band.load());
 
 	const form = computed(() => band.forms.find(f => f.id === Number(route.params.id)));
 	const registered = computed(() => (form.value ? clientFormFor(form.value.slug) : undefined));

@@ -23,7 +23,7 @@
 							<PracticeDetails :practice songs-open />
 						</div>
 					</details>
-					<p v-if="band.loadState === 'ready' && !history.length" class="band-card m-0 text-xl font-bold">
+					<p v-if="loadState === 'ready' && !history.length" class="band-card m-0 text-xl font-bold">
 						No past practices yet.
 					</p>
 				</BandSection>
@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-	import { computed, onMounted } from 'vue';
+	import { computed } from 'vue';
 	import Layout from '@router/layouts/main.vue';
 	import BandLink from '@components/da-band/band-link.vue';
 	import BandSection from '@components/da-band/band-section.vue';
@@ -41,10 +41,11 @@
 	import PracticeStatusBadge from '@components/da-band/practices/practice-status-badge.vue';
 	import { formatPracticeDay, practiceHistory } from '@utils/da-band/practices';
 	import { useEasternNow } from '@/composables/use-eastern-now';
+	import { useBandPage } from '@/composables/use-band-page';
 	import { useBandStore } from '@/stores/band';
 
 	const band = useBandStore();
-	onMounted(() => band.load());
+	const { loadState } = useBandPage();
 
 	const { now } = useEasternNow();
 	const history = computed(() => practiceHistory(band.practices, now.value));

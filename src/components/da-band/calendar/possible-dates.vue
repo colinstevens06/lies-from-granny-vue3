@@ -29,34 +29,25 @@
 	import { computed } from 'vue';
 	import type { Form } from '@models/form';
 	import CopyButton from '@components/da-band/copy-button.vue';
-	import { shows } from '@components/shows/shows';
-	import {
-		possibleDates,
-		possibleListText,
-		practicesStillNeeded,
-		showNights,
-		targetOf
-	} from '@utils/da-band/band-calendar';
+	import { possibleListText } from '@utils/da-band/band-calendar';
 	import { formatShortDay } from '@utils/dates';
-	import { useEasternNow } from '@/composables/use-eastern-now';
-	import { useBandStore } from '@/stores/band';
+	import { useBandCalendar } from '@/composables/use-band-calendar';
 
 	// Upcoming days all five can practice with nothing booked, then the Fridays and Saturdays among them all five can also play. With an open availability form it's headed by how many
 	// practices that form still wants and what they're for.
 	const props = defineProps<{ form?: Form }>();
 
-	const band = useBandStore();
-	// The reactive Eastern day, so a tab left open past midnight drops yesterday from the lists.
-	const { today } = useEasternNow();
-	const days = computed(() => possibleDates(props.form, band.availability, band.practices, shows, today.value));
-	const nights = computed(() => showNights(props.form, band.availability, band.practices, shows, today.value));
+	// Reads the reactive Eastern day, so a tab left open past midnight drops yesterday from the lists.
+	const { possibleDates, showNights, practicesStillNeeded, targetOf } = useBandCalendar();
+	const days = computed(() => possibleDates(props.form));
+	const nights = computed(() => showNights(props.form));
 
 	const header = computed(() => {
 		const works = `${days.value.length} ${days.value.length === 1 ? 'date works' : 'dates work'}`;
 		if (!props.form) return `Possible dates · ${works}`;
 
-		const needed = practicesStillNeeded(props.form, band.practices, shows);
-		const found = targetOf(props.form, shows, today.value);
+		const needed = practicesStillNeeded(props.form);
+		const found = targetOf(props.form);
 		const target = found?.label;
 		if (needed === undefined || !target) return `Possible dates · ${works}`;
 

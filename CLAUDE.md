@@ -27,6 +27,8 @@ Package manager is Yarn 3 (Berry, pinned via `.yarnrc.yml` → `.yarn/releases/`
 
 ## Architecture
 
+**Layers.** Client code follows `.claude/rules/frontend-layering.md` (Service → Store → Composable → Component, adopted from Speed Shopper with its deliberate differences listed). It loads on any `src/` file.
+
 **Bootstrap.** `src/main.ts` creates the app and registers Pinia, the router, and PrimeVue, then imports the global SCSS entry. Theme CSS, PrimeVue base CSS, PrimeIcons, and PrimeFlex are imported here as side effects — component-level styles do not import them.
 
 **Routing.** `src/router/index.ts` defines all routes with lazy `import()` components, so each view is its own chunk. Both `/` and `/home` render `home.vue`. A catch-all renders `_404.vue`, and `public/_redirects` (`/* /index.html 200`) makes Netlify serve `index.html` for every path so client routing works on refresh. `router.beforeResolve` scrolls to top on every navigation.
@@ -64,6 +66,17 @@ These are the things that break silently if only one side is edited.
 - Shared social links belong in `src/utils/urls.ts`.
 - Prettier config is authoritative and unusual: tabs, single quotes, no trailing commas, `printWidth` 120, `vueIndentScriptAndStyle: true`, and `endOfLine: "crlf"`. Run `yarn format` rather than hand-matching.
 - ESLint extends `vue3-essential` + TS + Prettier; `vue/multi-word-component-names` is off, which is why `nav.vue`, `footer.vue`, `shows.vue` are legal names.
+
+## Project profile
+
+Read by the shared `plan-feature`, `build-feature` and `review-feature` skills.
+
+- **Commands and gate:** § Commands above. Type-check `yarn type-check`, lint `yarn lint`, format `yarn format`, test `yarn test`, e2e `yarn test:e2e` (only with Colin's :8888 up).
+- **Plans:** `planning/` at the root, named `YYYY-MM-<topic>.md`. **Backlog:** `planning/da-band-backlog.md`.
+- **Specialist agents:** none. Builds run in the session that has the plan.
+- **Reviewers:** `general-purpose` subagents on Sonnet, briefed with the touched rules and the diff. `plan-reviewer` reviews plans.
+- **Read first:** `.claude/rules/frontend-layering.md` for any `src/` change; the `band-data` skill for `/da-band` data, functions and migrations.
+- **Ships as:** a commit per phase on the feature branch's open PR, not a PR per phase.
 
 ## Repo skills
 

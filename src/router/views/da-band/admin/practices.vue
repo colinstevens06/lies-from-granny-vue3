@@ -6,9 +6,7 @@
 				<h1 class="font-permanent-marker m-0">Practices</h1>
 
 				<AdminGate>
-					<p v-if="band.loadState !== 'ready'" class="band-card m-0 text-xl font-bold">
-						{{ band.loadState === 'error' ? "Couldn't load. Refresh to try again." : 'Loading…' }}
-					</p>
+					<BandLoadState v-if="loadState !== 'ready'" :load-state />
 
 					<PracticeEditor
 						v-else-if="editing"
@@ -41,21 +39,23 @@
 </template>
 
 <script setup lang="ts">
-	import { computed, onMounted, ref } from 'vue';
+	import { computed, ref } from 'vue';
 	import Button from 'primevue/button';
 	import Layout from '@router/layouts/main.vue';
 	import AdminGate from '@components/da-band/admin/admin-gate.vue';
 	import BandLink from '@components/da-band/band-link.vue';
+	import BandLoadState from '@components/da-band/band-load-state.vue';
 	import BandSection from '@components/da-band/band-section.vue';
 	import PracticeEditor from '@components/da-band/practices/practice-editor.vue';
 	import PracticeStatusBadge from '@components/da-band/practices/practice-status-badge.vue';
 	import type { Practice } from '@models/practice';
 	import { formatPracticeDay, formatPracticeTime, practiceLocation, upcomingPractices } from '@utils/da-band/practices';
 	import { useEasternNow } from '@/composables/use-eastern-now';
+	import { useBandPage } from '@/composables/use-band-page';
 	import { useBandStore } from '@/stores/band';
 
 	const band = useBandStore();
-	onMounted(() => band.load());
+	const { loadState } = useBandPage();
 
 	/** The practice being edited, 'new' for an empty editor, or nothing for the list. */
 	const editing = ref<Practice | 'new'>();

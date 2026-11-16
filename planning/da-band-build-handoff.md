@@ -54,7 +54,7 @@ Another session built `band-calendar.ts` (`e4de980`) and P5a (`b560400`, `823f30
 ## Rough edges to fix next
 
 - **Optimistic form answers:** the store doesn't apply them. Screens read `band.pendingFormAnswer`. Check that a fast reload can't show stale songs.
-- **Save notice:** `band.saveNotice` is shown on the form page and Edit mine only, not on the home page.
+- **Save notice:** `useBandPage().saveNotice` is shown on the form page and Edit mine only, not on the home page.
 - **Tile summary and asks:** the admin tile and "What this form asks" use ISO dates (`2027-01-01 to 2027-04-30`). Format them.
 - **Overdue copy:** "Overdue by N days. Shame." was only seen with a forced class, never with real overdue data.
 - **Login redirect:** after sign-out, the login page loses the previous `redirect`.

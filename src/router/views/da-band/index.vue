@@ -4,9 +4,7 @@
 			<div class="da-band">
 				<h1 class="font-permanent-marker m-0">Da Band</h1>
 
-				<p v-if="band.loadState !== 'ready'" class="band-card m-0 text-xl font-bold">
-					{{ band.loadState === 'error' ? "Couldn't load. Refresh to try again." : 'Loading…' }}
-				</p>
+				<BandLoadState v-if="loadState !== 'ready'" :load-state />
 
 				<template v-else>
 					<BandSection v-if="band.myTodos.length">
@@ -63,10 +61,11 @@
 </template>
 
 <script setup lang="ts">
-	import { computed, onMounted } from 'vue';
+	import { computed } from 'vue';
 	import Layout from '@router/layouts/main.vue';
 	import BandCalendar from '@components/da-band/calendar/band-calendar.vue';
 	import BandLink from '@components/da-band/band-link.vue';
+	import BandLoadState from '@components/da-band/band-load-state.vue';
 	import BandSection from '@components/da-band/band-section.vue';
 	import PossibleDates from '@components/da-band/calendar/possible-dates.vue';
 	import FormTodoCard from '@components/da-band/forms/form-todo-card.vue';
@@ -74,25 +73,23 @@
 	import NextGig from '@components/da-band/next-gig.vue';
 	import PracticeCard from '@components/da-band/practices/practice-card.vue';
 	import { shows } from '@components/shows/shows';
-	import { useEasternNow } from '@/composables/use-eastern-now';
+	import { useBandCalendar } from '@/composables/use-band-calendar';
 	import { isEveryoneIn } from '@utils/da-band/form-status';
 	import { upcomingPractices } from '@utils/da-band/practices';
-	import { possibleDates } from '@utils/da-band/band-calendar';
 	import { nextShowFrom } from '@utils/shows';
 	import { clientFormFor } from '@/forms';
+	import { useBandPage } from '@/composables/use-band-page';
 	import { useBandStore } from '@/stores/band';
 
 	const band = useBandStore();
-	onMounted(() => band.load());
+	const { loadState } = useBandPage();
 
-	const { now, today } = useEasternNow();
+	const { now, today, possibleDates } = useBandCalendar();
 
 	const upcoming = computed(() => upcomingPractices(band.practices, now.value));
 	const nextPractice = computed(() => upcoming.value.find(practice => practice.status !== 'cancelled'));
 	const laterPractices = computed(() => upcoming.value.filter(practice => practice !== nextPractice.value));
 	const nextGig = computed(() => nextShowFrom(shows, today.value));
 
-	const possibleCount = computed(
-		() => possibleDates(band.availabilityForm, band.availability, band.practices, shows, today.value).length
-	);
+	const possibleCount = computed(() => possibleDates(band.availabilityForm).length);
 </script>

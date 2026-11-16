@@ -6,7 +6,7 @@
 				<CalendarDay
 					:date
 					:past
-					:status="calendarDayStatus(date, band.availability, band.practices, shows)"
+					:status="dayStatus(date)"
 					:availability="band.availability"
 					@select="selected = $event"
 				/>
@@ -24,13 +24,13 @@
 	import LegendKeys from '@components/da-band/legend-keys.vue';
 	import MonthGrid from '@components/da-band/calendar/month-grid.vue';
 	import { CALENDAR_LEGEND } from '@components/da-band/calendar/day-status';
-	import { shows } from '@components/shows/shows';
-	import { calendarDayStatus } from '@utils/da-band/band-calendar';
+	import { useBandCalendar } from '@/composables/use-band-calendar';
 	import { useBandStore } from '@/stores/band';
 
 	// The shared calendar: each day's status fill (four keys, shown above it) plus five member dots. Tapping a day opens everyone's answers.
 	defineProps<{ today: string; form?: Form }>();
 
 	const band = useBandStore();
+	const { dayStatus } = useBandCalendar();
 	const selected = ref<string>();
 </script>

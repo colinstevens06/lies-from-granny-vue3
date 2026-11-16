@@ -5,8 +5,13 @@ import { mountWithPrime } from '../../../test-utils/mount';
 import { useBandStore } from '@/stores/band';
 import DaBand from './index.vue';
 
-// Stub the child components but keep their slots, so the page's own text is what's under test.
-const mountHome = () => mountWithPrime(DaBand, { shallow: true, global: { renderStubDefaultSlot: true } });
+// Stub the child components but keep their slots, so the page's own text is what's under test. The load-state line
+// is the page's own text, so it renders for real.
+const mountHome = () =>
+	mountWithPrime(DaBand, {
+		shallow: true,
+		global: { renderStubDefaultSlot: true, stubs: { BandLoadState: false } }
+	});
 
 describe('da-band home page', () => {
 	beforeEach(() => {
