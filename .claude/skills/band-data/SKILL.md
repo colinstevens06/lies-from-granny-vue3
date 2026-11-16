@@ -43,6 +43,16 @@ Run the Netlify CLI as `yarn exec netlify <cmd>`. `yarn netlify <cmd>` runs the 
 
 List them in the gitignored `band-data/import.ts` as `practices: PracticeImport[]` (same fields as `Practice`, minus `id` and `formId`), then `yarn seed:band` (dry run) and `yarn seed:band --write`. The target is that day's row (a live one first), so re-running updates in place, and marking a day `cancelled` updates the same row. `gigId` must be a `Gig.id` in `shows.ts`. `complete` is only accepted here; the editor offers tentative, scheduled and cancelled.
 
+## API shape
+
+REST per `~/.claude/rules/api.md`, which loads when you open a file in `netlify/functions/` or `src/services/`. Each function's header comment lists its routes. In short:
+
+- **Resources come back without a wrapper:** `GET /forms` returns `Form[]`, not `{ forms }`. Errors are `{ error, ...recovery }`.
+- **State changes use `PATCH`, not action URLs:** `PATCH /forms/:id { closed: true }` and `PATCH /forms/:id/members/:member { signedOff: true }`. Both accept only `true`, since a form never reopens and a sign-off is never taken back.
+- **The lock-in is a resource:** `PUT /forms/:id/schedule { days }`. It is idempotent: a retry with the same days returns the practices, and any other request on a closed form gets 409 `closed`.
+- **A member path is checked, not trusted:** `:member` must be the caller (`403 not-yours`). On availability, the admin may also write someone else's row.
+- **`http.ts` covers the HTTP details:** `methodNotAllowed(allow)` sets `Allow`, `created(body, location)` sets `Location`, and a non-JSON write gets 415.
+
 ## Client state (P4a)
 
 - `src/stores/band.ts` is the only client holder of server data; `src/services/band-service.ts` (one verb-named method per endpoint, e.g. `getForms`, `patchAvailability`, over `bandHttp` in `band-service-base.ts`, the only `fetch` for `/api/band/*`) is imported only by the store. The store keeps `@utils/da-band/auth` and `dev-auth` behind dynamic imports because `nav.vue` imports the store on every page. `BandApiError` lives in `src/models/band-api-error.ts`.

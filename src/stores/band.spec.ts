@@ -48,10 +48,10 @@ describe('band store', () => {
 			if (path.startsWith('availability/')) {
 				return patches++ === 0
 					? { status: 400, body: { error: 'date-out-of-range' } }
-					: { body: { availability: makeAvailability('colin', { '2026-12-02': 'no' }) } };
+					: { body: makeAvailability('colin', { '2026-12-02': 'no' }) };
 			}
-			if (path === 'availability') return { body: { members: [makeAvailability('colin', {})] } };
-			return { body: path === 'forms' ? { forms: [] } : { practices: [] } };
+			if (path === 'availability') return { body: [makeAvailability('colin', {})] };
+			return { body: [] };
 		});
 
 		store.setMyAnswers([answer('2026-12-01', 'yes')], { immediate: true });
@@ -64,6 +64,22 @@ describe('band store', () => {
 		await wait(450); // let the queued tap save, so it can't leak into the next test
 	});
 
+	it('signs me off by patching my own row on the form, and shows the form the server returns', async () => {
+		const store = signedInStore();
+		store.forms = [makeForm({ id: 1 })];
+		const signedOff = makeForm({ id: 1, closedAt: '2026-11-15T12:00:00Z' });
+		const calls: string[] = [];
+		serve((path, method) => {
+			calls.push(`${method} ${path}`);
+			return { body: signedOff };
+		});
+
+		await store.signOffForm(1);
+
+		expect(calls).toEqual(['PATCH forms/1/members/colin']);
+		expect(store.forms[0]).toEqual(signedOff);
+	});
+
 	// Code review #5: a save finishing while a load was in flight froze every form's copy, not just the saved one, so a
 	// form the admin had just closed still looked open.
 	it("takes the server's copy of other forms when a save finishes during a load (code review #5)", async () => {
@@ -73,13 +89,13 @@ describe('band store', () => {
 		let releaseForms!: () => void;
 		const formsGate = new Promise<void>(resolve => (releaseForms = resolve));
 		serve(async path => {
-			if (path === 'forms/1/answers') return { body: { form: makeForm({ id: 1 }) } };
-			if (path === 'availability') return { body: { members: [makeAvailability('colin', {})] } };
+			if (path === 'forms/1/members/colin/answers') return { body: makeForm({ id: 1 }) };
+			if (path === 'availability') return { body: [makeAvailability('colin', {})] };
 			if (path === 'forms') {
 				await formsGate;
-				return { body: { forms: [makeForm({ id: 1 }), makeForm({ id: 2, closedAt: '2026-11-12T12:00:00Z' })] } };
+				return { body: [makeForm({ id: 1 }), makeForm({ id: 2, closedAt: '2026-11-12T12:00:00Z' })] };
 			}
-			return { body: { practices: [] } };
+			return { body: [] };
 		});
 
 		const loading = store.load();

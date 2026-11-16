@@ -30,7 +30,7 @@ test('signing in as Anna shows the Early 2027 planning form with its calendar an
 		members: []
 	});
 	await page.route('**/api/band/forms', route =>
-		route.request().method() === 'GET' ? route.fulfill({ json: { forms: [form] } }) : route.continue()
+		route.request().method() === 'GET' ? route.fulfill({ json: [form] }) : route.continue()
 	);
 
 	await page.goto('/da-band/login');

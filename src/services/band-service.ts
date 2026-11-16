@@ -11,24 +11,29 @@ export const bandService = {
 	/** Who's signed in. Its 401 is the answer "signed out", so it doesn't redirect to login. */
 	getMe: () => bandHttp.get<CurrentMember>('me', { redirectOn401: false }),
 
-	getAvailability: () => bandHttp.get<{ members: MemberAvailability[] }>('availability'),
+	getAvailability: () => bandHttp.get<MemberAvailability[]>('availability'),
 
 	patchAvailability: (member: MemberId, changes: unknown[]) =>
-		bandHttp.patch<{ availability: MemberAvailability }>(`availability/${member}`, { changes }),
+		bandHttp.patch<MemberAvailability>(`availability/${member}`, { changes }),
 
-	getForms: () => bandHttp.get<{ forms: Form[] }>('forms'),
+	getForms: () => bandHttp.get<Form[]>('forms'),
 
-	putFormAnswers: (formId: number, body: unknown) => bandHttp.put<{ form: Form }>(`forms/${formId}/answers`, body),
+	/** Admin: the only change a form takes is closing. */
+	patchForm: (formId: number, patch: { closed: true }) => bandHttp.patch<Form>(`forms/${formId}`, patch),
 
-	postSignOff: (formId: number) => bandHttp.post<{ form: Form }>(`forms/${formId}/sign-off`),
+	/** Admin: books the days as practices and closes the form. */
+	putFormSchedule: (formId: number, days: string[]) => bandHttp.put<Practice[]>(`forms/${formId}/schedule`, { days }),
 
-	postLockIn: (formId: number, days: string[]) => bandHttp.post(`forms/${formId}/lock-in`, { days }),
+	/** A member's own row on a form: the only change is signing off. */
+	patchFormMember: (formId: number, member: MemberId, patch: { signedOff: true }) =>
+		bandHttp.patch<Form>(`forms/${formId}/members/${member}`, patch),
 
-	postCloseForm: (formId: number) => bandHttp.post<{ form: Form }>(`forms/${formId}/close`),
+	putFormMemberAnswers: (formId: number, member: MemberId, body: unknown) =>
+		bandHttp.put<Form>(`forms/${formId}/members/${member}/answers`, body),
 
-	getPractices: () => bandHttp.get<{ practices: Practice[] }>('practices'),
+	getPractices: () => bandHttp.get<Practice[]>('practices'),
 
-	postPractice: (input: PracticeInput) => bandHttp.post<{ practice: Practice }>('practices', input),
+	postPractice: (input: PracticeInput) => bandHttp.post<Practice>('practices', input),
 
-	putPractice: (id: number, input: PracticeInput) => bandHttp.put<{ practice: Practice }>(`practices/${id}`, input)
+	putPractice: (id: number, input: PracticeInput) => bandHttp.put<Practice>(`practices/${id}`, input)
 };

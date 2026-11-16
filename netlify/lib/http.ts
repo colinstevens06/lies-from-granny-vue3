@@ -1,23 +1,28 @@
-import type { CurrentMember } from '../../src/models/band-member';
+import { members } from '../../src/components/da-band/members';
+import type { CurrentMember, MemberId } from '../../src/models/band-member';
 import { getCurrentMember, requireAdmin } from './current-member';
 import { isFailure, type Failure } from './failure';
 
-// Shared by every band function. Check order (contract 10): method → origin and content type on writes → path shape
-// → identity → role → body shape → database lookups → validation that needs the looked-up row.
+// Shared by every band function. REST shape: ~/.claude/rules/api.md (resources returned bare, errors `{ error }`).
+// Check order (contract 10): path shape → method → origin and content type on writes → path ids → identity → role →
+// body shape → database lookups → validation that needs the looked-up row.
 
-export const json = (status: number, body: unknown) =>
+export const json = (status: number, body: unknown, headers: Record<string, string> = {}) =>
 	new Response(JSON.stringify(body), {
 		status,
-		headers: { 'content-type': 'application/json', 'cache-control': 'private, no-store' }
+		headers: { 'content-type': 'application/json', 'cache-control': 'private, no-store', ...headers }
 	});
 
 export const fail = (status: number, error: string, extra: Record<string, unknown> = {}) =>
 	json(status, { error, ...extra });
 
-/** A write must come from this site and carry JSON. Returns the refusal, or undefined when it passes. */
+/** A 201 for a newly created resource, with its URL in `Location`. */
+export const created = (body: unknown, location: string) => json(201, body, { location });
+
+/** A write must come from this site (403) and carry JSON (415). Returns the refusal, or undefined when it passes. */
 export const checkWrite = (req: Request) => {
 	if (req.headers.get('origin') !== new URL(req.url).origin) return fail(403, 'bad-origin');
-	if (!req.headers.get('content-type')?.includes('application/json')) return fail(403, 'bad-origin');
+	if (!req.headers.get('content-type')?.includes('application/json')) return fail(415, 'unsupported-media-type');
 };
 
 /** The parsed JSON body, or undefined when it isn't valid JSON. */
@@ -33,7 +38,9 @@ export const authenticate = async (req: Request, admin = false): Promise<Current
 	return current;
 };
 
-export const methodNotAllowed = () => fail(405, 'method-not-allowed');
+/** A 405 with the `Allow` header HTTP requires: the methods this path does take. */
+export const methodNotAllowed = (allow: string[]) =>
+	json(405, { error: 'method-not-allowed' }, { allow: allow.join(', ') });
 
 /** A database result as a response: a `Failure` becomes its status and `{ error, ...details }`; anything else is a 200. */
 export const respond = (
@@ -51,6 +58,10 @@ export const idFrom = (segment: string | undefined) => {
 	const id = Number(segment);
 	return id <= MAX_DB_ID ? id : undefined;
 };
+
+/** The member id in a path segment, or undefined (a 404) when it isn't a band member. */
+export const memberFrom = (segment: string | undefined): MemberId | undefined =>
+	members.find(m => m.id === segment)?.id;
 
 /** Path segments after /api/band/<resource>. */
 export const subPath = (req: Request) => new URL(req.url).pathname.replace(/\/+$/, '').split('/').slice(4);

@@ -11,7 +11,7 @@ import type {
 import type { MemberId } from '../../src/models/band-member';
 import type { Form, FormAvailability } from '../../src/models/form';
 import type { Practice, PracticeImport, PracticeInput } from '../../src/models/practice';
-import { parseLockIn } from '../../src/utils/da-band/forms';
+import { parseLockIn, repeatsLockIn } from '../../src/utils/da-band/forms';
 import { handlerFor } from '../forms';
 import { failure, isFailure, type Failure } from './failure';
 
@@ -241,10 +241,15 @@ export const listForms = async (db?: Db): Promise<Form[]> => {
 const notFound = () => failure(404, 'not-found');
 
 /** Locks the form row and checks it's there, registered and (unless `allowClosed`) open. */
-const lockOpenForm = async (client: Queryable, formId: number, lock: 'for share' | 'for update') => {
+const lockOpenForm = async (
+	client: Queryable,
+	formId: number,
+	lock: 'for share' | 'for update',
+	{ allowClosed = false } = {}
+) => {
 	const row = await loadFormRow(client, formId, lock);
 	if (!row || !handlerFor(row.slug)) return notFound();
-	if (row.closed_at) return failure(409, 'closed');
+	if (row.closed_at && !allowClosed) return failure(409, 'closed');
 
 	return row;
 };
@@ -306,27 +311,37 @@ export const saveFormAnswer = async (
 		return (await toForm(client, row))!;
 	});
 
+/** Closes the form. Idempotent (a PATCH): closing a closed form returns it unchanged. */
 export const closeForm = async (formId: number, by: MemberId, db?: Db): Promise<Form | Failure> =>
 	inTransaction(db, async client => {
-		const row = await lockOpenForm(client, formId, 'for update');
+		const row = await lockOpenForm(client, formId, 'for update', { allowClosed: true });
 		if (isFailure(row)) return row;
 
-		await client.query('update forms set closed_at = now(), closed_by = $2 where id = $1', [formId, by]);
+		if (!row.closed_at) {
+			await client.query('update forms set closed_at = now(), closed_by = $2 where id = $1', [formId, by]);
+		}
 
 		return (await toForm(client, (await loadFormRow(client, formId))!))!;
 	});
 
-/** Creates a scheduled practice per chosen day and closes the form, all or nothing. */
+/**
+ * Creates a scheduled practice per chosen day and closes the form, all or nothing. Idempotent (a PUT): repeating a
+ * lock-in that went through returns its practices; any other lock-in of a closed form is `409 closed`.
+ */
 export const lockIn = async (
 	formId: number,
 	body: unknown,
 	by: MemberId,
 	today: string,
 	db?: Db
-): Promise<{ form: Form; practices: Practice[] } | Failure> =>
+): Promise<Practice[] | Failure> =>
 	inRollbackableTransaction(db, async client => {
-		const row = await lockOpenForm(client, formId, 'for update');
+		const row = await lockOpenForm(client, formId, 'for update', { allowClosed: true });
 		if (isFailure(row)) return row;
+		if (row.closed_at) {
+			const existing = await readPractices(client, { formId });
+			return repeatsLockIn(body, existing) ? existing : failure(409, 'closed');
+		}
 		if (!row.avail_start) return failure(409, 'no-availability');
 
 		const form = (await toForm(client, row))!;
@@ -347,10 +362,7 @@ export const lockIn = async (
 
 		await client.query('update forms set closed_at = now(), closed_by = $2 where id = $1', [formId, by]);
 
-		return {
-			form: (await toForm(client, (await loadFormRow(client, formId))!))!,
-			practices: await readPractices(client, { formId })
-		};
+		return readPractices(client, { formId });
 	});
 
 // ── Practices ───────────────────────────────────────────────────────────────

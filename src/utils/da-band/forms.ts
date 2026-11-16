@@ -1,4 +1,5 @@
 import type { Form } from '../../models/form';
+import type { Practice } from '../../models/practice';
 import { MAX_DAYS_PER_REQUEST } from './availability';
 import { isIsoDate } from '../dates';
 import type { Parsed } from '../../models/parsed';
@@ -26,3 +27,25 @@ export const parseLockIn = (body: unknown, form: Form, today: string): Parsed<{ 
 
 	return parsed({ days: days.sort() });
 };
+
+/**
+ * A retry of a lock-in that already went through: the form is closed and its practices are exactly the days asked for.
+ * Compared without `parseLockIn`'s date checks, so a retry still matches after those days have passed.
+ */
+export const repeatsLockIn = (body: unknown, practices: Pick<Practice, 'date' | 'status'>[]) => {
+	if (!isRecord(body) || !Array.isArray(body.days)) return false;
+
+	const asked = [...new Set(body.days)].sort();
+	const booked = practices
+		.filter(p => p.status !== 'cancelled')
+		.map(p => p.date)
+		.sort();
+	return asked.length > 0 && asked.length === booked.length && asked.every((day, i) => day === booked[i]);
+};
+
+/**
+ * A PATCH body whose one allowed change is setting `field` to true: a form closes but never reopens, and a sign-off is
+ * never taken back. Other fields are ignored.
+ */
+export const parseFlagPatch = <K extends string>(body: unknown, field: K): Parsed<Record<K, true>> =>
+	isRecord(body) && body[field] === true ? parsed({ [field]: true } as Record<K, true>) : rejected('bad-body');
