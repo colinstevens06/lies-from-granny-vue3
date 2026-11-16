@@ -38,7 +38,7 @@
 	import { useBandStore } from '@/stores/band';
 
 	const band = useBandStore();
-	onMounted(band.load);
+	onMounted(() => band.load());
 
 	const { today } = useEasternNow();
 </script>

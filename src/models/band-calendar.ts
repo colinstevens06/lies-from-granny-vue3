@@ -20,7 +20,7 @@ export interface FormTarget {
 export interface PickGroups {
 	/** Everyone said Yes. */
 	everyoneYes: string[];
-	/** Exactly one member isn't a Yes (and so can't be counted in); `name` labels who ("no Fran"). */
+	/** Exactly one member isn't a Yes (and so can't be counted in); `name` labels who ("no Francesco"). */
 	oneShort: { day: string; member: MemberId; name: string }[];
 }
 

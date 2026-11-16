@@ -78,7 +78,7 @@
 
 	const band = useBandStore();
 	const route = useRoute();
-	onMounted(band.load);
+	onMounted(() => band.load());
 
 	const form = computed(() => band.forms.find(f => f.id === Number(route.params.id)));
 	const registered = computed(() => (form.value ? clientFormFor(form.value.slug) : undefined));

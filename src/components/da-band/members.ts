@@ -5,7 +5,7 @@ export const members: BandMember[] = [
 	{ id: 'anna', name: 'Anna' },
 	{ id: 'kyle', name: 'Kyle' },
 	{ id: 'nick', name: 'Nick' },
-	{ id: 'francesco', name: 'Fran' },
+	{ id: 'francesco', name: 'Francesco' },
 	{ id: 'colin', name: 'Colin' }
 ];
 

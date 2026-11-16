@@ -44,7 +44,7 @@
 	import { useBandStore } from '@/stores/band';
 
 	const band = useBandStore();
-	onMounted(band.load);
+	onMounted(() => band.load());
 
 	const { now } = useEasternNow();
 	const history = computed(() => practiceHistory(band.practices, now.value));

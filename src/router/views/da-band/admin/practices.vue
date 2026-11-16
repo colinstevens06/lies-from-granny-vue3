@@ -55,7 +55,7 @@
 	import { useBandStore } from '@/stores/band';
 
 	const band = useBandStore();
-	onMounted(band.load);
+	onMounted(() => band.load());
 
 	/** The practice being edited, 'new' for an empty editor, or nothing for the list. */
 	const editing = ref<Practice | 'new'>();

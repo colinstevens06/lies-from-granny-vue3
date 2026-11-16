@@ -51,7 +51,7 @@ describe('calendarDayStatus', () => {
 describe('nearMissText', () => {
 	it('names the one member who is not a yes', () => {
 		const rows = makeBandAvailability([D1], 'yes', { francesco: { [D1]: 'maybe' } });
-		expect(nearMissText(D1, rows)).toBe('Everyone but Fran (Not sure)');
+		expect(nearMissText(D1, rows)).toBe('Everyone but Francesco (Not sure)');
 		expect(nearMissText(D1, makeBandAvailability([D1]))).toBeUndefined();
 	});
 });
