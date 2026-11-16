@@ -58,7 +58,7 @@ export const useBandStore = defineStore('band', () => {
 		async send(entries) {
 			let result!: { availability: MemberAvailability };
 			for (let i = 0; i < entries.length; i += CHUNK) {
-				result = await bandService.saveAvailability(
+				result = await bandService.patchAvailability(
 					me.value!.member,
 					entries.slice(i, i + CHUNK).map(([date, change]) => ({ date, ...change }))
 				);
@@ -89,7 +89,7 @@ export const useBandStore = defineStore('band', () => {
 		async send(entries) {
 			// Latest whole body per form wins; one request per form, and every form's server copy is kept.
 			const saved: Form[] = [];
-			for (const [formId, body] of entries) saved.push((await bandService.saveFormAnswers(Number(formId), body)).form);
+			for (const [formId, body] of entries) saved.push((await bandService.putFormAnswers(Number(formId), body)).form);
 			return saved;
 		},
 		onSaved(_entries, savedForms) {
@@ -149,16 +149,16 @@ export const useBandStore = defineStore('band', () => {
 	 * since the load began, and answers still pending are laid back over the server's row. A form keeps its local copy only
 	 * while its answers are pending or just saved; every other form takes the server's copy. Everything else applies.
 	 */
-	async function load() {
+	const load = async () => {
 		const startedAt = saveVersion;
 		formsSavedDuringLoad.clear();
 		if (loadState.value !== 'ready') loadState.value = 'loading';
 
 		try {
 			const [avail, formList, practiceList] = await Promise.all([
-				bandService.availability(),
-				bandService.forms(),
-				bandService.practices()
+				bandService.getAvailability(),
+				bandService.getForms(),
+				bandService.getPractices()
 			]);
 			const mineChanged = saveVersion !== startedAt;
 			const mine = mineRow();
@@ -179,7 +179,7 @@ export const useBandStore = defineStore('band', () => {
 			// A 401 already went to login. Anything else keeps what's on screen and shows the error state.
 			loadState.value = loadState.value === 'ready' ? 'ready' : 'error';
 		}
-	}
+	};
 
 	// ── Getters ─────────────────────────────────────────────────────────────
 
@@ -193,7 +193,7 @@ export const useBandStore = defineStore('band', () => {
 
 	/** Signs me off a form. Throws a `BandApiError`: 409 `incomplete` (with what's missing) or `closed`. */
 	const signOffForm = async (formId: number) => {
-		const { form } = await bandService.signOff(formId);
+		const { form } = await bandService.postSignOff(formId);
 		forms.value = forms.value.map(f => (f.id === form.id ? form : f));
 	};
 
@@ -202,7 +202,9 @@ export const useBandStore = defineStore('band', () => {
 	 * the service, not the save queue. Throws a `BandApiError` (409 `date-taken`, 400 with the error code).
 	 */
 	const savePractice = async (input: PracticeInput, id?: number) => {
-		const { practice } = await bandService.savePractice(input, id);
+		const { practice } = await (id === undefined
+			? bandService.postPractice(input)
+			: bandService.putPractice(id, input));
 		practices.value =
 			id === undefined
 				? [...practices.value, practice]
@@ -211,12 +213,12 @@ export const useBandStore = defineStore('band', () => {
 
 	/** Admin: books the days as scheduled practices and closes the form. Throws a `BandApiError` (409 `already-booked` names the days). */
 	const lockInForm = async (formId: number, days: string[]) => {
-		await bandService.lockIn(formId, days);
+		await bandService.postLockIn(formId, days);
 	};
 
 	/** Admin: closes an open form (the server refuses anyone else). */
 	const closeForm = async (formId: number) => {
-		const { form } = await bandService.closeForm(formId);
+		const { form } = await bandService.postCloseForm(formId);
 		forms.value = forms.value.map(f => (f.id === form.id ? form : f));
 	};
 
@@ -227,7 +229,7 @@ export const useBandStore = defineStore('band', () => {
 		if (me.value) return 'ok';
 
 		try {
-			me.value = await bandService.me();
+			me.value = await bandService.getMe();
 			return 'ok';
 		} catch (error) {
 			if (error instanceof BandApiError && error.status === 401) return 'signed-out';

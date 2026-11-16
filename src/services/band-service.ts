@@ -2,40 +2,33 @@ import type { MemberAvailability } from '@models/availability';
 import type { CurrentMember, MemberId } from '@models/band-member';
 import type { Form } from '@models/form';
 import type { Practice, PracticeInput } from '@models/practice';
-import { bandRequest } from './band-service-base';
+import { bandHttp } from './band-service-base';
 
-// Stateless: one method per /api/band endpoint, returning the response body. Only `stores/band.ts` imports this.
+// Stateless: one method per /api/band endpoint, named by verb and returning the response body. Only `stores/band.ts`
+// imports this.
 
 export const bandService = {
 	/** Who's signed in. Its 401 is the answer "signed out", so it doesn't redirect to login. */
-	me: () => bandRequest<CurrentMember>('me', { redirectOn401: false }),
+	getMe: () => bandHttp.get<CurrentMember>('me', { redirectOn401: false }),
 
-	availability: () => bandRequest<{ members: MemberAvailability[] }>('availability'),
+	getAvailability: () => bandHttp.get<{ members: MemberAvailability[] }>('availability'),
 
-	saveAvailability: (member: MemberId, changes: unknown[]) =>
-		bandRequest<{ availability: MemberAvailability }>(`availability/${member}`, {
-			method: 'PATCH',
-			body: { changes }
-		}),
+	patchAvailability: (member: MemberId, changes: unknown[]) =>
+		bandHttp.patch<{ availability: MemberAvailability }>(`availability/${member}`, { changes }),
 
-	forms: () => bandRequest<{ forms: Form[] }>('forms'),
+	getForms: () => bandHttp.get<{ forms: Form[] }>('forms'),
 
-	saveFormAnswers: (formId: number, body: unknown) =>
-		bandRequest<{ form: Form }>(`forms/${formId}/answers`, { method: 'PUT', body }),
+	putFormAnswers: (formId: number, body: unknown) => bandHttp.put<{ form: Form }>(`forms/${formId}/answers`, body),
 
-	signOff: (formId: number) => bandRequest<{ form: Form }>(`forms/${formId}/sign-off`, { method: 'POST' }),
+	postSignOff: (formId: number) => bandHttp.post<{ form: Form }>(`forms/${formId}/sign-off`),
 
-	lockIn: (formId: number, days: string[]) =>
-		bandRequest(`forms/${formId}/lock-in`, { method: 'POST', body: { days } }),
+	postLockIn: (formId: number, days: string[]) => bandHttp.post(`forms/${formId}/lock-in`, { days }),
 
-	closeForm: (formId: number) => bandRequest<{ form: Form }>(`forms/${formId}/close`, { method: 'POST' }),
+	postCloseForm: (formId: number) => bandHttp.post<{ form: Form }>(`forms/${formId}/close`),
 
-	practices: () => bandRequest<{ practices: Practice[] }>('practices'),
+	getPractices: () => bandHttp.get<{ practices: Practice[] }>('practices'),
 
-	/** Creates a practice (no `id`) or replaces one (whole record). */
-	savePractice: (input: PracticeInput, id?: number) =>
-		bandRequest<{ practice: Practice }>(id === undefined ? 'practices' : `practices/${id}`, {
-			method: id === undefined ? 'POST' : 'PUT',
-			body: input
-		})
+	postPractice: (input: PracticeInput) => bandHttp.post<{ practice: Practice }>('practices', input),
+
+	putPractice: (id: number, input: PracticeInput) => bandHttp.put<{ practice: Practice }>(`practices/${id}`, input)
 };

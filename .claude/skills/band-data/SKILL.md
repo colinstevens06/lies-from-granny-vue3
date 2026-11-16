@@ -45,7 +45,7 @@ List them in the gitignored `band-data/import.ts` as `practices: PracticeImport[
 
 ## Client state (P4a)
 
-- `src/stores/band.ts` is the only client holder of server data; `src/services/band-service.ts` (one method per endpoint, over `band-service-base.ts`, the only `fetch` for `/api/band/*`) is imported only by the store. The store keeps `@utils/da-band/auth` and `dev-auth` behind dynamic imports because `nav.vue` imports the store on every page. `BandApiError` lives in `src/models/band-api-error.ts`.
+- `src/stores/band.ts` is the only client holder of server data; `src/services/band-service.ts` (one verb-named method per endpoint, e.g. `getForms`, `patchAvailability`, over `bandHttp` in `band-service-base.ts`, the only `fetch` for `/api/band/*`) is imported only by the store. The store keeps `@utils/da-band/auth` and `dev-auth` behind dynamic imports because `nav.vue` imports the store on every page. `BandApiError` lives in `src/models/band-api-error.ts`.
 - Every `/da-band*` view calls `band.load()` on mount. Practices come from the store; `src/components/da-band/practices.ts` is gone. To add practices, use the admin editor (P8) or the seed.
 - Answers save through two lanes built on `src/composables/use-save-lane.ts` (availability keyed by date, form answers keyed by form). Both follow the same rules: one request in flight, retries at 2/4/8 s then every 30 s on a network error or 5xx, a dropped batch plus a reload on any other 4xx.
 

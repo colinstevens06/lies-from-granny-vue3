@@ -15,8 +15,10 @@ import { isRecord, parsed, rejected } from '../parsed';
 
 // Shared by the Netlify functions and the client: relative imports only, no I/O.
 
-const ANSWERS: Answer[] = ['yes', 'no', 'maybe'];
-const WEEKDAYS: Weekday[] = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+/** Every answer a member can give. */
+export const ANSWERS: Answer[] = ['yes', 'no', 'maybe'];
+/** Sunday first, so a day's `Date#getDay()` indexes it. */
+export const WEEKDAYS: Weekday[] = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 /** A form's range is under 400 days, so one request never needs more. */
 export const MAX_DAYS_PER_REQUEST = 400;
 

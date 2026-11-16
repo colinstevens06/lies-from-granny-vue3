@@ -11,7 +11,7 @@ const localTestingHeaders = async (): Promise<Record<string, string>> => {
 	return (await import('@utils/da-band/auth/dev-auth')).devHeaders();
 };
 
-export const bandRequest = async <T>(
+const bandRequest = async <T>(
 	path: string,
 	{ method = 'GET', body, redirectOn401 = true }: BandRequestOptions = {}
 ): Promise<T> => {
@@ -42,4 +42,14 @@ export const bandRequest = async <T>(
 
 	const { error, ...details } = data as { error?: string } & Record<string, unknown>;
 	throw new BandApiError(response.status, error ?? 'error', details);
+};
+
+/** One helper per HTTP verb, so a service method never names the verb as a string. */
+export const bandHttp = {
+	/** `redirectOn401: false` is for callers that treat a 401 as an answer, not a reason to go to login. */
+	get: <T>(path: string, options?: Pick<BandRequestOptions, 'redirectOn401'>) =>
+		bandRequest<T>(path, { ...options, method: 'GET' }),
+	post: <T = unknown>(path: string, body?: unknown) => bandRequest<T>(path, { method: 'POST', body }),
+	put: <T = unknown>(path: string, body?: unknown) => bandRequest<T>(path, { method: 'PUT', body }),
+	patch: <T = unknown>(path: string, body?: unknown) => bandRequest<T>(path, { method: 'PATCH', body })
 };
