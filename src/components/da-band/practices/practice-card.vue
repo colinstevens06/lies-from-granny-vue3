@@ -1,5 +1,5 @@
 <template>
-	<article class="band-card" :class="{ 'band-card--featured': featured, 'text-600': cancelled }">
+	<article class="band-card" :class="{ 'band-card--featured': featured, 'text-black-alpha-60': cancelled }">
 		<PracticeStatusBadge :status="practice.status" />
 		<div
 			:class="[

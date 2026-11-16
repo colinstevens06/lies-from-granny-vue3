@@ -10,7 +10,7 @@
 						v-for="practice in history"
 						:key="practice.id"
 						class="band-card block"
-						:class="{ 'text-600': practice.status === 'cancelled' }"
+						:class="{ 'text-black-alpha-60': practice.status === 'cancelled' }"
 					>
 						<summary
 							class="cursor-pointer text-xl font-bold"
