@@ -4,8 +4,7 @@ import type { Form } from '@models/form';
 import type { Practice, PracticeInput } from '@models/practice';
 import { bandRequest } from './band-service-base';
 
-// Stateless: one method per /api/band endpoint, returning the response body. Only `stores/band.ts` imports this, and
-// only inside its actions, so the API code stays out of the main bundle (nav.vue imports the store).
+// Stateless: one method per /api/band endpoint, returning the response body. Only `stores/band.ts` imports this.
 
 export const bandService = {
 	/** Who's signed in. Its 401 is the answer "signed out", so it doesn't redirect to login. */
