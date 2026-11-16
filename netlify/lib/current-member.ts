@@ -14,19 +14,22 @@ export type MemberLookup = CurrentMember | 'signed-out' | 'not-a-member';
  * header is ignored and the real Identity path runs:
  *   - `NETLIFY_DEV`, `NETLIFY_LOCAL` and `CONTEXT` are exactly what `netlify dev` sets: 'true', 'true' and 'dev'.
  *     A deployed function has none of them, and a missing or odd value means off.
- *   - `DEPLOY_ID` and `NETLIFY` are both unset. A deployed function always has `DEPLOY_ID`, and a Netlify build sets
- *     `NETLIFY`, while the CLI sets `NETLIFY_LOCAL` instead (see @netlify/config's READONLY_ENV note) and never passes a
- *     deploy id to `netlify dev`. So a stray `NETLIFY_DEV` or `CONTEXT` in the site's env can't turn the bypass on.
+ *   - `NETLIFY` is unset and `DEPLOY_ID` is unset or `'0'`. A deployed function always has a real `DEPLOY_ID`, and a
+ *     Netlify build sets `NETLIFY`, while the CLI sets `NETLIFY_LOCAL` instead (see @netlify/config's READONLY_ENV
+ *     note). Netlify CLI 27 gives `netlify dev` the placeholder `DEPLOY_ID=0`, so that exact value counts as local.
+ *     A stray `NETLIFY_DEV` or `CONTEXT` in the site's env still can't turn the bypass on.
  *   - the request's own host is localhost or 127.0.0.1.
  *   - the header names a known member id.
  */
 const DEV_MEMBER_HEADER = 'x-dev-member';
 
+const isLocalDeployId = (id: string | undefined) => !id || id === '0';
+
 const isNetlifyDev = (req: Request) =>
 	process.env.NETLIFY_DEV === 'true' &&
 	process.env.NETLIFY_LOCAL === 'true' &&
 	process.env.CONTEXT === 'dev' &&
-	!process.env.DEPLOY_ID &&
+	isLocalDeployId(process.env.DEPLOY_ID) &&
 	!process.env.NETLIFY &&
 	['localhost', '127.0.0.1'].includes(new URL(req.url).hostname);
 
