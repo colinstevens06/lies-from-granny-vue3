@@ -3,6 +3,14 @@
 	padding-right: 1rem;
 }
 
+/* /da-band views: full-bleed on phones for more room; unchanged from md up */
+@media screen and (max-width: $breakpoint-md - 1px) {
+	.main-container--flush-mobile {
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
+
 @media screen and (min-width: $breakpoint-md) {
 	.main-container {
 		padding-left: 70px;

@@ -14,10 +14,10 @@
 		<div v-for="(name, weekday) in WEEKDAY_LABELS" :key="name" class="flex align-items-center gap-2 py-1">
 			<span class="w-2rem flex-none font-bold">{{ name }}</span>
 			<!-- Nothing stays selected, so tapping the same answer again (after flipping overwrite) still emits. -->
-			<!-- Yes / No / Not sure stay on one line at phone width: equal-width options, tight padding, no wrap. -->
+			<!-- Yes / No / Not sure stay on one line at phone width: each option sizes to its label, no wrap. -->
 			<SelectButton
 				class="flex flex-nowrap flex-1 min-w-0"
-				:pt="{ button: { class: 'flex-1 min-w-0 py-2 px-1 text-sm white-space-nowrap' } }"
+				:pt="{ button: { class: 'flex-auto min-w-0 justify-content-center py-2 px-2 text-sm white-space-nowrap' } }"
 				:model-value="undefined"
 				:options="ANSWER_OPTIONS"
 				option-label="label"

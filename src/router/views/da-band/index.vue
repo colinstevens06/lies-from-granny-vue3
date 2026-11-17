@@ -1,6 +1,6 @@
 <template>
 	<Layout>
-		<div class="main-container">
+		<div class="main-container main-container--flush-mobile">
 			<div class="da-band">
 				<h1 class="font-permanent-marker m-0">Da Band</h1>
 

@@ -1,6 +1,6 @@
 <template>
 	<Layout>
-		<div class="main-container">
+		<div class="main-container main-container--flush-mobile">
 			<div class="da-band">
 				<BandLink to="/da-band" class="inline-block mb-3">&larr; Da Band</BandLink>
 

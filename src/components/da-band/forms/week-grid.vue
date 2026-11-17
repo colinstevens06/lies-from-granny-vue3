@@ -1,6 +1,6 @@
 <template>
 	<div class="flex flex-column gap-1">
-		<LegendKeys :items="LEGEND" class="mb-2" />
+		<LegendKeys :items="ANSWER_LEGEND" class="mb-2" />
 		<div :style="ROW_STYLE">
 			<span />
 			<div
@@ -33,16 +33,9 @@
 	import type { DayAnswer, MyAnswer } from '@models/availability';
 	import { formatMonthDay } from '@utils/dates';
 	import { WEEKDAY_INITIALS, weeksInRange } from '@utils/da-band/band-calendar';
-	import LegendKeys, { type LegendItem } from '@components/da-band/legend-keys.vue';
+	import LegendKeys from '@components/da-band/legend-keys.vue';
+	import { ANSWER_LEGEND } from './answer-legend';
 	import AnswerCell from './answer-cell.vue';
-
-	const LEGEND: LegendItem[] = [
-		{ label: 'Blank', swatch: 'answer-cell--none' },
-		{ label: 'Yes', swatch: 'answer-cell--yes' },
-		{ label: 'Yes, no show (Fri, Sat)', swatch: 'answer-cell--yes', band: true },
-		{ label: 'No', swatch: 'answer-cell--no' },
-		{ label: 'Not sure', swatch: 'answer-cell--maybe' }
-	];
 
 	// A week label, then Sunday through Saturday. PrimeFlex 3 has no grid-template utilities.
 	const ROW_STYLE = {

@@ -1,6 +1,6 @@
 <template>
 	<Layout>
-		<div class="main-container">
+		<div class="main-container main-container--flush-mobile">
 			<div class="da-band">
 				<BandLink to="/da-band" class="inline-block mb-3">&larr; Da Band</BandLink>
 				<h1 class="font-permanent-marker m-0">Edit my availability</h1>
@@ -8,6 +8,7 @@
 
 				<BandLoadState v-if="loadState !== 'ready'" :load-state />
 				<template v-else>
+					<LegendKeys :items="ANSWER_LEGEND" class="mb-2" />
 					<MonthGrid :today :form="formStore.availabilityForm">
 						<template #day="{ date, past }">
 							<AnswerCell
@@ -31,6 +32,8 @@
 	import AnswerCell from '@components/da-band/forms/answer-cell.vue';
 	import BandLink from '@components/da-band/band-link.vue';
 	import BandLoadState from '@components/da-band/band-load-state.vue';
+	import LegendKeys from '@components/da-band/legend-keys.vue';
+	import { ANSWER_LEGEND } from '@components/da-band/forms/answer-legend';
 	import MonthGrid from '@components/da-band/calendar/month-grid.vue';
 	import { useEasternNow } from '@/composables/use-eastern-now';
 	import { useBandPage } from '@/composables/use-band-page';
