@@ -57,7 +57,7 @@
 						<PracticeCard v-for="practice in laterPractices" :key="practice.id" :practice />
 					</BandSection>
 
-					<BandLink to="/da-band/history" class="inline-block mt-4">Practice history &rarr;</BandLink>
+					<BandLink v-if="hasHistory" to="/da-band/history" class="inline-block mt-4">Practice history &rarr;</BandLink>
 				</template>
 			</div>
 		</div>
@@ -80,7 +80,7 @@
 	import { shows } from '@components/shows/shows';
 	import { useBandCalendar } from '@/composables/use-band-calendar';
 	import { isEveryoneIn } from '@utils/da-band/form-status';
-	import { upcomingPractices } from '@utils/da-band/practices';
+	import { practiceHistory, upcomingPractices } from '@utils/da-band/practices';
 	import { nextShowFrom } from '@utils/shows';
 	import { clientFormFor } from '@/forms';
 	import { useBandPage } from '@/composables/use-band-page';
@@ -99,6 +99,7 @@
 	const nextPractice = computed(() => upcoming.value.find(practice => practice.status !== 'cancelled'));
 	const laterPractices = computed(() => upcoming.value.filter(practice => practice !== nextPractice.value));
 	const nextGig = computed(() => nextShowFrom(shows, today.value));
+	const hasHistory = computed(() => practiceHistory(practiceStore.practices, now.value).length > 0);
 
 	const possibleCount = computed(() => possibleDates(formStore.availabilityForm).length);
 </script>
