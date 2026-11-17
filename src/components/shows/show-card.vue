@@ -21,7 +21,7 @@
 				<template v-for="detail in gig.text" :key="detail">
 					<p v-html="detail"></p>
 				</template>
-				<div v-if="gig.songs?.length > 0">
+				<div v-if="gig.songs?.length">
 					<div class="gig-text my-3">New songs included:</div>
 					<ul>
 						<li v-for="song in gig.songs" :key="song">{{ song }}</li>

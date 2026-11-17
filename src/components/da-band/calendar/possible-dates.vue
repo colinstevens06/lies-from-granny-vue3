@@ -1,0 +1,52 @@
+<template>
+	<section v-if="days.length || form" class="flex flex-column gap-2 p-3 border-round-lg bg-poster-yellow">
+		<p class="m-0 font-bold">{{ header }}</p>
+		<ul v-if="days.length" class="flex flex-wrap gap-2 m-0 p-0 list-none">
+			<li v-for="day in days" :key="day" class="py-1 px-2 border-round-3xl bg-white">
+				{{ formatShortDay(day) }}
+			</li>
+		</ul>
+		<p v-else class="text-black-alpha-70">No dates work for everyone yet.</p>
+
+		<template v-if="nights.length">
+			<p class="m-0 mt-2 font-bold">Show nights · {{ nights.length }} {{ nights.length === 1 ? 'night' : 'nights' }}</p>
+			<ul class="flex flex-wrap gap-2 m-0 p-0 list-none">
+				<li
+					v-for="day in nights"
+					:key="day"
+					class="py-1 px-2 border-1 border-round-3xl border-lfg-pink bg-lfg-pink-tint"
+				>
+					{{ formatShortDay(day) }}
+				</li>
+			</ul>
+		</template>
+	</section>
+</template>
+
+<script setup lang="ts">
+	import { computed } from 'vue';
+	import type { Form } from '@models/form';
+	import { formatShortDay } from '@utils/dates';
+	import { useBandCalendar } from '@/composables/use-band-calendar';
+
+	// Upcoming days all five can practice with nothing booked, then the Fridays and Saturdays among them all five can also play. With an open availability form it's headed by how many
+	// practices that form still wants and what they're for.
+	const props = defineProps<{ form?: Form }>();
+
+	// Reads the reactive Eastern day, so a tab left open past midnight drops yesterday from the lists.
+	const { possibleDates, showNights, practicesStillNeeded, targetOf } = useBandCalendar();
+	const days = computed(() => possibleDates(props.form));
+	const nights = computed(() => showNights(props.form));
+
+	const header = computed(() => {
+		const works = `${days.value.length} ${days.value.length === 1 ? 'date works' : 'dates work'}`;
+		if (!props.form) return `Possible dates · ${works}`;
+
+		const needed = practicesStillNeeded(props.form);
+		const found = targetOf(props.form);
+		const target = found?.label;
+		if (needed === undefined || !target) return `Possible dates · ${works}`;
+
+		return `${needed} ${needed === 1 ? 'practice' : 'practices'} to schedule before ${target} · ${works}`;
+	});
+</script>

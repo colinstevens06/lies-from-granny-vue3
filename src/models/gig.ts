@@ -8,5 +8,6 @@ export interface Gig {
 	/** Intrinsic image dimensions, used to reserve layout space before load. */
 	imgWidth?: number;
 	imgHeight?: number;
-	songs: string[];
+	/** New setlist additions debuting at this show; omitted when there are none. */
+	songs?: string[];
 }

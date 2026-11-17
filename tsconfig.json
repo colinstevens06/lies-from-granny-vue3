@@ -1,6 +1,6 @@
 {
 	"extends": "@vue/tsconfig/tsconfig.json",
-	"include": ["env.d.ts", "src/**/*.ts", "src/**/*.vue"],
+	"include": ["env.d.ts", "src/**/*.ts", "src/**/*.vue", "netlify/**/*.ts", "scripts/**/*.ts", "band-data/**/*.ts"],
 	"compilerOptions": {
 		"baseUrl": "src",
 		"paths": {

@@ -38,3 +38,13 @@ coverage
 
 # Local Netlify folder
 .netlify
+
+# Real band data for the seed script (see scripts/seed-band-data.ts)
+/band-data
+
+# Playwright
+test-results/
+playwright-report/
+
+# Written by Netlify CLI's bundled Deno (Edge Functions runtime) during `netlify dev`; this project runs on Node
+deno.lock

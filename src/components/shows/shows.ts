@@ -1,6 +1,6 @@
 import type { Gig } from '@models/gig';
 
-export const shows = [
+export const shows: Gig[] = [
 	{
 		id: 26,
 		name: 'Pickles Pub, OCMD',
@@ -327,4 +327,4 @@ export const shows = [
 		imgWidth: 400,
 		imgHeight: 500
 	}
-] as Gig[];
+];
