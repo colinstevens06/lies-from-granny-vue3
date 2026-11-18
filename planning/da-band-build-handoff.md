@@ -27,7 +27,7 @@ Another session built `band-calendar.ts` (`e4de980`) and P5a (`b560400`, `823f30
 
 **Unverified or skipped:**
 - Real Google sign-in has never run. Unknown: where Google's redirect lands, and whether `nf_jwt` reaches `/api/band/*`.
-- Production seeding (`yarn seed:band --branch main`) has never run. Its credentials JSON shape and the branch name are assumptions.
+- Production seeding ran on 2026-11-17 as `yarn seed:band --branch production`. The production database branch is named `production`, not `main`.
 - `/security-review` (server phases and the dev switch) and `/code-review` (client) have not run.
 - Sign-off, lock-in and the practice editor were checked only on the server or with a faked store, not clicked through against the real API.
 - `$bf-*` colors (now at the top of `views/_da-band.scss`, since `_band-forms.scss` was folded into it) should move to `_variables.scss` (plan U12).
