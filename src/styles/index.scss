@@ -12,6 +12,13 @@ body {
 	padding: 0;
 }
 
+// Netlify injects a "Powered by Netlify" badge iframe into <body> on Free-plan projects.
+// A stylesheet rule applies whenever it appears, so no timer or observer is needed.
+// The supported switch is Project configuration > General > Powered by Netlify badge.
+#nl-badge-frame {
+	display: none !important;
+}
+
 .font-permanent-marker {
 	font-family: 'Permanent Marker', cursive;
 }
