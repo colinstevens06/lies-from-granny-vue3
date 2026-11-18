@@ -7,7 +7,7 @@
 		>
 			To do
 		</p>
-		<h3 class="text-xl font-bold">{{ form.title }}</h3>
+		<h3 class="mt-0 text-xl font-bold">{{ form.title }}</h3>
 		<p class="m-0 font-bold" :class="overdue ? 'text-white-alpha-90' : ''">{{ dueText }}</p>
 		<p v-if="done" :class="overdue ? 'text-white' : 'text-black-alpha-70'">Just sign off. Nothing new to fill in.</p>
 		<ul class="flex flex-column gap-2 my-1 p-0 list-none">

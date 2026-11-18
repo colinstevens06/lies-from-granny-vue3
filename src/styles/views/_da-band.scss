@@ -3,11 +3,18 @@
 // templates (see CLAUDE.md, Styling), so nothing here is per-component layout.
 
 // Answer colors (Yes / No / Not sure), shared by the answer cells, the calendar dots and the SelectButton highlights.
-// Yes is dark enough for white 10px labels: #237934 on white text is about 5.4:1 (WCAG AA wants 4.5:1).
-$bf-yes: #237934;
+// Colors come from the theme's own scales (--green-*, --orange-*, --gray-*), not hex, so they track the theme; only the
+// LFG brand colors in _variables.scss are hand-picked (Colin, 2026-11-17).
+// Yes is dark enough for white 10px labels: --green-700 (#357b38) under white text is about 5.2:1 (WCAG AA wants 4.5:1).
+$bf-yes: var(--green-700);
 $bf-no: $lfg-dark-gray;
-$bf-maybe: #f59f00;
+$bf-maybe: var(--orange-400);
 $bf-muted: rgba(33, 37, 41, 0.68);
+// The calendar dots carry no text, so they can be brighter than the cells (Colin, 2026-11-17). Busy is a light gray from
+// the theme's own gray scale (--gray-400, #bdbdbd) so it still reads on a day filled black or pink, where the old pink
+// dot vanished.
+$bf-yes-dot: var(--green-500);
+$bf-no-dot: var(--gray-400);
 
 // Brand colors as utilities, !important like PrimeFlex's own so they beat a component's base color. PrimeFlex's
 // `*-primary` classes can't be used: _primeflex-variables.scss resets --primary-color to PrimeFlex's blue.
@@ -21,7 +28,7 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 
 // A show night everyone can play: a pale pink fill that stays distinct from the solid-pink Booked day.
 .bg-lfg-pink-tint {
-	background-color: #fde2ee !important;
+	background-color: $lfg-pink-light !important;
 }
 
 .border-lfg-pink {
@@ -105,20 +112,20 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 
 	&--none {
 		background: #fff;
-		box-shadow: inset 0 0 0 1.5px #adb5bd;
+		box-shadow: inset 0 0 0 1.5px var(--gray-500);
 		color: $bf-muted;
 	}
 }
 
 // Calendar dots are solid fills with no outline, so none of them fights its neighbor. Pending is the one hollow dot,
-// ringed in its own gray. Yes to practice but no to a show is split down the middle: green left, pink right.
+// ringed in its own gray. Yes to practice but no to a show is split down the middle: green left, gray right.
 .answer-dot {
 	&--yes {
-		background: $bf-yes;
+		background: $bf-yes-dot;
 	}
 
 	&--no {
-		background: $lfg-pink;
+		background: $bf-no-dot;
 	}
 
 	&--maybe {
@@ -127,11 +134,11 @@ $bf-muted: rgba(33, 37, 41, 0.68);
 
 	&--none {
 		background: #fff;
-		box-shadow: inset 0 0 0 1px #adb5bd;
+		box-shadow: inset 0 0 0 1px var(--gray-500);
 	}
 
 	&--no-show {
-		background: linear-gradient(to right, $bf-yes 50%, $lfg-pink 50%);
+		background: linear-gradient(to right, $bf-yes-dot 50%, $bf-no-dot 50%);
 	}
 }
 

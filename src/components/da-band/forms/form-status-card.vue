@@ -1,6 +1,6 @@
 <template>
 	<article class="band-card">
-		<h3 class="text-xl font-bold">{{ form.title }}</h3>
+		<h3 class="mt-0 text-xl font-bold">{{ form.title }}</h3>
 		<FormState :form />
 		<p v-if="waiting.length" class="text-black-alpha-70">Waiting on {{ waitingNames }}</p>
 		<div class="flex flex-wrap align-items-center gap-3 mt-2">
