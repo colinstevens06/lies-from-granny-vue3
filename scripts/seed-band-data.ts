@@ -3,8 +3,8 @@
  *
  *   yarn seed:band                  dry run against the local database (needs `yarn netlify` running)
  *   yarn seed:band --write          commit to the local database
- *   yarn seed:band --branch main    dry run against a deployed database branch, using your Netlify CLI login
- *   yarn seed:band --branch main --write
+ *   yarn seed:band --branch production    dry run against a deployed database branch, using your Netlify CLI login
+ *   yarn seed:band --branch production --write
  *
  * Or set DATABASE_URL in the shell to use any connection string. It prints the target host first.
  * Production needs the Access control toggle for full write access turned on for the run, then off again.
