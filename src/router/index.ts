@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import { useMemberStore } from '@/stores/member';
+import { bandRedirect } from '@utils/da-band/auth/band-redirect';
 
 declare module 'vue-router' {
 	interface RouteMeta {
@@ -99,9 +100,20 @@ const router = createRouter({
 });
 
 router.beforeEach(async to => {
-	// Reaching login means the session is gone or in doubt (a 401 sends the browser here). Drop the cached member so
-	// the nav stops showing them and the next band page checks with the server instead of trusting the cache.
-	if (to.name === 'da-band-login') useMemberStore().forget();
+	if (to.name === 'da-band-login') {
+		// Reaching login means the session is gone or in doubt (a 401 sends the browser here). Drop the cached member so
+		// the nav stops showing them and the next band page checks with the server instead of trusting the cache.
+		const memberStore = useMemberStore();
+		memberStore.forget();
+
+		// A reason means the login page has something to say, so it stays. Otherwise a member who is signed in (Google
+		// returns to the page that started sign-in; a bookmark) goes on to where they were headed. Any other answer,
+		// or a failed check, shows the login page.
+		if (to.query.reason) return;
+		const status = await memberStore.loadMe().catch(() => 'error' as const);
+		if (status === 'ok') return bandRedirect(to.query.redirect);
+		return;
+	}
 
 	if (!to.meta.requiresMember) return;
 
