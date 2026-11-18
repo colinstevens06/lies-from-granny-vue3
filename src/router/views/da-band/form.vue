@@ -38,11 +38,11 @@
 							@click="askSignOff"
 						/>
 						<p v-if="blocker && !signedOff" class="m-0 font-bold text-pink-600">{{ blocker }}</p>
-						<span v-if="saveNotice" class="font-bold">{{ saveNotice }}</span>
 					</div>
 
 					<ShowNightsSheet v-model:visible="confirming" :summary="nights" :busy="signingOff" @confirm="signOff" />
 				</template>
+				<SaveToast />
 			</div>
 		</div>
 	</Layout>
@@ -56,6 +56,7 @@
 	import BandLink from '@components/da-band/band-link.vue';
 	import BandLoadState from '@components/da-band/band-load-state.vue';
 	import ShowNightsSheet from '@components/da-band/forms/show-nights-sheet.vue';
+	import SaveToast from '@components/da-band/save-toast.vue';
 	import { showNightSummary } from '@utils/da-band/band-calendar';
 	import { ApiError } from '@models/api-error';
 	import { daysBetween, formatShortDay } from '@utils/dates';
@@ -67,7 +68,7 @@
 
 	const memberStore = useMemberStore();
 	const formStore = useFormStore();
-	const { loadState, saveNotice, saving, load } = useBandPage();
+	const { loadState, saving, load } = useBandPage();
 	const route = useRoute();
 	const router = useRouter();
 

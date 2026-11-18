@@ -34,11 +34,12 @@ export const useBandData = () => {
 	/** True while either save queue is busy, so sign-off waits for answers of both kinds. */
 	const saving = computed(() => availabilityStore.saving || formStore.saving);
 
-	const saveNotice = computed(() => {
+	/** The worse of the two save queues' problems: a retry outranks a reload. */
+	const saveProblem = computed((): SaveProblem | undefined => {
 		const problems = [availabilityStore.saveProblem, formStore.saveProblem];
-		const problem = problems.includes('retrying') ? 'retrying' : problems.includes('reloaded') ? 'reloaded' : undefined;
-		return problem && SAVE_NOTICE[problem];
+		return problems.includes('retrying') ? 'retrying' : problems.includes('reloaded') ? 'reloaded' : undefined;
 	});
+	const saveNotice = computed(() => saveProblem.value && SAVE_NOTICE[saveProblem.value]);
 
 	/**
 	 * Admin: books the days as practices and closes the form, then reloads both. Throws an `ApiError` (409
@@ -49,5 +50,5 @@ export const useBandData = () => {
 		await Promise.all([formStore.load(), practiceStore.load()]);
 	};
 
-	return { load, loadState, saving, saveNotice, lockIn };
+	return { load, loadState, saving, saveProblem, saveNotice, lockIn };
 };
