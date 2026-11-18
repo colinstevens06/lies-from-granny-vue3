@@ -28,7 +28,8 @@ const finishSignIn = async () => {
 
 // If the Identity chunk can't load, the public site must still mount.
 (hasAuthCallbackHash() ? finishSignIn() : Promise.resolve())
-	.catch(() => undefined)
+	// Whatever went wrong, the token must not stay in the address bar, where a copied link would carry it.
+	.catch(() => window.history.replaceState(undefined, '', window.location.pathname + window.location.search))
 	.then(() => {
 		app.use(router);
 		app.mount('#app');
