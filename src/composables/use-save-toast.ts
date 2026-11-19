@@ -5,7 +5,7 @@ import { useBandData } from '@/composables/use-band-data';
 export const SAVE_TOAST_GROUP = 'save';
 
 /** Quiet time after the save queues empty before "Saved" shows. A tap in that window starts the wait over. */
-export const SAVED_SETTLE_MS = 1100;
+export const SAVED_SETTLE_MS = 1250;
 const SAVED_LIFE_MS = 2500;
 
 /**

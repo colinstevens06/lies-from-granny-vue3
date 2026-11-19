@@ -42,4 +42,4 @@ The first suite (Vitest unit and component tests, three read-only Playwright smo
 - **More component cases.** `week-grid.vue` and `answer-cell.vue` tap cycle, `form-todo-card.vue` copy and overdue states, `calendar-day.vue`.
 - **Server functions against a local DB.** `netlify/` handlers (sign-off, availability writes, lock-in, `x-dev-member` only in dev) with a throwaway local database, never Colin's running one.
 - **More E2E flows.** Sign off, tap an answer, weekday fill and the admin lock-in, against a disposable seeded database (the smoke specs are read-only on purpose).
-- **Pin the PrimeVue version.** `yarn.lock` holds 3.32.2 but `^3.32.2` floats to 3.53.1 on a fresh install, where the weekday-sheet re-tap bug (review #3) appears. The re-tap test in `weekday-fill-sheet.spec.ts` guards it.
+- **Pin the PrimeVue version.** `pnpm-lock.yaml` holds 3.32.2 but `^3.32.2` floats to 3.53.1 on a fresh install, where the weekday-sheet re-tap bug (review #3) appears. The re-tap test in `weekday-fill-sheet.spec.ts` guards it.

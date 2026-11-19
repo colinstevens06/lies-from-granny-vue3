@@ -43,4 +43,4 @@ Guidelines drawn from those examples:
 2. Check whether a real flyer image exists under `public/images/shows/`. If not, see the `show-poster-placeholders` skill to generate one.
 3. Write 2-4 `text` entries in the established voice, using the facts gathered — no invented details.
 4. Add the `songs` array only if new songs are debuting.
-5. Run `yarn type-check` after editing `shows.ts`.
+5. Run `pnpm type-check` after editing `shows.ts`.

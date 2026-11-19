@@ -17,9 +17,9 @@ If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has a
    2. Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
 2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
 
-## Yarn as Package Manager
+## pnpm as Package Manager
 
-This project uses yarn as its package manager. Make sure to download it and install on your CPU.
+This project uses pnpm, pinned by the `packageManager` field in `package.json`. Enable it with `corepack enable`.
 
 ## Customize configuration
 
@@ -28,30 +28,30 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 ## Project Setup
 
 ```sh
-yarn
+pnpm install
 ```
 
 ### Compile and Hot-Reload for Development
 
 ```sh
-yarn dev
+pnpm dev
 ```
 
 ### Type-Check, Compile and Minify for Production
 
 ```sh
-yarn build
+pnpm build
 ```
 
 ### Lint with [ESLint](https://eslint.org/)
 
 ```sh
-yarn lint
+pnpm lint
 ```
 
 ### Format with Prettier
 
 ```sh
-yarn format
+pnpm format
 ```
 

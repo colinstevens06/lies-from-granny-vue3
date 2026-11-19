@@ -2,7 +2,7 @@
 
 Scope: `src/` on `feature/da-band` vs `main`, plus the uncommitted working tree. Read-only review, medium effort, done by reading the code against `CLAUDE.md` and the house rules. Server (`netlify/`) and auth/security are out of scope.
 
-Gates run on the working tree: `yarn type-check` exit 0, `yarn exec eslint src --ext .ts,.vue` exit 0. `yarn build-only` was not run.
+Gates run on the working tree: `pnpm type-check` exit 0, `pnpm exec eslint src --ext .ts,.vue` exit 0. `pnpm build-only` was not run.
 
 Summary: 0 High, 4 Medium, 8 Low. Nothing found that loses data silently in the normal path. The save lane and the merge rule in `load()` are sound for the common cases; the problems are at the edges.
 
@@ -133,7 +133,7 @@ Fix: wrap the sections in `v-else` after the loading/error line.
 ## Not checked
 
 - No browser pass at all: nothing was rendered at 375px or any other width, and no clicks were made on :8888. The 375px comments above are from reading class lists and the grid definitions, not from looking.
-- `yarn build-only` was not run.
+- `pnpm build-only` was not run.
 - Not read: `practice-editor.vue`, `utils/practice-input.ts`, `da-band-admin*.vue` beyond the form page, `da-band-history.vue`, `day-answers-sheet.vue`, `form-responses.vue`, `form-status-card.vue`, `utils/form-status.ts`, `copy-button.vue`, the nav template, `shows.vue` changes.
 - The SCSS (`_da-band.scss`, `_primevue-structure.scss`, `_nav.scss`) was not audited for leftover BEM spacing/layout; I only saw that `answer-cell--*`, `answer-dot--*` and `yes-no*` classes are still used by templates and presumably style colors. Whether those belong under "brand tokens" is not decided here.
 - Whether the server refuses a lock-in day that is no longer valid (#2), and what it returns for an out-of-range save (#1), is the other session's area.

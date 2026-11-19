@@ -10,13 +10,13 @@ The plan is `planning/2026-11-da-band-auth-plan.md`. This file records how to op
 
 ## Commands
 
-Run the Netlify CLI as `yarn exec netlify <cmd>`. `yarn netlify <cmd>` runs the package script (`netlify dev`) and ignores the command.
+Run the Netlify CLI as `pnpm exec netlify <cmd>`. `pnpm netlify <cmd>` runs the package script (`netlify dev`) and ignores the command.
 
-- `yarn netlify`: local dev (site, functions and a local Postgres). Use it for any band work.
-- `yarn exec netlify database migrations apply`: apply new migrations to the local database. Production applies them on deploy.
-- `yarn exec netlify database connect --query "select …"`: query the local database.
-- `yarn seed:band`: dry run into the local database. `--write` commits. See Seeding.
-- Gate: `yarn type-check`, `yarn lint`, `yarn build`. There is no test runner.
+- `pnpm netlify`: local dev (site, functions and a local Postgres). Use it for any band work.
+- `pnpm exec netlify database migrations apply`: apply new migrations to the local database. Production applies them on deploy.
+- `pnpm exec netlify database connect --query "select …"`: query the local database.
+- `pnpm seed:band`: dry run into the local database. `--write` commits. See Seeding.
+- Gate: `pnpm type-check`, `pnpm lint`, `pnpm build`. There is no test runner.
 
 ## Migrations (P1)
 
@@ -26,10 +26,10 @@ Run the Netlify CLI as `yarn exec netlify <cmd>`. `yarn netlify <cmd>` runs the 
 
 ## Seeding (P1)
 
-`scripts/seed-band-data.ts` reads the gitignored `band-data/import.ts` through a variable `import()` path. Never import it with a literal path from anything `tsconfig.json` includes: the file doesn't exist on Netlify's build machine, so `vue-tsc` fails and every deploy fails with exit code 2 (PR #21, 2026-11-13). To check, move `band-data/` aside and run `yarn type-check`. The file exports `availability: AvailabilityImport[]` and `practices: PracticeImport[]`. The script is a dry run unless you pass `--write`, prints the target host first, and never overwrites an answer from a higher-ranked source (`self` > `manual` > `poll` > `assumed`).
+`scripts/seed-band-data.ts` reads the gitignored `band-data/import.ts` through a variable `import()` path. Never import it with a literal path from anything `tsconfig.json` includes: the file doesn't exist on Netlify's build machine, so `vue-tsc` fails and every deploy fails with exit code 2 (PR #21, 2026-11-13). To check, move `band-data/` aside and run `pnpm type-check`. The file exports `availability: AvailabilityImport[]` and `practices: PracticeImport[]`. The script is a dry run unless you pass `--write`, prints the target host first, and never overwrites an answer from a higher-ranked source (`self` > `manual` > `poll` > `assumed`).
 
-- Local: `yarn seed:band` (needs `yarn netlify` running; the connection string comes from `.netlify/state.json`).
-- Production: `yarn seed:band --branch production`, which gets the connection string from your Netlify CLI login. **The production database branch is named `production`, not `main`** (the git branch is `main`; `--branch main` fails with "No database branch found"). A deploy's `database_branch_id` shows the name, and a preview's database branch is named for its git branch. Verified against production on 2026-11-17. Production's Access control page gives the CLI read-only access by default, so a write needs "full write access" turned on first. Turn it on only for the run and off again afterward. Dry run first.
+- Local: `pnpm seed:band` (needs `pnpm netlify` running; the connection string comes from `.netlify/state.json`).
+- Production: `pnpm seed:band --branch production`, which gets the connection string from your Netlify CLI login. **The production database branch is named `production`, not `main`** (the git branch is `main`; `--branch main` fails with "No database branch found"). A deploy's `database_branch_id` shows the name, and a preview's database branch is named for its git branch. Verified against production on 2026-11-17. Production's Access control page gives the CLI read-only access by default, so a write needs "full write access" turned on first. Turn it on only for the run and off again afterward. Dry run first.
 - Any other database: set `DATABASE_URL` in the shell.
 
 ## Forms and practices server (P3)
@@ -41,7 +41,7 @@ Run the Netlify CLI as `yarn exec netlify <cmd>`. `yarn netlify <cmd>` runs the 
 
 ### Importing practices
 
-List them in the gitignored `band-data/import.ts` as `practices: PracticeImport[]` (same fields as `Practice`, minus `id` and `formId`), then `yarn seed:band` (dry run) and `yarn seed:band --write`. The target is that day's row (a live one first), so re-running updates in place, and marking a day `cancelled` updates the same row. `gigId` must be a `Gig.id` in `shows.ts`. `complete` is only accepted here; the editor offers tentative, scheduled and cancelled.
+List them in the gitignored `band-data/import.ts` as `practices: PracticeImport[]` (same fields as `Practice`, minus `id` and `formId`), then `pnpm seed:band` (dry run) and `pnpm seed:band --write`. The target is that day's row (a live one first), so re-running updates in place, and marking a day `cancelled` updates the same row. `gigId` must be a `Gig.id` in `shows.ts`. `complete` is only accepted here; the editor offers tentative, scheduled and cancelled.
 
 ## API shape
 
@@ -67,7 +67,7 @@ Worked example: `early-2027-planning` (migration `0003`, `src/forms/early-2027-p
 2. Write a migration that inserts the form row (title, due date, and any availability columns) and its `form_members` rows, plus any new tables. Quote apostrophes in text as `''`. Never edit it once a deploy has applied it.
 3. Add `src/forms/<slug>/` with `model.ts` and `rules.ts` (`missing`). Add `screen.vue` and `responses.vue` there too (props: `form`), built from the shared pieces in `src/components/da-band/forms/` (`availability-section`, `yes-no-text`). Save answers through `band.setMyFormAnswer(form.id, body)` and, for availability, `band.setMyAnswers`.
 4. Add `netlify/forms/<slug>.ts` (`loadDetails`, and `saveAnswer` if members answer), plus `mineOf` and `missing` in `rules.ts`. A form with availability should call `availabilityMissing` from `src/utils/da-band/availability.ts` in its `missing`.
-5. Wire all three registries: `src/forms/rules.ts`, `netlify/forms/index.ts`, and `src/forms/index.ts` (the client registry: `summary`, `asks`, lazy `screen` and `responses`, and `todoLines` for the to-do card and progress bar). They are typed `Record<FormSlug, …>`, so a missing one fails `yarn type-check`.
+5. Wire all three registries: `src/forms/rules.ts`, `netlify/forms/index.ts`, and `src/forms/index.ts` (the client registry: `summary`, `asks`, lazy `screen` and `responses`, and `todoLines` for the to-do card and progress bar). They are typed `Record<FormSlug, …>`, so a missing one fails `pnpm type-check`.
 6. Extend `FormDetails` in `src/models/form.ts` (`FormSlug` follows from it).
 7. Only one open form may have availability. Close the old one before a new availability form's migration runs.
 
@@ -86,20 +86,20 @@ Worked example: `early-2027-planning` (migration `0003`, `src/forms/early-2027-p
 
 ## Local testing
 
-Google sign-in can't work under `yarn netlify`: Identity isn't proxied locally (`/.netlify/identity/*` falls through to the Vue app), and Identity's OAuth state returns to production anyway. Real sign-in is checked on production at release, before Anna is invited.
+Google sign-in can't work under `pnpm netlify`: Identity isn't proxied locally (`/.netlify/identity/*` falls through to the Vue app), and Identity's OAuth state returns to production anyway. Real sign-in is checked on production at release, before Anna is invited.
 
 Instead, the login page shows **Sign in as {member}** buttons in dev (Colin is marked admin). The choice lives in `sessionStorage`, the band service sends it as an `x-dev-member` header, and **Sign out** clears it. Everything else works as in production: `/api/band/me` returns the member, and pages and API calls follow the real role rules.
 
 - **Server gate:** `devMemberFrom` in `netlify/lib/current-member.ts`, the single auth seam. It accepts the header only when `NETLIFY_DEV=true`, `NETLIFY_LOCAL=true` and `CONTEXT=dev` (what `netlify dev` sets, and a deployed function has none of them), the request's host is localhost or 127.0.0.1, and the header names a known member. Anything else runs the real Identity path. It also requires `DEPLOY_ID` and `NETLIFY` to be unset (`netlify dev` sets neither; every deployed function has `DEPLOY_ID`). **Never set `NETLIFY_DEV`, `NETLIFY_LOCAL`, `CONTEXT`, `DEPLOY_ID` or `NETLIFY` as environment variables in the Netlify UI**: they gate a sign-in bypass. The bypass code still ships in the function bundle behind these checks.
-- **Client gate:** the switcher and `src/utils/da-band/auth/dev-auth.ts` sit behind `import.meta.env.DEV`, so a production build has none of it. After changing this code, run `yarn build-only` and confirm `grep -r "x-dev-member" dist` finds nothing.
-- Seed the local database first (`yarn seed:band --write` with `yarn netlify` running) to see Anna's prefill and the existing practice.
+- **Client gate:** the switcher and `src/utils/da-band/auth/dev-auth.ts` sit behind `import.meta.env.DEV`, so a production build has none of it. After changing this code, run `pnpm build-only` and confirm `grep -r "x-dev-member" dist` finds nothing.
+- Seed the local database first (`pnpm seed:band --write` with `pnpm netlify` running) to see Anna's prefill and the existing practice.
 
 ## Release order
 
 Colin releases to Anna alone first, testing on production, not a preview. Previews copy production, so they start empty.
 
 1. Deploy. Migrations `0001`–`0003` run and the Early 2027 planning form row appears.
-2. Seed production: `yarn seed:band --branch production` (dry run), then `--write`, with the database's full-write access toggle on only for that run. The `production` database branch exists only after the first production deploy publishes (before that the CLI says "No database branch found"). The connection-string path worked against production on 2026-11-17. Fallback if it won't connect: skip the seed, add the practice in `/da-band/admin/practices`, and have Anna enter her own availability.
+2. Seed production: `pnpm seed:band --branch production` (dry run), then `--write`, with the database's full-write access toggle on only for that run. The `production` database branch exists only after the first production deploy publishes (before that the CLI says "No database branch found"). The connection-string path worked against production on 2026-11-17. Fallback if it won't connect: skip the seed, add the practice in `/da-band/admin/practices`, and have Anna enter her own availability.
 3. Colin checks `/da-band`.
 4. Colin invites Anna (see Identity members).
 

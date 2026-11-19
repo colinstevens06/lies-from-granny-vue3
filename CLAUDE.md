@@ -8,22 +8,22 @@ Vue 3 + Vite + TypeScript static marketing site for the band Lies From Granny, d
 
 ## Commands
 
-Package manager is Yarn 3 (Berry, pinned via `.yarnrc.yml` → `.yarn/releases/`, `node-modules` linker). Use `yarn`, never `npm`.
+Package manager is pnpm, pinned by `packageManager` in `package.json` (run it through corepack). Use `pnpm`, never `npm` or `yarn`. `pnpm-workspace.yaml` holds `allowBuilds`, the list of dependencies allowed to run install scripts (esbuild, sharp, netlify-cli, and so on); a new dependency that needs a build script must be added there, or install fails with `ERR_PNPM_IGNORED_BUILDS`.
 
-- `yarn` — install
-- `yarn netlify` — **use this for local dev, not `yarn dev`.** Rendered image URLs point at `/.netlify/images`, which only `netlify dev` can serve. Under plain `vite dev` every image on the site 404s.
-  - **One dev server, Colin's.** Colin keeps `yarn netlify` running on :8888. Sessions never start, stop or restart a dev server: `.claude/launch.json`'s `netlify-dev` only attaches to :8888, and Vite HMR plus netlify dev's function reload pick up edits. Each extra `netlify dev` grabs new ports and opens new tabs. If :8888 isn't up, say so instead of starting one.
-- `yarn dev` — plain Vite dev server (broken images; only useful for non-image work)
-- `yarn type-check` — `vue-tsc --noEmit`
-- `yarn lint` — ESLint with `--fix`
-- `yarn format` — Prettier over `src/`
-- `yarn build` — runs `type-check` and `build-only` in parallel (`npm-run-all`)
-- `yarn preview` — serve the production build
+- `pnpm install` — install
+- `pnpm netlify` — **use this for local dev, not `pnpm dev`.** Rendered image URLs point at `/.netlify/images`, which only `netlify dev` can serve. Under plain `vite dev` every image on the site 404s.
+  - **One dev server, Colin's.** Colin keeps `pnpm netlify` running on :8888. Sessions never start, stop or restart a dev server: `.claude/launch.json`'s `netlify-dev` only attaches to :8888, and Vite HMR plus netlify dev's function reload pick up edits. Each extra `netlify dev` grabs new ports and opens new tabs. If :8888 isn't up, say so instead of starting one.
+- `pnpm dev` — plain Vite dev server (broken images; only useful for non-image work)
+- `pnpm type-check` — `vue-tsc --noEmit`
+- `pnpm lint` — ESLint with `--fix`
+- `pnpm format` — Prettier over `src/`
+- `pnpm build` — runs `type-check` and `build-only` in parallel (`npm-run-all`)
+- `pnpm preview` — serve the production build
 
-- `yarn test` — Vitest (`vitest run`, jsdom). Specs sit next to the code as `*.spec.ts`; shared factories (`makeForm`, `makeMyDays`, `makeBandAvailability`) and the PrimeVue `mountWithPrime` helper are in `src/test-utils/`. `yarn test:watch` for watch mode.
-- `yarn test:e2e` — Playwright smoke specs in `e2e/` (Chromium only), read-only against Colin's dev server on :8888. Needs `yarn netlify` already running; there is no `webServer` block and sessions never start it. Not part of `yarn test`.
+- `pnpm test` — Vitest (`vitest run`, jsdom). Specs sit next to the code as `*.spec.ts`; shared factories (`makeForm`, `makeMyDays`, `makeBandAvailability`) and the PrimeVue `mountWithPrime` helper are in `src/test-utils/`. `pnpm test:watch` for watch mode.
+- `pnpm test:e2e` — Playwright smoke specs in `e2e/` (Chromium only), read-only against Colin's dev server on :8888. Needs `pnpm netlify` already running; there is no `webServer` block and sessions never start it. Not part of `pnpm test`.
 
-**Verification gate after a change:** `yarn type-check`, `yarn lint` and `yarn test`, plus `yarn build` for anything touching config or build output. Run `yarn test:e2e` when :8888 is up and the change touches `/da-band` flows. Pins to know: `@vue/test-utils` is held at 2.4.6 (2.4.7+ needs Vue 3.5; the repo is on 3.4, so same-name prop shorthand like `:visible` is the style) and Vitest at 0.34 (Vitest 1+ needs Vite 5).
+**Verification gate after a change:** `pnpm type-check`, `pnpm lint` and `pnpm test`, plus `pnpm build` for anything touching config or build output. Run `pnpm test:e2e` when :8888 is up and the change touches `/da-band` flows. Pins to know: `@vue/test-utils` is held at 2.4.6 (2.4.7+ needs Vue 3.5; the repo is on 3.4, so same-name prop shorthand like `:visible` is the style) and Vitest at 0.34 (Vitest 1+ needs Vite 5).
 
 ## Architecture
 
@@ -52,7 +52,7 @@ These are the things that break silently if only one side is edited.
 - **Path aliases are declared twice** — in `tsconfig.json` (`paths`) and `vite.config.ts` (`resolve.alias`). Changing one without the other type-checks but fails at build, or vice versa. Aliases: `@`, `@components`, `@models`, `@router`, `@styles`, `@utils`, `@views`.
 - **The home hero preload is hand-duplicated.** `index.html` has an inline script that injects `<link rel="preload">` tags for the LCP hero, gated on the pathname so it only fires on home routes. Those URLs must match the `netlifyImage` srcset in `src/router/views/home.vue` character for character — a mismatch causes a second download instead of a faster LCP. Update both in the same change. The script must also stay first in `<head>`, ahead of the preload scanner.
 - **Show dates are parsed strings.** `src/utils/shows.ts` (used by `shows.vue` and `/da-band`) splits upcoming from past with `new Date(\`${show.date} 23:59:59\`)`. `Gig.date` must stay a human-readable string `new Date()` can parse (`'March 16, 2026'`, `'Sept 27, 2025'`). An unparseable date makes the show vanish from both lists.
-- **The data files are annotated, not cast** — `export const shows: Gig[]`, `export const songs: BandListing[]`. Keep it that way: an `as Gig[]` assertion at the end of the array silently suppresses missing-field errors on every entry, whereas the annotation makes `yarn type-check` validate each new show or band listing. `Gig.songs` is optional (only shows debuting new material carry it); everything else on `Gig` and all of `BandListing` is required.
+- **The data files are annotated, not cast** — `export const shows: Gig[]`, `export const songs: BandListing[]`. Keep it that way: an `as Gig[]` assertion at the end of the array silently suppresses missing-field errors on every entry, whereas the annotation makes `pnpm type-check` validate each new show or band listing. `Gig.songs` is optional (only shows debuting new material carry it); everything else on `Gig` and all of `BandListing` is required.
 - **`show-card.vue` renders `gig.text` entries with `v-html`.** Only intentionally authored, trusted HTML belongs in `Gig.text`.
 - **`songs-container.vue` sorts nested `songs` arrays in place**, mutating the imported `songs` module data. Anything else reading that module sees the sorted result.
 - **The contact form is a Netlify form.** `index.html` carries a hidden static `<form name="contact" netlify netlify-honeypot="bot-field">` for Netlify's build-time detection, because the real form in `src/router/views/contact.vue` is client-rendered and invisible to the crawler. The rendered form's `name` and its hidden `form-name` value must match that stub. Verify deploy behavior before changing either.
@@ -65,14 +65,14 @@ These are the things that break silently if only one side is edited.
   - **`src/forms/` is a top-level registry**, one folder per form slug, shared with `netlify/forms/`. Its `screen.vue` and `responses.vue` are loaded by path through `src/forms/index.ts`, never by tag, so they repeat across slugs the way route files do.
 - Shared social links belong in `src/utils/urls.ts`.
 - **Drawers open from the right** (Colin, 2026-11-16). Every `/da-band` sheet wraps `src/components/da-band/band-drawer.vue` (PrimeVue `Sidebar`, `position="right"`), never `Sidebar` directly.
-- Prettier config is authoritative and unusual: tabs, single quotes, no trailing commas, `printWidth` 120, `vueIndentScriptAndStyle: true`, and `endOfLine: "crlf"`. Run `yarn format` rather than hand-matching.
+- Prettier config is authoritative and unusual: tabs, single quotes, no trailing commas, `printWidth` 120, `vueIndentScriptAndStyle: true`, and `endOfLine: "crlf"`. Run `pnpm format` rather than hand-matching.
 - ESLint extends `vue3-essential` + TS + Prettier; `vue/multi-word-component-names` is off, which is why `nav.vue`, `footer.vue`, `shows.vue` are legal names.
 
 ## Project profile
 
 Read by the shared `plan-feature`, `build-feature` and `review-feature` skills.
 
-- **Commands and gate:** § Commands above. Type-check `yarn type-check`, lint `yarn lint`, format `yarn format`, test `yarn test`, e2e `yarn test:e2e` (only with Colin's :8888 up).
+- **Commands and gate:** § Commands above. Type-check `pnpm type-check`, lint `pnpm lint`, format `pnpm format`, test `pnpm test`, e2e `pnpm test:e2e` (only with Colin's :8888 up).
 - **Plans:** `planning/` at the root, named `YYYY-MM-<topic>.md`. **Backlog:** `planning/da-band-backlog.md`.
 - **Specialist agents:** none. Builds run in the session that has the plan.
 - **Reviewers:** `general-purpose` subagents on Sonnet, briefed with the touched rules and the diff. `plan-reviewer` reviews plans.

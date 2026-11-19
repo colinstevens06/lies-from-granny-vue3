@@ -52,7 +52,7 @@ Use this skill whenever a change adds, updates, reviews, or renders an image.
 3. Generate the Netlify CDN URL through the shared helper at a width appropriate to the rendered slot.
 4. Add stable image dimensions and appropriate loading, priority, and alternative-text attributes.
 5. For layout changes, check a narrow mobile viewport and a desktop viewport for overflow, broken images, accidental cropping, and layout shift.
-6. Run `yarn type-check` after changing Vue or TypeScript files. Run `yarn build` when changing delivery or deployment behavior.
+6. Run `pnpm type-check` after changing Vue or TypeScript files. Run `pnpm build` when changing delivery or deployment behavior.
 
 ## Review Checklist
 

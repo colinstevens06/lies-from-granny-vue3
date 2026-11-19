@@ -3,7 +3,7 @@ import type { Form, FormSlug } from '@models/form';
 import { early2027Planning } from './early-2027-planning';
 
 // The client form registry: slug → how the app shows that form. Typed Record<FormSlug, …> so a missing registration
-// fails `yarn type-check`. The sign-off rule lives in ./rules (shared with the server), never here.
+// fails `pnpm type-check`. The sign-off rule lives in ./rules (shared with the server), never here.
 
 /** One line on a to-do card or the progress bar. */
 export interface TodoLine {

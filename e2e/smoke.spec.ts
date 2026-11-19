@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { makeForm } from '../src/test-utils/factories';
 
-// Read-only smoke tests against Colin's dev server (`yarn netlify` on :8888, started by him). They never tap an
+// Read-only smoke tests against Colin's dev server (`pnpm netlify` on :8888, started by him). They never tap an
 // answer, sign off, or fill, so the local database is left as it was. Signing in only stores the dev member in the
 // browser (see src/utils/da-band/auth/dev-auth.ts).
 

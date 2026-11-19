@@ -39,7 +39,7 @@ updates — only if 0–2 get used. The one exception is §10's Option A, which 
 button and can ship whenever.
 
 1. Write `members.ts` from the roster, plus `practice.ts` and `practices.ts` with real entries.
-   Pin every date to `America/New_York` through one shared helper. Run `yarn type-check`.
+   Pin every date to `America/New_York` through one shared helper. Run `pnpm type-check`.
 2. Add the `/da-band` route — unlisted, `noindex`, absent from the nav. Build the next-practice
    headline: day, date, time, location, what to prepare. Readable in two seconds on a phone.
 3. Pull the next gig from `shows.ts`. First extract the upcoming/past date filter out of
@@ -247,7 +247,7 @@ thing — before the `.ics` feed, if you're impatient. A plain-text "known confl
 ### Data models
 
 Follow the existing conventions exactly: annotate the array, never cast it
-(`export const practices: Practice[]`), so `yarn type-check` validates each new entry the way
+(`export const practices: Practice[]`), so `pnpm type-check` validates each new entry the way
 it does for `Gig[]` and `BandListing[]`.
 
 ```ts
@@ -355,8 +355,8 @@ the route is reachable by anyone who guesses the URL, and phase 0 has no auth. B
 
 ### Verification gate
 
-Same as the rest of the repo: `yarn type-check` and `yarn lint`. There is no test runner.
-Run `yarn netlify` (not `yarn dev`) for local dev if any images are involved.
+Same as the rest of the repo: `pnpm type-check` and `pnpm lint`. There is no test runner.
+Run `pnpm netlify` (not `pnpm dev`) for local dev if any images are involved.
 
 ---
 
@@ -586,7 +586,7 @@ applies to Google sign-in. Magic links aren't part of `@netlify/identity`.
 ### Note on "should the MVP data be JSON?"
 
 You asked to mark this for later. Here's the short version: for phase 0, **keep it as annotated
-TypeScript**, not JSON. The annotation is what makes `yarn type-check` catch a missing field on
+TypeScript**, not JSON. The annotation is what makes `pnpm type-check` catch a missing field on
 a new practice — a `.json` import gives you none of that, and CLAUDE.md already calls out this
 exact trap for `shows.ts`. When phase 3 lands and records are written at runtime, they become
 JSON blobs in the datastore *and* you write a TS type for them — you get both. There's no step
@@ -882,7 +882,7 @@ practice notes is plausibly worth more than the edits derived from them.
 The admin page takes the dictated note, bundles it with the current state the agent would need —
 the song catalog, the next few practices, the next show — and hands back a single formatted prompt,
 copied to the clipboard. Colin pastes it into Claude Code at his desk, which already has repo
-access, `yarn type-check`, `yarn lint`, and a human reading the diff.
+access, `pnpm type-check`, `pnpm lint`, and a human reading the diff.
 
 No infrastructure, no key, no endpoint, no new auth surface, nothing to pay for, and it works the
 week after phase 0 ships. It's the same trick §9 already recommends for the group text — compose
@@ -917,13 +917,13 @@ and only the runner moves.
 This is the load-bearing constraint of the whole phase.
 
 The agent would be editing `shows.ts` and `songs.ts` — annotated arrays whose whole safety story is
-that `yarn type-check` validates each entry — and it'd be doing it next to the cross-file invariants
+that `pnpm type-check` validates each entry — and it'd be doing it next to the cross-file invariants
 CLAUDE.md already warns about: the hand-duplicated hero preload, the date strings that must stay
 `new Date()`-parseable or a show silently vanishes, the `v-html` in `gig.text`. That is precisely
 the class of thing an agent breaks quietly and confidently.
 
 So: branch, PR, Netlify deploy preview, and — **this repo has no CI today** — a small workflow
-running `yarn type-check` and `yarn build` on the PR, which is worth adding regardless of whether
+running `pnpm type-check` and `pnpm build` on the PR, which is worth adding regardless of whether
 this phase ever happens. Reviewing from a phone is one tap on Files Changed. A dictation that
 mishears a song title should cost thirty seconds of review, not a live site nobody checked.
 
@@ -979,7 +979,7 @@ Collected from above plus a few more:
 - **"Last played at this venue"** — free once set lists are recorded.
 - **Copy-to-clipboard summary for the group text** — meets them where they are.
 - **`noindex` + unlisted route + a `netlify.toml`** — the repo has no `netlify.toml` today.
-- **A CI workflow running `yarn type-check` and `yarn build` on PRs** — the repo has no CI at all
+- **A CI workflow running `pnpm type-check` and `pnpm build` on PRs** — the repo has no CI at all
   today. Cheap, and it's a prerequisite for anything in §10 ever opening a pull request.
 - **A dictated note that composes its own prompt** — §10's Option A. A textarea, the iOS keyboard
   mic, and a copy button. Same shape as the group-text item above, and the same reason it works.

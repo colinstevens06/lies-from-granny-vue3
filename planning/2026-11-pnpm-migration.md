@@ -1,6 +1,6 @@
 # Yarn 3 to pnpm migration plan
 
-Written 2026-11-12. Status: scoped and trial-run, not started. Goal: switch the package manager from Yarn 3 (Berry) to pnpm, ideally before the da-band rollout lands more dependencies.
+Written 2026-11-12. Status: files switched to pnpm in the working tree on `fix/da-band-testing-feedback` (uncommitted, 2026-11-18); gates passed in a scratch copy; real `node_modules` not reinstalled yet; Netlify build command not changed. Goal: switch the package manager from Yarn 3 (Berry) to pnpm, ideally before the da-band rollout lands more dependencies.
 
 ## What was verified
 

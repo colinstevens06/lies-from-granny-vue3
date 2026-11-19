@@ -27,7 +27,7 @@ Another session built `band-calendar.ts` (`e4de980`) and P5a (`b560400`, `823f30
 
 **Unverified or skipped:**
 - Real Google sign-in has never run. Unknown: where Google's redirect lands, and whether `nf_jwt` reaches `/api/band/*`.
-- Production seeding ran on 2026-11-17 as `yarn seed:band --branch production`. The production database branch is named `production`, not `main`.
+- Production seeding ran on 2026-11-17 as `pnpm seed:band --branch production`. The production database branch is named `production`, not `main`.
 - `/security-review` (server phases and the dev switch) and `/code-review` (client) have not run.
 - Sign-off, lock-in and the practice editor were checked only on the server or with a faked store, not clicked through against the real API.
 - `$bf-*` colors (now at the top of `views/_da-band.scss`, since `_band-forms.scss` was folded into it) should move to `_variables.scss` (plan U12).
@@ -36,10 +36,10 @@ Another session built `band-calendar.ts` (`e4de980`) and P5a (`b560400`, `823f30
 
 ## Traps
 
-- **Netlify CLI:** `yarn exec netlify <cmd>`. `yarn netlify <cmd>` runs `netlify dev` and ignores the command.
+- **Netlify CLI:** `pnpm exec netlify <cmd>`. `pnpm netlify <cmd>` runs `netlify dev` and ignores the command.
 - **Identity doesn't work locally.** `/.netlify/identity/*` falls through to the Vue app, and OAuth returns to production. Use the dev switch on the login page. The server accepts `x-dev-member` only inside `devMemberFrom` (`netlify/lib/current-member.ts`) when `NETLIFY_DEV`, `NETLIFY_LOCAL` and `CONTEXT` equal `true`, `true`, `dev` and the host is localhost. The client half is behind `import.meta.env.DEV`. After touching either, confirm `grep -r x-dev-member dist` is empty. Keep the bypass inside `getCurrentMember`.
-- **Dev server:** Colin's `yarn netlify` on :8888 is attach-only. Don't start, stop or restart it. It holds the local database directory, so the CLI can't open the DB while it runs.
-- **Local DB reset is pending.** The local row still has the old slug (`march-show-planning`), so the form is hidden. Colin: stop the server, run `yarn exec netlify database reset --force`, start the server, run `yarn exec netlify database migrations apply`, then `yarn seed:band --write`. Migration 0003 was edited in place, since no deploy has applied it.
+- **Dev server:** Colin's `pnpm netlify` on :8888 is attach-only. Don't start, stop or restart it. It holds the local database directory, so the CLI can't open the DB while it runs.
+- **Local DB reset is pending.** The local row still has the old slug (`march-show-planning`), so the form is hidden. Colin: stop the server, run `pnpm exec netlify database reset --force`, start the server, run `pnpm exec netlify database migrations apply`, then `pnpm seed:band --write`. Migration 0003 was edited in place, since no deploy has applied it.
 - **A second dev server picks random ports.** Port 8889 or 57925 means a second server is running.
 - **Netlify dev quirk:** a function's 4xx on a POST may fall through to static fallbacks, so `curl` can show 405 for a 403.
 - **Shared checkout:** other sessions edit this tree. Stage files by explicit path, and check `git status` first. Never `git add -A` on the repo root, and never stash or switch branches. Colin's unrelated files are listed in the first task brief: `shows.ts`, `songs.ts`, `show-card.vue`, `gig.ts`, `site-images/SKILL.md`, `CLAUDE.md`, `deno.lock` and the Molloy's placeholder image.
