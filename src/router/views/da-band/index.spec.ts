@@ -10,7 +10,7 @@ import DaBand from './index.vue';
 const mountHome = () =>
 	mountWithPrime(DaBand, {
 		shallow: true,
-		global: { renderStubDefaultSlot: true, stubs: { BandLoadState: false } }
+		global: { renderStubDefaultSlot: true, stubs: { BandLoadState: false, RockHornsLoader: false } }
 	});
 
 describe('da-band home page', () => {
@@ -34,7 +34,7 @@ describe('da-band home page', () => {
 		const wrapper = mountHome();
 		await flushPromises();
 
-		expect(wrapper.text()).toContain('Loading…');
+		expect(wrapper.find('[role="progressbar"][aria-label="Loading"]').exists()).toBe(true);
 		expect(wrapper.text()).not.toContain('No practice on the calendar.');
 		expect(wrapper.text()).not.toContain('Next gig');
 	});

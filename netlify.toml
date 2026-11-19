@@ -1,0 +1,12 @@
+# Netlify build config. Values here win over the Netlify UI's build settings.
+# Docs: https://docs.netlify.com/build/configure-builds/file-based-configuration/
+
+[build]
+  command = "pnpm build"
+  publish = "dist"
+
+  # Skip the build (and save credits) when nothing that affects the site changed since the last deploy.
+  # Exit 0 = nothing relevant changed, skip. Exit 1 = something changed, build. Any git error also builds.
+  # Anything the build reads must be listed here: a file missing from the list never triggers a build on its own.
+  # Not listed on purpose: planning/, e2e/, scripts/, .claude/, README.md, CLAUDE.md, *.spec.ts-only changes.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- src public netlify index.html vite.config.ts tsconfig.json tsconfig.vite.json env.d.ts package.json pnpm-lock.yaml pnpm-workspace.yaml netlify.toml"

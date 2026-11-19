@@ -64,7 +64,7 @@ Service (HTTP) → Store (server state) → Composable (joins, UI/workflow state
 | Autosave queues in composables                           | Each save queue lives in its entity store                | The store's `load()` merges around answers still pending or just saved, so the queue's pending state has to sit beside the merge.                                       |
 | Services return `*Dto`s, stores map with `@models` mappers | Services return app types                                | The wire shape is the app shape today. Add a mapper in `@models` the first time they differ, called only inside the store.                                              |
 | One boolean flag per operation (`isLoading`, `isSaving`) | One `loadState` (`idle`/`loading`/`ready`/`error`) per store, plus `saving` | The pages show one load state, never two loads racing in one store. Add a per-operation flag the first time a page needs one.                                          |
-| Error toasts from the service base                       | Inline messages from the caller                          | The site has no toast surface; each failure is shown where it happened.                                                                                                |
+| Error toasts from the service base                       | Inline messages from the caller; autosave status in one toast | A failure from an action is shown where it happened. The autosave is the exception (Colin, 2026-11-18): a member tapping days can be scrolled anywhere, so `useSaveToast` (via `save-toast.vue`) shows "Saved" once per burst and save problems in a toast. The service base still never toasts. |
 
 ## Testing
 

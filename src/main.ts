@@ -4,6 +4,7 @@ import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
 import PrimeVue from 'primevue/config';
+import ToastService from 'primevue/toastservice';
 import { hasAuthCallbackHash } from './utils/da-band/auth/auth-hash';
 
 //theme
@@ -18,6 +19,8 @@ const app = createApp(App);
 
 app.use(createPinia());
 app.use(PrimeVue);
+// Only the event bus; the <Toast> that renders it is mounted by the /da-band pages that autosave (save-toast.vue).
+app.use(ToastService);
 
 // Google sends the browser back with the sign-in in the URL hash. Finish it before the router's first guard runs.
 // Only a callback hash pulls in the Identity library; every other visit skips it.

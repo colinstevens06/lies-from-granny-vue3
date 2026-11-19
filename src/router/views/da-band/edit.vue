@@ -20,8 +20,8 @@
 							/>
 						</template>
 					</MonthGrid>
-					<p v-if="saveNotice" class="m-0 font-bold">{{ saveNotice }}</p>
 				</template>
+				<SaveToast />
 			</div>
 		</div>
 	</Layout>
@@ -33,6 +33,7 @@
 	import BandLink from '@components/da-band/band-link.vue';
 	import BandLoadState from '@components/da-band/band-load-state.vue';
 	import LegendKeys from '@components/da-band/legend-keys.vue';
+	import SaveToast from '@components/da-band/save-toast.vue';
 	import { ANSWER_LEGEND } from '@components/da-band/forms/answer-legend';
 	import MonthGrid from '@components/da-band/calendar/month-grid.vue';
 	import { useEasternNow } from '@/composables/use-eastern-now';
@@ -42,7 +43,7 @@
 
 	const availabilityStore = useAvailabilityStore();
 	const formStore = useFormStore();
-	const { loadState, saveNotice } = useBandPage();
+	const { loadState } = useBandPage();
 
 	const { today } = useEasternNow();
 </script>

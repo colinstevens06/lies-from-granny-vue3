@@ -203,3 +203,55 @@ $bf-no-dot: var(--gray-400);
 		color: #fff;
 	}
 }
+
+// The rock-horns loader (rock-horns-loader.vue): hidden for the first 0.2 s so a fast load never flashes it, then the
+// hand rocks on its wrist and shifts pink to black (Speed Shopper's cart loader timing).
+.rock-horns-loader {
+	opacity: 0;
+	animation: rock-horns-appear 0.15s ease-out 0.2s forwards;
+}
+
+.rock-horns-hand {
+	color: $lfg-pink;
+	transform-origin: 50% 95%;
+	rotate: -10deg;
+	animation: rock-horns-rock 1s infinite 0.1s, rock-horns-color 2s ease-in-out infinite;
+
+	@media (prefers-reduced-motion: reduce) {
+		rotate: none;
+		animation: rock-horns-color 2s ease-in-out infinite;
+	}
+}
+
+@keyframes rock-horns-appear {
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes rock-horns-rock {
+	0%,
+	50% {
+		animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	0%,
+	100% {
+		rotate: -10deg;
+	}
+
+	50% {
+		rotate: 10deg;
+	}
+}
+
+@keyframes rock-horns-color {
+	0%,
+	100% {
+		color: $lfg-pink;
+	}
+
+	50% {
+		color: $lfg-dark-gray;
+	}
+}

@@ -1,2 +1,2 @@
-# Vendored PrimeVue theme CSS (~6,400 lines). `yarn format` would rewrite all of it.
+# Vendored PrimeVue theme CSS (~6,400 lines). `pnpm format` would rewrite all of it.
 src/styles/_theme.scss

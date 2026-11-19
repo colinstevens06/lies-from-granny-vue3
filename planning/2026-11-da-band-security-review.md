@@ -1,6 +1,6 @@
 # /da-band security review (2026-11-12)
 
-Scope: `feature/da-band` vs `main` plus the uncommitted restyle. Read-only review, inline (no subagents). `yarn build-only` was run to check `dist/`. Nothing was run against a database or Netlify.
+Scope: `feature/da-band` vs `main` plus the uncommitted restyle. Read-only review, inline (no subagents). `pnpm build-only` was run to check `dist/`. Nothing was run against a database or Netlify.
 
 **Result: 0 High, 0 Medium, 4 Low, 3 Info.** No exploitable authentication, authorization, injection or data-leak path found.
 

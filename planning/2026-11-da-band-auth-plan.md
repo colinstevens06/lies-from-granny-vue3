@@ -110,7 +110,7 @@ All ✅ rows were verified on November 10, with 0 ❌.
 | Netlify site link | absent | ❌ (see the pre-flight) |
 
 **Pre-flight, before P1:**
-1. Run `yarn netlify link`.
+1. Run `pnpm netlify link`.
 2. Confirm the account is on the credit-based Free plan.
 3. Create the database with direct SQL.
 4. Add `@netlify/identity`, `@netlify/database`, `@netlify/functions` and `tsx` (dev).
@@ -302,7 +302,7 @@ Stop and ask Colin if step 2, 6 or 7 fails.
      - `loadDetails` reads `song_pitches` plus `song_suggestions` in position order.
      - `saveAnswer` runs `parseSongPitch`, upserts `song_pitches` with `answered_at = now()`, then deletes and reinserts that member's `song_suggestions`, in one transaction under the form's `for share` lock.
    - **A form row whose slug isn't registered** (an old preview branch, or after a rollback) is **logged and left out** of `listForms` and every form endpoint (`404`). It never breaks the other forms.
-   - **All three registries** (`src/forms/rules.ts`, `src/forms/index.ts`, `netlify/forms/index.ts`) are typed `Record<FormSlug, …>`, so a missing registration fails `yarn type-check`.
+   - **All three registries** (`src/forms/rules.ts`, `src/forms/index.ts`, `netlify/forms/index.ts`) are typed `Record<FormSlug, …>`, so a missing registration fails `pnpm type-check`.
 
 9. **Endpoints.** Every route is member-gated: `401 signed-out` and `403 not-a-member`.
 
@@ -328,7 +328,7 @@ Stop and ask Colin if step 2, 6 or 7 fails.
     - Check order: method → Origin and JSON content type on writes (`403 bad-origin`) → path shape only, with no database access → identity → role → body shape (`400`) → database lookups (`404`/`409`) → validation that needs the looked-up row (`parseLockIn`, the handler's parse; `400`).
     - An unauthenticated request never reaches the database.
 
-11. **Seed** [P1, extended in P3]: `yarn seed:band` (`tsx scripts/seed-band-data.ts`).
+11. **Seed** [P1, extended in P3]: `pnpm seed:band` (`tsx scripts/seed-band-data.ts`).
     - It reads the gitignored `band-data/import.ts`, which exports `availability: AvailabilityImport[]` and `practices: PracticeImport[]`.
     - Dry run is the default, and `--write` commits.
     - It needs `DATABASE_URL` from the shell only, and prints the host first.
@@ -511,11 +511,11 @@ There are no specialist agents, so the building session does each phase, one com
 
 Follow `authoring-agentic-docs`.
 
-**Review per phase:** `/security-review` for P1, P3 and P3b, and `/code-review` for P4a–P8. Then `yarn type-check`, `yarn lint` and `yarn build`, and format only the files you touched.
+**Review per phase:** `/security-review` for P1, P3 and P3b, and `/code-review` for P4a–P8. Then `pnpm type-check`, `pnpm lint` and `pnpm build`, and format only the files you touched.
 
 ## Test Scenarios
 
-There's no test runner, so each scenario is checked by hand. The server phases check the session-free paths with `curl` and the local database. Signed-in scenarios run after P2, in the browser under `yarn netlify`.
+There's no test runner, so each scenario is checked by hand. The server phases check the session-free paths with `curl` and the local database. Signed-in scenarios run after P2, in the browser under `pnpm netlify`.
 
 ### User-facing
 - Given someone signed out, then every `/api/band/*` call returns `401` without touching the database.
@@ -555,7 +555,7 @@ These are Colin's steps:
 3. In the Identity dashboard, give each user **exactly one** slug role (`anna`, `kyle`, `nick`, `francesco` or `colin`), and give Colin `admin` as well. The dashboard sets roles only, and that's all `getCurrentMember` reads.
 4. **Before P4a deletes `practices.ts`,** copy its entries into `band-data/import.ts`.
 5. Give the build session March show planning's due date (for migration `0003`).
-6. **On release:** deploy (migrations `0001`–`0003` run, and the form row appears), then run `yarn seed:band` against production (a dry run, then `--write`), then check `/da-band`. Previews are copied from production, so they're empty until then.
+6. **On release:** deploy (migrations `0001`–`0003` run, and the form row appears), then run `pnpm seed:band` against production (a dry run, then `--write`), then check `/da-band`. Previews are copied from production, so they're empty until then.
 
 ## Later: phase 2, sign-in and gate (paragraph)
 
@@ -572,7 +572,7 @@ Paste this into `CLAUDE.md`. This planning session wasn't cleared to edit that f
 ```md
 ## Project profile
 
-- **Commands:** type-check `yarn type-check`; lint `yarn lint`; format `yarn format` (with another session's uncommitted work here, `yarn prettier --write <files>` on your own files only); build `yarn build`; dev `yarn netlify`; seed `yarn seed:band`. No test runner and no e2e.
+- **Commands:** type-check `pnpm type-check`; lint `pnpm lint`; format `pnpm format` (with another session's uncommitted work here, `pnpm exec prettier --write <files>` on your own files only); build `pnpm build`; dev `pnpm netlify`; seed `pnpm seed:band`. No test runner and no e2e.
 - **Plans:** `planning/` (flat, `YYYY-MM-<topic>-plan.md`); backlog in `planning/da-band-backlog.md`.
 - **Specialist agents:** none; the building session does the work itself.
 - **Reviewers:** `plan-reviewer` (plans), `/code-review` and `/security-review` (code; security for anything under `netlify/` or touching auth).

@@ -5,7 +5,7 @@ import type { Queryable } from '../lib/band-db';
 import type { Failure } from '../lib/failure';
 
 // The server form registry: slug → handler. One handler per registered form, typed Record<FormSlug, …> so a
-// missing registration fails `yarn type-check`.
+// missing registration fails `pnpm type-check`.
 
 export interface FormHandler<D> {
 	/** Everyone's answers, for GET. */
